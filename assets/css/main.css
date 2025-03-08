@@ -10,6 +10,150 @@
 # Font & Color Variables
 # Help: https://bootstrapmade.com/color-system/
 --------------------------------------------------------------*/
+/* metabolite */
+.module-header {
+  background-color: #f0f0e0;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.module-section {
+  margin-bottom: 30px;
+  padding: 15px;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.module-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.search-area {
+  display: flex;
+  margin-bottom: 15px;
+  justify-content: space-between;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+}
+
+.search-box input {
+  margin-left: 10px;
+  padding: 5px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.download-button {
+  background-color: #73bd24;
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.download-button:hover {
+  background-color: #73bd24;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: #f2f2f2;
+}
+
+.pagination-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.pagination {
+  display: flex;
+}
+
+.resource-link {
+  color: #0275d8;
+  text-decoration: none;
+}
+
+.resource-link:hover {
+  text-decoration: underline;
+}
+
+.heatmap-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.heatmap-controls {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.heatmap-control-group {
+  margin-right: 20px;
+}
+
+.heatmap-input {
+  width: 200px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.heatmap-button {
+  background-color: #3fbbc0;
+  color: white;
+  border: none;
+  padding: 6px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.heatmap-image {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ddd;
+}
+
+.dropdown-select {
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-left: 10px;
+}
+
+.content-description {
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
 
 /* 数据源区域样式 */
 .data-source {
@@ -529,6 +673,10 @@ h6 {
 
   .navmenu .dropdown ul li {
     min-width: 200px;
+  }
+
+  .navmenu .dropdown ul li a.active {
+    color: #3fbbc0;
   }
 
   .navmenu .dropdown ul a {
@@ -2173,4 +2321,312 @@ section,
 .download-more:hover {
   background-color: #0056b3;
   color: #fff;
+}
+/*TOOLS*/
+
+:root {
+  --primary-color: #3fbbc0;
+  --secondary-color: #3fbbc0;
+  --accent-color: #3fbbc0;
+  --light-bg: #f9f9f9;
+  --dark-bg: #333;
+  --border-color: #ddd;
+}
+
+.tools-container {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.tools-sidebar {
+  background-color: #f5f5f5;
+  border-right: 1px solid var(--border-color);
+  padding: 0;
+  height: 100%;
+}
+
+.tools-header {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 15px 20px;
+  margin-bottom: 0;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.tools-menu {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.tools-menu-item {
+  border-bottom: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.tools-menu-item a {
+  display: block;
+  padding: 15px 20px;
+  color: #444;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.tools-menu-item:hover {
+  background-color: rgba(63, 187, 192, 0.05);
+}
+
+.tools-menu-item:hover a {
+  color: var(--primary-color);
+  border-left-color: var(--primary-color);
+}
+
+.tools-menu-item.active {
+  background-color: #fff;
+}
+
+.tools-menu-item.active a {
+  color: var(--secondary-color);
+  border-left-color: var(--secondary-color);
+  font-weight: 600;
+}
+
+.tool-content-area {
+  padding: 25px;
+  min-height: 600px;
+}
+
+.tool-title {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  border-bottom: 2px solid var(--secondary-color);
+  padding-bottom: 10px;
+  display: inline-block;
+}
+
+.tool-subtitle {
+  color: #666;
+  font-size: 18px;
+  margin-bottom: 25px;
+}
+
+.tool-description {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background-color: rgba(63, 187, 192, 0.05);
+  padding: 15px 20px;
+  margin-bottom: 25px;
+}
+
+.tool-description-green {
+  background-color: rgba(139, 195, 74, 0.1);
+  border-color: rgba(139, 195, 74, 0.3);
+}
+
+.tool-panel {
+  background-color: #fff;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  margin-bottom: 25px;
+}
+
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 10px 15px;
+  font-size: 14px;
+}
+
+.form-control:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(63, 187, 192, 0.25);
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.btn-tool-primary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-tool-primary:hover {
+  background-color: #3fbbc0;
+  border-color: #3fbbc0;
+  color: white;
+}
+
+.btn-tool-secondary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-tool-secondary:hover {
+  background-color: #36a5a9;
+  border-color: #36a5a9;
+  color: white;
+}
+
+.btn-tool-green {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-tool-green:hover {
+  background-color: #b36a42;
+  border-color: #7cb342;
+}
+
+.sequence-input {
+  font-family: monospace;
+  height: 150px;
+  resize: vertical;
+}
+
+.genome-selector {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.genome-selector-item {
+  padding: 8px 10px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.genome-selector-item:hover {
+  background-color: #f5f5f5;
+}
+
+.parameter-info {
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
+.info-icon {
+  color: var(--primary-color);
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.example-link {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+
+.example-link:hover {
+  text-decoration: underline;
+}
+
+.search-box {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+.search-box input {
+  flex: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.search-box button {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: white;
+}
+
+.feature-item {
+  margin-bottom: 15px;
+  padding-left: 25px;
+  position: relative;
+}
+
+.feature-item:before {
+  content: "•";
+  color: var(--primary-color);
+  font-size: 20px;
+  position: absolute;
+  left: 0;
+  top: -3px;
+}
+
+.database-checkbox {
+  margin-right: 10px;
+}
+
+.database-section {
+  margin-bottom: 20px;
+}
+
+.database-title {
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+}
+
+.database-item {
+  margin-bottom: 8px;
+}
+
+.advanced-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px dashed #ddd;
+}
+
+/* Tool-specific styles */
+.blast-header {
+  background-color: #3fbbc0;
+  padding: 15px 20px;
+  border-radius: 6px 6px 0 0;
+  color: white;
+}
+
+.blast-content {
+  background-color: #f8faf5;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+}
+
+.list-group-item .badge.bg-primary {
+  background-color: #3fbbc0 !important;
 }
