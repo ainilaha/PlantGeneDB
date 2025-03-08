@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>QTP-GMD</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="assets/css/main.css" rel="stylesheet">
+
+    <!-- Additional CSS for the transcriptomics module -->
+    <style>
+        /* 为导航栏中的 Omics 下拉菜单和 Transcriptomics 链接设置活动状态的颜色 */
+        .navmenu .dropdown a.active {
+            color: #3fbbc0;
+        }
+        
+        .navmenu .dropdown ul li a.active {
+            color: #3fbbc0;
+        }
+        
+        /* 确保鼠标悬停时保持相同的颜色 */
+        .navmenu .dropdown a.active:hover,
+        .navmenu .dropdown ul li a.active:hover {
+            color: #3fbbc0;
+        }
+    </style>
+
+    <!-- JS File -->
+    <script src="assets/js/genomic-interaction.js"></script>
+
+</head>
+
+<body class="index-page">
+
+    <header id="header" class="header sticky-top">
+
+        <div class="topbar d-flex align-items-center">
+            <div class="container d-flex justify-content-center justify-content-md-between">
+                <div class="d-none d-md-flex align-items-center">
+                    <i class="bi bi-clock me-1"></i>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-phone me-1"></i>
+                </div>
+            </div>
+        </div><!-- End Top Bar -->
+
+        <div class="branding d-flex align-items-center">
+
+            <div class="container position-relative d-flex align-items-center justify-content-end">
+                <a href="index.html" class="logo d-flex align-items-center me-auto">
+                    <h1 class="sitename">QTP-GMD</h1>
+                    <!-- Uncomment the line below if you also wish to use a text logo -->
+                    <!-- <h1 class="sitename">Medicio</h1>  -->
+                </a>
+
+                <nav id="navmenu" class="navmenu">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+
+                        <!-- Omics 下拉菜单 -->
+                        <li class="dropdown"><a href="#" class="active"><span>Omics</span> <i
+                                    class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li><a href="Genomic.html">Genomics</a></li>
+                                <li><a href="transcriptomics.html" class="active">Transcriptomics</a></li>
+                                <li><a href="metabolite.html">Metabolomics</a></li>
+                            </ul>
+                        </li>
+
+                        <li><a href="#phenotype">Phenotype</a></li>
+
+                        <!-- Tools 下拉菜单 -->
+                        <li class="dropdown"><a href="#"><span>Tools</span> <i
+                                    class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li><a href="#jbrowse">Jbrowse</a></li>
+                                <li><a href="#blast">BLAST</a></li>
+                                <li><a href="#primer3">Primer3 Design</a></li>
+                                <li><a href="#orthovenn">OrthoVenn</a></li>
+                                <li><a href="#enrichment">Enrichment</a></li>
+                                <li><a href="#crispr">CRISPR-Predictor</a></li>
+                                <li><a href="#gene-search">Gene Search</a></li>
+                            </ul>
+                        </li>
+
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+                </nav>
+                <a class="cta-btn" href="login.html">Sign in</a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <main class="main">
+        <!-- Gene Expression Section -->
+        <section class="gene-expression section">
+            <div class="container section-title">
+                <h2>Gene Expression Information</h2>
+            </div>
+            <div class="container">
+                <div class="module-section">
+                    <!-- 搜索和下载区域 -->
+                    <div class="search-area">
+                        <div class="search-box">
+                            <label>Input Gene ID, Name, or Function:</label>
+                            <input type="text" placeholder="Search genes...">
+                        </div>
+                        <button class="download-button">Download Table <i class="bi bi-download"></i></button>
+                    </div>
+
+                    <!-- 数据表格 - 基因表达信息 -->
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Gene ID</th>
+                                <th>Gene Name</th>
+                                <th>Description</th>
+                                <th>Chromosome</th>
+                                <th>Start Position</th>
+                                <th>End Position</th>
+                                <th>Strand</th>
+                                <th>Associated Pathway</th>
+                                <th>GO Terms</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>QTP001</td>
+                                <td><a href="#" class="resource-link">WRKY1</a></td>
+                                <td>WRKY transcription factor 1</td>
+                                <td>Chr2</td>
+                                <td>15678923</td>
+                                <td>15682045</td>
+                                <td>+</td>
+                                <td>Stress response</td>
+                                <td>GO:0006355, GO:0003700</td>
+                            </tr>
+                            <tr>
+                                <td>QTP002</td>
+                                <td><a href="#" class="resource-link">MADS3</a></td>
+                                <td>MADS-box transcription factor 3</td>
+                                <td>Chr1</td>
+                                <td>8765432</td>
+                                <td>8769876</td>
+                                <td>-</td>
+                                <td>Floral development</td>
+                                <td>GO:0006355, GO:0003700</td>
+                            </tr>
+                            <tr>
+                                <td>QTP003</td>
+                                <td><a href="#" class="resource-link">PAL1</a></td>
+                                <td>Phenylalanine ammonia-lyase 1</td>
+                                <td>Chr5</td>
+                                <td>25678901</td>
+                                <td>25680345</td>
+                                <td>+</td>
+                                <td>Phenylpropanoid biosynthesis</td>
+                                <td>GO:0006559, GO:0016841</td>
+                            </tr>
+                            <tr>
+                                <td>QTP004</td>
+                                <td><a href="#" class="resource-link">SOD1</a></td>
+                                <td>Superoxide dismutase 1</td>
+                                <td>Chr3</td>
+                                <td>12345678</td>
+                                <td>12347890</td>
+                                <td>+</td>
+                                <td>Oxidative stress response</td>
+                                <td>GO:0006801, GO:0004784</td>
+                            </tr>
+                            <tr>
+                                <td>QTP005</td>
+                                <td><a href="#" class="resource-link">CHS</a></td>
+                                <td>Chalcone synthase</td>
+                                <td>Chr7</td>
+                                <td>34567890</td>
+                                <td>34569012</td>
+                                <td>-</td>
+                                <td>Flavonoid biosynthesis</td>
+                                <td>GO:0009813, GO:0016210</td>
+                            </tr>
+                            <tr>
+                                <td>QTP006</td>
+                                <td><a href="#" class="resource-link">RUB1</a></td>
+                                <td>Ribulose bisphosphate carboxylase small chain 1</td>
+                                <td>Chr4</td>
+                                <td>7654321</td>
+                                <td>7655432</td>
+                                <td>+</td>
+                                <td>Photosynthesis</td>
+                                <td>GO:0015977, GO:0016984</td>
+                            </tr>
+                            <tr>
+                                <td>QTP007</td>
+                                <td><a href="#" class="resource-link">NCED3</a></td>
+                                <td>9-cis-epoxycarotenoid dioxygenase 3</td>
+                                <td>Chr9</td>
+                                <td>45678901</td>
+                                <td>45681234</td>
+                                <td>-</td>
+                                <td>ABA biosynthesis</td>
+                                <td>GO:0009688, GO:0016702</td>
+                            </tr>
+                            <tr>
+                                <td>QTP008</td>
+                                <td><a href="#" class="resource-link">ERF1</a></td>
+                                <td>Ethylene-responsive transcription factor 1</td>
+                                <td>Chr6</td>
+                                <td>23456789</td>
+                                <td>23458765</td>
+                                <td>+</td>
+                                <td>Ethylene signaling</td>
+                                <td>GO:0006355, GO:0003700</td>
+                            </tr>
+                            <tr>
+                                <td>QTP009</td>
+                                <td><a href="#" class="resource-link">PIP2</a></td>
+                                <td>Plasma membrane intrinsic protein 2</td>
+                                <td>Chr8</td>
+                                <td>56789012</td>
+                                <td>56790123</td>
+                                <td>-</td>
+                                <td>Water transport</td>
+                                <td>GO:0006833, GO:0015250</td>
+                            </tr>
+                            <tr>
+                                <td>QTP010</td>
+                                <td><a href="#" class="resource-link">HSP70</a></td>
+                                <td>Heat shock protein 70</td>
+                                <td>Chr10</td>
+                                <td>67890123</td>
+                                <td>67893456</td>
+                                <td>+</td>
+                                <td>Heat stress response</td>
+                                <td>GO:0006986, GO:0005524</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 分页区域 -->
+                    <div class="pagination-area">
+                        <div class="page-info">
+                            Items per page:
+                            <select class="dropdown-select">
+                                <option>10</option>
+                                <option selected>15</option>
+                                <option>50</option>
+                                <option>100</option>
+                            </select>
+                            <span>1-10 of 3582</span>
+                        </div>
+                        <div class="pagination">
+                            <button class="page-button" disabled>❮❮</button>
+                            <button class="page-button" disabled>❮</button>
+                            <button class="page-button active">1</button>
+                            <button class="page-button">2</button>
+                            <button class="page-button">3</button>
+                            <button class="page-button">❯</button>
+                            <button class="page-button">❯❯</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expression Data Section -->
+        <section class="expression-data section">
+            <div class="container section-title">
+                <h2>Expression Data Query</h2>
+            </div>
+            <div class="container">
+                <div class="module-section">
+                    <!-- 样本筛选区域 -->
+                    <div class="search-area">
+                        <div style="display: flex; gap: 20px;">
+                            <div>
+                                <label>Tissue:</label>
+                                <select class="dropdown-select">
+                                    <option selected>all tissues</option>
+                                    <option>leaf</option>
+                                    <option>root</option>
+                                    <option>stem</option>
+                                    <option>flower</option>
+                                    <option>fruit</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Developmental Stage:</label>
+                                <select class="dropdown-select">
+                                    <option selected>all stages</option>
+                                    <option>seedling</option>
+                                    <option>vegetative</option>
+                                    <option>flowering</option>
+                                    <option>fruiting</option>
+                                    <option>senescence</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Treatment:</label>
+                                <select class="dropdown-select">
+                                    <option selected>all conditions</option>
+                                    <option>control</option>
+                                    <option>drought</option>
+                                    <option>salt stress</option>
+                                    <option>cold stress</option>
+                                    <option>heat stress</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="download-button">Download Table <i class="bi bi-download"></i></button>
+                    </div>
+
+                    <!-- 搜索框 -->
+                    <div class="search-box" style="margin-bottom: 15px;">
+                        <label><i class="bi bi-search"></i> Input gene ID or name:</label>
+                        <input type="text" placeholder="Search expression data..." class="expression-input">
+                    </div>
+
+                    <!-- 数据表格 - 表达水平 -->
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sample ID</th>
+                                <th>Tissue</th>
+                                <th>Stage</th>
+                                <th>Treatment</th>
+                                <th>Replicate</th>
+                                <th>Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>QTP-L1-C-R1</td>
+                                <td>leaf</td>
+                                <td>seedling</td>
+                                <td>control</td>
+                                <td>1</td>
+                                <td>Our lab</td>
+                            </tr>
+                            <tr>
+                                <td>QTP-L1-C-R2</td>
+                                <td>leaf</td>
+                                <td>seedling</td>
+                                <td>control</td>
+                                <td>2</td>
+                                <td>Our lab</td>
+                            </tr>
+                            <tr>
+                                <td>QTP-L1-C-R3</td>
+                                <td>leaf</td>
+                                <td>seedling</td>
+                                <td>control</td>
+                                <td>3</td>
+                                <td>Our lab</td>
+                            </tr>
+                            <tr>
+                                <td>QTP-L1-D-R1</td>
+                                <td>leaf</td>
+                                <td>seedling</td>
+                                <td>drought</td>
+                                <td>1</td>
+                                <td>Our lab</td>
+                            </tr>
+                            <tr>
+                                <td>QTP-L1-D-R2</td>
+                                <td>leaf</td>
+                                <td>seedling</td>
+                                <td>drought</td>
+                                <td>2</td>
+                                <td>Our lab</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 分页区域 -->
+                    <div class="pagination-area">
+                        <div class="page-info">
+                            Items per page:
+                            <select class="dropdown-select">
+                                <option>10</option>
+                                <option selected>15</option>
+                                <option>50</option>
+                                <option>100</option>
+                            </select>
+                            <span>1-5 of 52</span>
+                        </div>
+                        <div class="pagination">
+                            <button class="page-button" disabled>❮❮</button>
+                            <button class="page-button" disabled>❮</button>
+                            <button class="page-button active">1</button>
+                            <button class="page-button">2</button>
+                            <button class="page-button">❯</button>
+                            <button class="page-button">❯❯</button>
+                        </div>
+                    </div>
+
+                    <!-- 基因表达水平查询搜索框 -->
+                    <div style="margin-top: 20px;">
+                        <div class="search-box" style="margin-bottom: 15px;">
+                            <label><i class="bi bi-search"></i> Input gene ID:</label>
+                            <input type="text" placeholder="Search gene expression levels..." class="expression-input">
+                        </div>
+                        <button class="download-button" style="margin-top: 10px;">Download Table <i
+                                class="bi bi-download"></i></button>
+                    </div>
+
+                    <!-- 基因表达水平数据表 -->
+                    <div style="overflow-x: auto; margin-top: 15px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Gene ID</th>
+                                    <th>QTP-L1-C-R1</th>
+                                    <th>QTP-L1-C-R2</th>
+                                    <th>QTP-L1-C-R3</th>
+                                    <th>QTP-L1-D-R1</th>
+                                    <th>QTP-L1-D-R2</th>
+                                    <th>QTP-L1-D-R3</th>
+                                    <th>QTP-R1-C-R1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>QTP001</td>
+                                    <td>12.45</td>
+                                    <td>13.21</td>
+                                    <td>11.87</td>
+                                    <td>45.67</td>
+                                    <td>48.32</td>
+                                    <td>46.89</td>
+                                    <td>5.23</td>
+                                </tr>
+                                <tr>
+                                    <td>QTP002</td>
+                                    <td>34.78</td>
+                                    <td>36.45</td>
+                                    <td>33.21</td>
+                                    <td>28.90</td>
+                                    <td>27.65</td>
+                                    <td>29.32</td>
+                                    <td>42.67</td>
+                                </tr>
+                                <tr>
+                                    <td>QTP003</td>
+                                    <td>56.23</td>
+                                    <td>54.89</td>
+                                    <td>55.67</td>
+                                    <td>123.45</td>
+                                    <td>126.78</td>
+                                    <td>120.34</td>
+                                    <td>24.56</td>
+                                </tr>
+                                <tr>
+                                    <td>QTP004</td>
+                                    <td>8.76</td>
+                                    <td>9.32</td>
+                                    <td>8.45</td>
+                                    <td>18.90</td>
+                                    <td>19.43</td>
+                                    <td>18.21</td>
+                                    <td>6.78</td>
+                                </tr>
+                                <tr>
+                                    <td>QTP005</td>
+                                    <td>67.89</td>
+                                    <td>65.43</td>
+                                    <td>68.90</td>
+                                    <td>45.67</td>
+                                    <td>43.21</td>
+                                    <td>46.78</td>
+                                    <td>12.34</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分页区域 -->
+                    <div class="pagination-area">
+                        <div class="page-info">
+                            Items per page:
+                            <select class="dropdown-select">
+                                <option>10</option>
+                                <option selected>15</option>
+                                <option>50</option>
+                                <option>100</option>
+                            </select>
+                            <span>1-5 of 3582</span>
+                        </div>
+                        <div class="pagination">
+                            <button class="page-button" disabled>❮❮</button>
+                            <button class="page-button" disabled>❮</button>
+                            <button class="page-button active">1</button>
+                            <button class="page-button">2</button>
+                            <button class="page-button">3</button>
+                            <button class="page-button">❯</button>
+                            <button class="page-button">❯❯</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expression Heatmap Section -->
+        <section class="heatmap section">
+            <div class="container section-title">
+                <h2>Gene Expression Heatmap</h2>
+            </div>
+            <div class="container">
+                <div class="module-section">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="module-title">Input genes</div>
+                            <div style="border: 1px solid #ddd; padding: 10px; height: 280px; overflow-y: auto;">
+                                <div>QTP001</div>
+                                <div>QTP002</div>
+                                <div>QTP003</div>
+                                <div>QTP004</div>
+                                <div>QTP005</div>
+                                <div>QTP006</div>
+                                <div>QTP007</div>
+                                <div>QTP008</div>
+                                <div>QTP009</div>
+                                <div>QTP010</div>
+                            </div>
+                            <button class="heatmap-button" style="width: 100%; margin-top: 10px;">Generate Heatmap</button>
+                        </div>
+
+                        <div class="col-md-9">
+                            <div class="heatmap-container">
+                                <div class="module-title text-center">Gene Expression Heatmap (log2 TPM)</div>
+                                <div style="text-align: right; margin-bottom: 10px;">
+                                    <button class="btn btn-sm btn-outline-secondary"><i
+                                            class="bi bi-zoom-in"></i></button>
+                                </div>
+                                <div style="text-align: center; height: 350px; background-color: #f9f9f9; display: flex; justify-content: center; align-items: center; border: 1px dashed #ccc;">
+                                    <div>Enter a gene ID and click "Generate Network" to visualize co-expression relationships</div>
+                                </div>
+                                <div style="margin-top: 10px; text-align: center; font-size: 0.9em; color: #666;">
+                                    <p>Node size represents expression level; edge thickness represents correlation strength</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GO Enrichment Analysis Section -->
+        <section class="go-enrichment section">
+            <div class="container section-title">
+                <h2>GO Enrichment Analysis</h2>
+            </div>
+            <div class="container">
+                <div class="module-section">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="module-title">Input gene list</div>
+                            <textarea style="width: 100%; height: 200px; padding: 10px; margin-bottom: 15px;" placeholder="Enter gene IDs (one per line)"></textarea>
+                            
+                            <div style="margin-bottom: 15px; display: flex; gap: 10px;">
+                                <div style="flex: 1;">
+                                    <label>P-value cutoff:</label>
+                                    <select class="dropdown-select" style="width: 100%;">
+                                        <option>0.05</option>
+                                        <option>0.01</option>
+                                        <option>0.001</option>
+                                    </select>
+                                </div>
+                                <div style="flex: 1;">
+                                    <label>GO Category:</label>
+                                    <select class="dropdown-select" style="width: 100%;">
+                                        <option>All</option>
+                                        <option>Biological Process</option>
+                                        <option>Molecular Function</option>
+                                        <option>Cellular Component</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button class="heatmap-button" style="width: 100%; margin-bottom: 20px;">Run Enrichment Analysis</button>
+                        </div>
+
+                        <div class="col-md-8">
+                            <div class="enrichment-container">
+                                <div class="module-title text-center">GO Enrichment Results</div>
+                                <div style="text-align: right; margin-bottom: 10px;">
+                                    <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-download"></i> Download Results</button>
+                                </div>
+                                
+                                <div style="overflow-x: auto;">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>GO ID</th>
+                                                <th>Description</th>
+                                                <th>Category</th>
+                                                <th>P-value</th>
+                                                <th>FDR</th>
+                                                <th>Gene Count</th>
+                                                <th>Gene Ratio</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>GO:0006979</td>
+                                                <td>Response to oxidative stress</td>
+                                                <td>BP</td>
+                                                <td>1.2e-8</td>
+                                                <td>3.5e-6</td>
+                                                <td>12</td>
+                                                <td>12/58</td>
+                                            </tr>
+                                            <tr>
+                                                <td>GO:0009737</td>
+                                                <td>Response to abscisic acid</td>
+                                                <td>BP</td>
+                                                <td>4.5e-7</td>
+                                                <td>8.9e-5</td>
+                                                <td>15</td>
+                                                <td>15/58</td>
+                                            </tr>
+                                            <tr>
+                                                <td>GO:0016491</td>
+                                                <td>Oxidoreductase activity</td>
+                                                <td>MF</td>
+                                                <td>6.7e-6</td>
+                                                <td>1.2e-4</td>
+                                                <td>10</td>
+                                                <td>10/58</td>
+                                            </tr>
+                                            <tr>
+                                                <td>GO:0006950</td>
+                                                <td>Response to stress</td>
+                                                <td>BP</td>
+                                                <td>8.9e-5</td>
+                                                <td>3.4e-3</td>
+                                                <td>22</td>
+                                                <td>22/58</td>
+                                            </tr>
+                                            <tr>
+                                                <td>GO:0009651</td>
+                                                <td>Response to salt stress</td>
+                                                <td>BP</td>
+                                                <td>1.2e-4</td>
+                                                <td>4.1e-3</td>
+                                                <td>8</td>
+                                                <td>8/58</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div style="margin-top: 20px;">
+                                    <div class="module-title text-center">Enrichment Visualization</div>
+                                    <div style="text-align: center; height: 250px; background-color: #f9f9f9; display: flex; justify-content: center; align-items: center; border: 1px dashed #ccc;">
+                                        <div>Input gene list and run analysis to view GO enrichment visualization</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="footer" class="footer light-background">
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6 footer-about">
+                    <a href="index.html" class="logo d-flex align-items-center">
+                        <span class="sitename">QTP-GMD</span>
+                    </a>
+                    <div class="footer-contact pt-3">
+                        <p>Research Institute of Highland Agriculture</p>
+                        <p>University Campus, Building A</p>
+                        <p class="mt-3"><strong>Tel:</strong> <span>+86 XXX XXXX XXXX</span></p>
+                        <p><strong>Email:</strong> <span>contact@highlandgrass.edu.cn</span></p>
+                    </div>
+                    <div class="social-links d-flex mt-4">
+                        <a href=""><i class="bi bi-wechat"></i></a>
+                        <a href=""><i class="bi bi-envelope"></i></a>
+                        <a href=""><i class="bi bi-globe"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Project</a></li>
+                        <li><a href="#">Database Access</a></li>
+                        <li><a href="#">Research Papers</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-3 footer-links">
+                    <h4>Database Resources</h4>
+                    <ul>
+                        <li><a href="#">Wheat Species Data</a></li>
+                        <li><a href="#">Forage Grass Collection</a></li>
+                        <li><a href="#">Growth Parameters</a></li>
+                        <li><a href="#">Environmental Data</a></li>
+                        <li><a href="#">Research Tools</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-3 footer-links">
+                    <h4>Partners</h4>
+                    <ul>
+                        <li><a href="#">Research Institutes</a></li>
+                        <li><a href="#">Universities</a></li>
+                        <li><a href="#">Agricultural Stations</a></li>
+                        <li><a href="#">Funding Organizations</a></li>
+                        <li><a href="#">Collaborators</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="container copyright text-center mt-4">
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">Highland Grass Database</strong> <span>All Rights
+                    Reserved</span></p>
+            <div class="credits">
+                Supported by the Research Institute of Highland Agriculture
+            </div>
+        </div>
+
+    </footer>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+    <!-- JS File -->
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

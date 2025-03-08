@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>QTP-GMD Tools</title>
+    <meta name="description" content="QTP-GMD Genomics and Bioinformatics Tools">
+    <meta name="keywords" content="genomics, tools, blast, jbrowse, primer3, enrichment">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="assets/css/main.css" rel="stylesheet">
+
+</head>
+
+<body class="index-page">
+
+    <header id="header" class="header sticky-top">
+        <div class="topbar d-flex align-items-center">
+            <div class="container d-flex justify-content-center justify-content-md-between">
+                <div class="d-none d-md-flex align-items-center">
+                    <i class="bi bi-clock me-1"></i>
+                </div>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-phone me-1"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="branding d-flex align-items-center">
+            <div class="container position-relative d-flex align-items-center justify-content-end">
+                <a href="index.html" class="logo d-flex align-items-center me-auto">
+                    <h1 class="sitename">QTP-GMD</h1>
+                </a>
+
+                <nav id="navmenu" class="navmenu">
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+
+                        <li class="dropdown"><a href="#"><span>Omics</span> <i
+                                    class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li><a href="Genomic.html">Genomics</a></li>
+                                <li><a href="transcriptomics.html">Transcriptomics</a></li>
+                                <li><a href="metabolite.html">Metabolomics</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#phenotype">Phenotype</a></li>
+                        <!-- Tools 下拉菜单 -->
+                        <li class="dropdown"><a href="#" class="active" style="color: #3fbbc0;"><span style="color: #3fbbc0;">Tools</span> <i
+                                    class="bi bi-chevron-down toggle-dropdown"></i></a>
+
+                            
+                        </li>
+
+
+                        <li><a href="#contact">Contact</a></li>
+
+                    </ul>
+                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+                </nav>
+                <a class="cta-btn" href="login.html">Sign in</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container mt-5 mb-5">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="tools-sidebar sticky-md-top" style="top: 100px; z-index: 999;">
+                        <div class="tools-header">
+                            <i class="bi bi-tools me-2"></i> Bioinformatics Tools
+                        </div>
+                        <ul class="tools-menu">
+                            <li class="tools-menu-item" data-tool="jbrowse">
+                                <a href="#jbrowse"><i class="bi bi-search me-2"></i> JBrowse</a>
+                            </li>
+                            <li class="tools-menu-item" data-tool="blast">
+                                <a href="#blast"><i class="bi bi-layers-half me-2"></i> BLAST</a>
+                            </li>
+                            <li class="tools-menu-item" data-tool="primer3">
+                                <a href="#primer3"><i class="bi bi-scissors me-2"></i> Primer3 Design</a>
+                            </li>
+                            <li class="tools-menu-item" data-tool="orthovenn">
+                                <a href="#orthovenn"><i class="bi bi-diagram-3 me-2"></i> OrthoVenn</a>
+                            </li>
+                            <li class="tools-menu-item" data-tool="enrichment">
+                                <a href="#enrichment"><i class="bi bi-bar-chart-line me-2"></i> Enrichment</a>
+                            </li>
+                            <li class="tools-menu-item" data-tool="gwas">
+                                <a href="#gwas"><i class="bi bi-graph-up me-2"></i> GWAS Analysis</a>
+                            </li>
+                            <li class="tools-menu-item" data-tool="crispr">
+                                <a href="#crispr"><i class="bi bi-bullseye me-2"></i> CRISPR-Predictor</a>
+                            </li>
+                            <li class="tools-menu-item" data-tool="gene-search">
+                                <a href="#gene-search"><i class="bi bi-search me-2"></i> Gene Search</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-9">
+                    <div class="tools-container">
+                        <!-- BLAST Tool Section -->
+                        <div id="blast" class="tool-content-area">
+                            <h2 class="tool-title">BLAST</h2>
+                            <h3 class="tool-subtitle">Basic Local Alignment Search Tool</h3>
+
+                            <div class="tool-description">
+                                <p class="mb-0">BLAST (Basic Local Alignment Search Tool) finds regions of local
+                                    similarity between sequences. The program compares nucleotide or protein sequences
+                                    to sequence databases and calculates the statistical significance of matches.</p>
+                            </div>
+
+                            <div class="tool-panel">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="sequenceInput" class="form-label">Query Sequence</label>
+                                        <textarea class="form-control sequence-input" id="sequenceInput"
+                                            placeholder="Paste query sequence(s) or drag file containing query sequence(s) in FASTA format here..."></textarea>
+                                        <div class="d-flex align-items-center justify-content-between mt-2">
+                                            <button type="button" class="btn btn-sm btn-tool-secondary"><i
+                                                    class="bi bi-upload me-1"></i> Upload File</button>
+                                            <a href="#" class="example-link">Load Example Sequence</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="database-section">
+                                                <h5 class="database-title">Nucleotide Databases</h5>
+                                                <div class="database-item">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value=""
+                                                            id="nuc1" checked>
+                                                        <label class="form-check-label" for="nuc1">
+                                                            Genomic (v1.0)
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="database-item">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value=""
+                                                            id="nuc2">
+                                                        <label class="form-check-label" for="nuc2">
+                                                            mRNA (v1.0)
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="database-item">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value=""
+                                                            id="nuc3">
+                                                        <label class="form-check-label" for="nuc3">
+                                                            cDNA (v1.0)
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="database-section">
+                                                <h5 class="database-title">Protein Databases</h5>
+                                                <div class="database-item">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value=""
+                                                            id="prot1">
+                                                        <label class="form-check-label" for="prot1">
+                                                            Protein (v1.0)
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="database-item">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value=""
+                                                            id="prot2">
+                                                        <label class="form-check-label" for="prot2">
+                                                            Translated CDS (v1.0)
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="advanced-section">
+                                        <div class="mb-3">
+                                            <label for="advancedParams" class="form-label">Advanced Parameters</label>
+                                            <input type="text" class="form-control" id="advancedParams"
+                                                placeholder="e.g. -evalue 1.0e-5 -num_alignments 100">
+                                            <div class="parameter-info">
+                                                Optional parameters for fine-tuning your BLAST search
+                                                <i class="bi bi-question-circle info-icon" data-bs-toggle="tooltip"
+                                                    title="Set additional parameters to customize your BLAST query"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" value="" id="openNewTab">
+                                            <label class="form-check-label" for="openNewTab">
+                                                Open results in new tab
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 text-center">
+                                        <button type="submit" class="btn btn-tool-primary px-5">
+                                            <i class="bi bi-search me-2"></i> Run BLAST
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Jbrowse Tool Section -->
+                        <div id="jbrowse" class="tool-content-area" style="display:none">
+                            <h2 class="tool-title">JBrowse</h2>
+                            <h3 class="tool-subtitle">Genome Browser</h3>
+
+                            <div class="tool-description">
+                                <p class="mb-0">JBrowse is a fast, interactive genome browser built with HTML5 and
+                                    JavaScript. It allows you to explore genomic data and annotations with unprecedented
+                                    speed and responsiveness.</p>
+                            </div>
+
+                            <div class="tool-description tool-description-green">
+                                <p class="mb-2"><strong>Key Features:</strong></p>
+                                <div class="feature-item">Fast and responsive visualization of large genomic datasets
+                                </div>
+                                <div class="feature-item">Explore gene structures, variations, and functional
+                                    annotations</div>
+                                <div class="feature-item">Supports multiple reference genomes and coordinate systems
+                                </div>
+                                <div class="feature-item">Customizable display and track configuration</div>
+                            </div>
+
+                            <div class="tool-panel">
+                                <div class="row mb-4">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Select Reference Genome</label>
+                                        <select class="form-select">
+                                            <option selected>Reference v1.0</option>
+                                            <option>Reference v2.0</option>
+                                            <option>Alternative Assembly</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label class="form-label">Jump to Position</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control"
+                                                placeholder="e.g. chr1:1000000..2000000 or gene:AT1G01010">
+                                            <button class="btn btn-tool-secondary" type="button">Go</button>
+                                        </div>
+                                        <small class="text-muted">Enter coordinates or gene ID</small>
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <a href="#" class="btn btn-tool-primary btn-lg px-4 py-2">
+                                        <i class="bi bi-box-arrow-up-right me-2"></i> Launch JBrowse
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div class="tool-panel mt-4">
+                                <h5 class="mb-3">Recent Examples</h5>
+                                <div class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Gene cluster on Chr5</h6>
+                                            <small>3 days ago</small>
+                                        </div>
+                                        <small>Chr5:12500000..12600000</small>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Transcription factor region</h6>
+                                            <small>5 days ago</small>
+                                        </div>
+                                        <small>Chr3:8750000..8800000</small>
+                                    </a>
+                                    <a href="#" class="list-group-item list-group-item-action">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">Disease resistance genes</h6>
+                                            <small>1 week ago</small>
+                                        </div>
+                                        <small>Chr7:22500000..22750000</small>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Primer3 Tool Section -->
+                        <div id="primer3" class="tool-content-area" style="display:none">
+                            <h2 class="tool-title">Primer3 Design</h2>
+                            <h3 class="tool-subtitle">PCR Primer Design Tool</h3>
+
+                            <div class="tool-description">
+                                <p class="mb-0">Primer3 designs PCR primers from DNA sequences. It can also design
+                                    hybridization probes and sequencing primers.</p>
+                            </div>
+
+                            <div class="blast-header">
+                                Primer3 (Pick primers from a DNA sequence)
+                            </div>
+                            <div class="blast-content">
+                                <form>
+                                    <div class="row mb-3">
+                                        <div class="col-md-3">
+                                            <label for="genomicRegion" class="form-label">Genomic region</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <input type="text" class="form-control" id="genomicRegion">
+                                            <small class="text-muted">e.g. Chr01:10000..11000</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-3">
+                                            <label for="sequence" class="form-label">Sequence</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <textarea class="form-control" id="sequence" rows="5"></textarea>
+                                            <div class="mt-2">
+                                                <button type="button"
+                                                    class="btn btn-sm btn-tool-secondary">Upload</button>
+                                                <a href="#" class="example-link ms-2">Click here to get an example</a>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-3">
+                                            <label for="config" class="form-label">Config</label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <select class="form-select" id="config">
+                                                <option selected>Default parameters</option>
+                                                <option>High specificity</option>
+                                                <option>Long amplicons</option>
+                                                <option>Short amplicons</option>
+                                                <option>Custom settings...</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="advanced-section" style="display: none;">
+                                        <h5 class="mb-3">Advanced Settings</h5>
+                                        <div class="row mb-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Primer Size</label>
+                                                <div class="row g-2">
+                                                    <div class="col-4">
+                                                        <input type="number" class="form-control" placeholder="Min"
+                                                            value="18">
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <input type="number" class="form-control" placeholder="Opt"
+                                                            value="20">
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <input type="number" class="form-control" placeholder="Max"
+                                                            value="27">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Primer Tm (°C)</label>
+                                                <div class="row g-2">
+                                                    <div class="col-4">
+                                                        <input type="number" class="form-control" placeholder="Min"
+                                                            value="57">
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <input type="number" class="form-control" placeholder="Opt"
+                                                            value="60">
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <input type="number" class="form-control" placeholder="Max"
+                                                            value="63">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-9 offset-md-3">
+                                            <button type="submit" class="btn btn-tool-green px-4 py-2">
+                                                <i class="bi bi-check-circle me-2"></i> Submit
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Gene Search Tool Section -->
+                        <div id="gene-search" class="tool-content-area" style="display:none">
+                            <h2 class="tool-title">Gene Search</h2>
+                            <h3 class="tool-subtitle">Find and Explore Gene Information</h3>
+
+                            <div class="tool-description">
+                                <p class="mb-0">Search for genes by ID, name, or function. Access comprehensive gene
+                                    information including structure, expression data, and functional annotations.</p>
+                            </div>
+
+                            <div class="tool-panel">
+                                <div class="search-box mb-4">
+                                    <input type="text" class="form-control"
+                                        placeholder="Enter gene ID (e.g., PMA7G04168) or gene name">
+                                    <button class="btn" type="submit"><i class="bi bi-search"></i></button>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Search By Species</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <select class="form-select mb-3">
+                                                <option selected>Cenchrus americanus</option>
+                                                <option>Cenchrus purpureus</option>
+                                                <option>Setaria italica</option>
+                                                <option>Panicum virgatum</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div>
+                                                <label class="form-label">Demo: <a href="#"
+                                                        class="example-link">PMA7G04168</a></label>
+                                            </div>
+                                            <button class="btn btn-tool-primary">Submit</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h5 class="mb-3">Recent Searches</h5>
+                                    <div class="list-group">
+                                        <a href="#"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            PMA7G04168
+                                            <span class="badge bg-primary rounded-pill">Cenchrus americanus</span>
+                                        </a>
+                                        <a href="#"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            Cp00001G12345
+                                            <span class="badge bg-primary rounded-pill">Cenchrus purpureus</span>
+                                        </a>
+                                        <a href="#"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            Si023405
+                                            <span class="badge bg-primary rounded-pill">Setaria italica</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Example Gene Result Section -->
+                            <div class="tool-panel">
+                                <h5 class="mb-3">Gene Information</h5>
+                                <table class="table table-bordered">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th>Gene ID</th>
+                                            <th>Chromosome</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Strand</th>
+                                            <th>Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>PMA7G04168</td>
+                                            <td>chr7</td>
+                                            <td>141833288</td>
+                                            <td>141834115</td>
+                                            <td>+</td>
+                                            <td>Hypothetical protein</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <h5 class="mb-3 mt-4">Conservative Domain</h5>
+                                <table class="table table-bordered">
+                                    <thead class="bg-light">
+                                        <tr>
+                                            <th>Gene ID</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>PMA7G04168</td>
+                                            <td>141833288</td>
+                                            <td>141834115</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <h5 class="mb-3 mt-4">Gene Structure</h5>
+                                <div class="text-center bg-light p-3 border">
+                                    <p>JBrowse visualization would appear here</p>
+                                    <button class="btn btn-sm btn-tool-secondary">
+                                        <i class="bi bi-box-arrow-up-right me-1"></i> Open in JBrowse
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- GWAS Analysis Tool Section -->
+                        <div id="gwas" class="tool-content-area" style="display:none">
+                            <h2 class="tool-title">GWAS Analysis</h2>
+                            <h3 class="tool-subtitle">Genome-Wide Association Studies</h3>
+
+                            <div class="tool-description">
+                                <p class="mb-0">GWAS identifies associations between genetic variants and traits of
+                                    interest across the genome. This tool helps you analyze genotype and phenotype data
+                                    to identify significant associations.</p>
+                            </div>
+
+                            <div class="tool-panel">
+                                <form>
+                                    <h5 class="mb-3">Genotype Setting</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Genotype dataset type</label>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="genotypeType"
+                                                id="useExisting" checked>
+                                            <label class="form-check-label" for="useExisting">
+                                                Use existing genotype dataset
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="genotypeType"
+                                                id="uploadCustom">
+                                            <label class="form-check-label" for="uploadCustom">
+                                                Upload custom genotype dataset
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="genotypeDataset" class="form-label">Select genotype dataset</label>
+                                        <select class="form-select" id="genotypeDataset">
+                                            <option selected>Whole genome sequencing (ZhongHuang No.13)</option>
+                                            <option>Genome-wide SNP dataset (v1.0)</option>
+                                            <option>Reduced representation sequencing</option>
+                                        </select>
+                                    </div>
+
+                                    <hr class="my-4">
+
+                                    <h5 class="mb-3">Phenotype Setting</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Phenotype type</label>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="phenotypeType"
+                                                id="quantitative" checked>
+                                            <label class="form-check-label" for="quantitative">
+                                                Quantitative characters
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="phenotypeType"
+                                                id="discrete">
+                                            <label class="form-check-label" for="discrete">
+                                                Discrete characters (case-control)
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="phenotypeInput" class="form-label">Input phenotypes in text</label>
+                                        <textarea class="form-control" id="phenotypeInput" rows="5"
+                                            placeholder="Enter phenotype data..."></textarea>
+                                        <small class="text-muted">
+                                            Note: Data is separated by tab. The first column is material ID from
+                                            genotype materials list. The second column is the corresponding phenotype.
+                                        </small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Or upload phenotype file</label>
+                                        <input type="file" class="form-control">
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-tool-primary px-4">
+                                            Analyze
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary ms-2">
+                                            Demo Result
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="tool-panel mt-4">
+                                <h5 class="mb-3">Data Processing Pipeline</h5>
+                                <img src="assets/img/gwas-pipeline.png" alt="GWAS Pipeline" class="img-fluid">
+                            </div>
+                        </div>
+
+                        <!-- OrthoVenn Tool Section -->
+                        <div id="orthovenn" class="tool-content-area" style="display:none">
+                            <h2 class="tool-title">OrthoVenn</h2>
+                            <h3 class="tool-subtitle">Orthologous Gene Cluster Analysis</h3>
+
+                            <div class="tool-description tool-description-green">
+                                <p class="mb-0">支持引物设计和直系同源基因分析 - OrthoVenn is a web platform for comparison and
+                                    analysis of orthologous gene clusters among multiple species.</p>
+                            </div>
+
+                            <div class="tool-panel">
+                                <form>
+                                    <h5 class="mb-3">Upload Protein Sequences</h5>
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Species 1</label>
+                                            <div class="input-group mb-2">
+                                                <input type="text" class="form-control" placeholder="Species name">
+                                                <button class="btn btn-outline-secondary" type="button">Select
+                                                    File</button>
+                                            </div>
+                                            <small class="text-muted">FASTA format required</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Species 2</label>
+                                            <div class="input-group mb-2">
+                                                <input type="text" class="form-control" placeholder="Species name">
+                                                <button class="btn btn-outline-secondary" type="button">Select
+                                                    File</button>
+                                            </div>
+                                            <small class="text-muted">FASTA format required</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center mb-4">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-plus-circle me-1"></i> Add More Species
+                                        </button>
+                                    </div>
+
+                                    <h5 class="mb-3">Analysis Parameters</h5>
+                                    <div class="row mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">E-value</label>
+                                            <input type="text" class="form-control" value="1e-5">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Inflation Value</label>
+                                            <input type="text" class="form-control" value="1.5">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-tool-primary px-4">
+                                            <i class="bi bi-diagram-3 me-2"></i> Submit Analysis
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="tool-panel mt-4">
+                                <h5 class="mb-3">Example Results</h5>
+                                <div class="text-center">
+                                    <img src="assets/img/venn-diagram.png" alt="Venn Diagram Example"
+                                        class="img-fluid mb-3" style="max-height: 300px;">
+                                    <p class="text-muted">Example Venn diagram showing orthologous clusters between
+                                        species</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CRISPR Tool Section -->
+                        <div id="crispr" class="tool-content-area" style="display:none">
+                            <h2 class="tool-title">CRISPR-Predictor</h2>
+                            <h3 class="tool-subtitle">CRISPR Target Design Tool</h3>
+
+                            <div class="tool-description">
+                                <p class="mb-0">Design CRISPR-Cas9 guide RNAs (gRNAs) with optimized on-target
+                                    efficiency and minimized off-target effects for precise genome editing.</p>
+                            </div>
+
+                            <div class="tool-panel">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="inputSequence" class="form-label">Input Sequence (DNA)</label>
+                                        <textarea class="form-control sequence-input" id="inputSequence" rows="5"
+                                            placeholder="Paste your target DNA sequence here..."></textarea>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Or specify genomic region</label>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <select class="form-select">
+                                                    <option selected>Chr1</option>
+                                                    <option>Chr2</option>
+                                                    <option>Chr3</option>
+                                                    <option>Chr4</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder="Start position">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" placeholder="End position">
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="button" class="btn btn-tool-secondary"><i
+                                                        class="bi bi-arrow-clockwise"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <h5 class="mb-3 mt-4">Parameters</h5>
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label">PAM Type</label>
+                                            <select class="form-select">
+                                                <option selected>SpCas9 (NGG)</option>
+                                                <option>SaCas9 (NNGRRT)</option>
+                                                <option>Cas12a/Cpf1 (TTTV)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">gRNA Length</label>
+                                            <select class="form-select">
+                                                <option>18 nt</option>
+                                                <option selected>20 nt</option>
+                                                <option>22 nt</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Specificity Check</label>
+                                            <select class="form-select">
+                                                <option selected>Stringent</option>
+                                                <option>Moderate</option>
+                                                <option>Relaxed</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" id="checkEfficiency"
+                                            checked>
+                                        <label class="form-check-label" for="checkEfficiency">
+                                            Predict gRNA efficiency
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" id="checkOfftarget"
+                                            checked>
+                                        <label class="form-check-label" for="checkOfftarget">
+                                            Perform off-target analysis
+                                        </label>
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-tool-primary px-4">
+                                            <i class="bi bi-search me-2"></i> Find CRISPR Targets
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Enrichment Tool Section -->
+                        <div id="enrichment" class="tool-content-area" style="display:none">
+                            <h2 class="tool-title">Enrichment Analysis</h2>
+                            <h3 class="tool-subtitle">GO, KEGG and Pathway Enrichment</h3>
+
+                            <div class="tool-description">
+                                <p class="mb-0">Identify over-represented biological themes, particularly GO terms, KEGG
+                                    pathways, or other functional annotations from lists of genes or proteins.</p>
+                            </div>
+
+                            <div class="tool-panel">
+                                <form>
+                                    <div class="mb-3">
+                                        <label for="geneList" class="form-label">Input Gene List</label>
+                                        <textarea class="form-control" id="geneList" rows="6"
+                                            placeholder="Paste gene IDs or names, one per line"></textarea>
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn-sm btn-outline-secondary">
+                                                <i class="bi bi-upload me-1"></i> Upload File
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary ms-2">
+                                                <i class="bi bi-trash me-1"></i> Clear
+                                            </button>
+                                            <a href="#" class="example-link ms-2">Load example</a>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Species</label>
+                                            <select class="form-select">
+                                                <option selected>QTP species v1.0</option>
+                                                <option>Arabidopsis thaliana</option>
+                                                <option>Oryza sativa</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Analysis Type</label>
+                                            <select class="form-select">
+                                                <option selected>GO Enrichment</option>
+                                                <option>KEGG Pathway</option>
+                                                <option>InterPro Domains</option>
+                                                <option>Plant Reactome</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">P-value Cutoff</label>
+                                            <select class="form-select">
+                                                <option>0.1</option>
+                                                <option selected>0.05</option>
+                                                <option>0.01</option>
+                                                <option>0.001</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-tool-primary px-4">
+                                            <i class="bi bi-bar-chart-line me-2"></i> Run Analysis
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer id="footer" class="footer light-background">
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6 footer-about">
+                    <a href="index.html" class="logo d-flex align-items-center">
+                        <span class="sitename">QTP-GMD</span>
+                    </a>
+                    <div class="footer-contact pt-3">
+                        <p>Research Institute of Highland Agriculture</p>
+                        <p>University Campus, Building A</p>
+                        <p class="mt-3"><strong>Tel:</strong> <span>+86 XXX XXXX XXXX</span></p>
+                        <p><strong>Email:</strong> <span>contact@highlandgrass.edu.cn</span></p>
+                    </div>
+                    <div class="social-links d-flex mt-4">
+                        <a href=""><i class="bi bi-wechat"></i></a>
+                        <a href=""><i class="bi bi-envelope"></i></a>
+                        <a href=""><i class="bi bi-globe"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Project</a></li>
+                        <li><a href="#">Database Access</a></li>
+                        <li><a href="#">Research Papers</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-3 footer-links">
+                    <h4>Database Resources</h4>
+                    <ul>
+                        <li><a href="#">Wheat Species Data</a></li>
+                        <li><a href="#">Forage Grass Collection</a></li>
+                        <li><a href="#">Growth Parameters</a></li>
+                        <li><a href="#">Environmental Data</a></li>
+                        <li><a href="#">Research Tools</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-3 footer-links">
+                    <h4>Partners</h4>
+                    <ul>
+                        <li><a href="#">Research Institutes</a></li>
+                        <li><a href="#">Universities</a></li>
+                        <li><a href="#">Agricultural Stations</a></li>
+                        <li><a href="#">Funding Organizations</a></li>
+                        <li><a href="#">Collaborators</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container copyright text-center mt-4">
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">Highland Grass Database</strong> <span>All Rights
+                    Reserved</span></p>
+            <div class="credits">
+                Supported by the Research Institute of Highland Agriculture
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+    <!-- JS File -->
+    <script src="assets/js/main.js"></script>
+
+    <!-- 页面特定脚本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // 工具菜单激活状态切换
+            const toolLinks = document.querySelectorAll('.tools-menu-item a');
+            const toolPanels = document.querySelectorAll('.tool-content-area');
+
+            // 默认显示第一个工具（BLAST）
+            toolPanels[0].style.display = 'block';
+
+            toolLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // 获取目标工具ID
+                    const targetTool = this.getAttribute('href').substring(1);
+
+                    // 移除所有激活状态
+                    toolLinks.forEach(item => {
+                        item.parentElement.classList.remove('active');
+                    });
+
+                    // 隐藏所有工具面板
+                    toolPanels.forEach(panel => {
+                        panel.style.display = 'none';
+                    });
+
+                    // 添加当前激活状态
+                    this.parentElement.classList.add('active');
+
+                    // 显示对应的工具面板
+                    document.getElementById(targetTool).style.display = 'block';
+                });
+            });
+
+            // 工具提示初始化
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+</body>
+
+</html>
