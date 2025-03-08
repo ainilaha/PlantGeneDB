@@ -2630,3 +2630,31 @@ section,
 .list-group-item .badge.bg-primary {
   background-color: #3fbbc0 !important;
 }
+/* Header Styles - Increase z-index to ensure it stays on top */
+#header.header.sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 1100; /* Higher than sidebar */
+  width: 100%;
+  background-color: #fff;
+}
+
+/* Adjust the sidebar positioning */
+.tools-sidebar.sticky-md-top {
+  z-index: 1000; /* Lower than header but still high */
+  top: 160px; /* Adjust this value to position below the entire header */
+  padding-top: 10px;
+}
+
+/* Add padding to the main content area to account for fixed header */
+.main {
+  padding-top: 20px;
+}
+
+/* Fix for mobile navigation */
+@media (max-width: 768px) {
+  .tools-sidebar.sticky-md-top {
+      position: relative;
+      top: 0;
+  }
+}
