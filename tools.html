@@ -68,13 +68,18 @@
                         <!-- Tools 下拉菜单 -->
                         <li class="dropdown"><a href="tools.html" class="active" style="color: #3fbbc0;"><span style="color: #3fbbc0;">Tools</span> <i
                                     class="bi bi-chevron-down toggle-dropdown"></i></a>
-
-                            
+                            <ul>
+                                <li><a href="tools.html#jbrowse">Jbrowse</a></li>
+                                <li><a href="tools.html#blast">BLAST</a></li>
+                                <li><a href="tools.html#primer3">Primer3 Design</a></li>
+                                <li><a href="tools.html#orthovenn">OrthoVenn</a></li>
+                                <li><a href="tools.html#enrichment">Enrichment</a></li>
+                                <li><a href="tools.html#gwas">GWAS Analysis</a></li>
+                                <li><a href="tools.html#crispr">CRISPR-Predictor</a></li>
+                                <li><a href="tools.html#gene-search">Gene Search</a></li>
+                            </ul>
                         </li>
-
-
                         <li><a href="#contact">Contact</a></li>
-
                     </ul>
                     <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
                 </nav>
@@ -949,9 +954,49 @@
             const toolLinks = document.querySelectorAll('.tools-menu-item a');
             const toolPanels = document.querySelectorAll('.tool-content-area');
 
-            // 默认显示第一个工具（BLAST）
-            toolPanels[0].style.display = 'block';
+            // 处理URL中的锚点
+            function handleUrlHash() {
+                // 获取当前URL中的锚点（去掉#号）
+                const currentHash = window.location.hash.substring(1);
 
+                if (currentHash) {
+                    // 隐藏所有工具面板
+                    toolPanels.forEach(panel => {
+                        panel.style.display = 'none';
+                    });
+
+                    // 移除所有激活状态
+                    toolLinks.forEach(item => {
+                        item.parentElement.classList.remove('active');
+                    });
+
+                    // 显示对应的工具面板
+                    const targetPanel = document.getElementById(currentHash);
+                    if (targetPanel) {
+                        targetPanel.style.display = 'block';
+
+                        // 找到对应的菜单项并激活
+                        const targetLink = document.querySelector(`.tools-menu-item a[href="#${currentHash}"]`);
+                        if (targetLink) {
+                            targetLink.parentElement.classList.add('active');
+                        }
+                    } else {
+                        // 如果没有找到对应面板，显示默认的第一个工具
+                        toolPanels[0].style.display = 'block';
+                    }
+                } else {
+                    // 没有锚点时显示默认的第一个工具
+                    toolPanels[0].style.display = 'block';
+                }
+            }
+
+            // 页面加载时处理锚点
+            handleUrlHash();
+
+            // 监听URL锚点变化
+            window.addEventListener('hashchange', handleUrlHash);
+
+            // 原有的点击事件处理...
             toolLinks.forEach(link => {
                 link.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -959,21 +1004,8 @@
                     // 获取目标工具ID
                     const targetTool = this.getAttribute('href').substring(1);
 
-                    // 移除所有激活状态
-                    toolLinks.forEach(item => {
-                        item.parentElement.classList.remove('active');
-                    });
-
-                    // 隐藏所有工具面板
-                    toolPanels.forEach(panel => {
-                        panel.style.display = 'none';
-                    });
-
-                    // 添加当前激活状态
-                    this.parentElement.classList.add('active');
-
-                    // 显示对应的工具面板
-                    document.getElementById(targetTool).style.display = 'block';
+                    // 更新URL锚点（会触发hashchange事件）
+                    window.location.hash = targetTool;
                 });
             });
 
