@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Starter Page - Medicio Bootstrap Template</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="assets/img/favicon.png" rel="icon">
+  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Medicio
+  * Template URL: https://bootstrapmade.com/medicio-free-bootstrap-theme/
+  * Updated: Aug 07 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+  <style>
+   .divider-line {
+  border-left: 2px solid rgba(0, 0, 0, 0.1);
+  margin-left: 2.2rem;
+  height: 0px;
+  opacity: 0.6;
+}
+
+.text-content h4 {
+  text-align: left;
+  margin-left: -8px;
+  width: calc(100% + 8px);
+}
+
+.alert-light-info {
+  background-color: rgba(23, 162, 184, 0.03);
+  border-color: #17a2b8 !important;
+}
+
+.fs-7 {
+  font-size: 0.85rem;
+}
+
+.contact-visual {
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  padding-left: 2rem;
+}
+
+@media (max-width: 992px) {
+  .contact-visual {
+    border-left: none;
+    padding-left: 0;
+    margin-top: 3rem;
+  }
+  .divider-line {
+    margin-left: 1.8rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .text-content h4 {
+    margin-left: -4px;
+  }
+  .divider-line {
+    margin-left: 1.6rem;
+  }
+}
+  </style>
+</head>
+
+<body class="starter-page-page">
+
+  <header id="header" class="header sticky-top">
+
+    <div class="topbar d-flex align-items-center">
+        <div class="container d-flex justify-content-center justify-content-md-between">
+            
+        </div>
+    </div><!-- End Top Bar -->
+
+    <div class="branding d-flex align-items-center">
+
+        <div class="container position-relative d-flex align-items-center justify-content-end">
+            <a href="index.html" class="logo d-flex align-items-center me-auto">
+                <h1 class="sitename">QTP-GMD</h1>
+                <!-- Uncomment the line below if you also wish to use a text logo -->
+                <!-- <h1 class="sitename">Medicio</h1>  -->
+            </a>
+
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+
+                    <!-- Omics 下拉菜单 -->
+                    <li class="dropdown"><a href="Genomics.html"><span>Omics</span> <i
+                                class="bi bi-chevron-down toggle-dropdown"></i></a>
+                        <ul>
+                            <li><a href="Genomics.html">Genomics</a></li>
+                            <li><a href="transcriptomics.html">Transcriptomics</a></li>
+                            <li><a href="metabolomics.html">Metabolomics</a></li>
+                        </ul>
+                    </li>
+                    
+
+                    <li><a href="Phenotype.html">Phenotype</a></li>
+
+                    <!-- Tools 下拉菜单 -->
+                    <li class="dropdown"><a href="tools.html"><span>Tools</span> <i
+                                class="bi bi-chevron-down toggle-dropdown"></i></a>
+                        <ul>
+                            <li><a href="tools.html#jbrowse">Jbrowse</a></li>
+                            <li><a href="tools.html#blast">BLAST</a></li>
+                            <li><a href="tools.html#primer3">Primer3 Design</a></li>
+                            <li><a href="tools.html#orthovenn">OrthoVenn</a></li>
+                            <li><a href="tools.html#enrichment">Enrichment</a></li>
+                            <li><a href="tools.html#gwas">GWAS Analysis</a></li>
+                            <li><a href="tools.html#crispr">CRISPR-Predictor</a></li>
+                            <li><a href="tools.html#gene-search">Gene Search</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+            <a class="cta-btn" href="login.html">Sign in</a>
+
+        </div>
+
+    </div>
+
+</header>
+
+  <main class="main">
+
+    
+  
+    <section id="unified-contact" class="unified-contact section">
+      <div class="container" data-aos="fade-up">
+        <div class="row g-lg-5">
+          <!-- 左侧内容区 -->
+          <div class="col-lg-7 offset-lg-1">
+            <div class="contact-flow">
+              
+              <!-- About区块 -->
+              <div class="flow-item py-3">
+                <div class="d-flex align-items-start">
+                  <i class="bi bi-info-circle-fill text-primary me-3 fs-5"></i>
+                  <div class="text-content">
+                    <h4 class="mb-2 fs-5 fw-bold">About QTP-GMD</h4>
+                    <p class="fs-6 text-secondary">
+                      QTP-GMD provides comprehensive knowledge and one-stop analysis applications 
+                      for Qinghai-Tibetan Plateau grass multi-omics research, integrating multi-omics 
+                      data with advanced analytical tools.
+                    </p>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="divider-line my-3"></div>
+    
+              <!-- 更新承诺 -->
+              <div class="flow-item py-3">
+                <div class="d-flex align-items-start">
+                  <i class="bi bi-arrow-repeat text-success me-3 fs-5"></i>
+                  <div class="text-content">
+                    <h4 class="mb-2 fs-5 fw-bold">Data Commitment</h4>
+                    <p class="fs-6 text-secondary">
+                      Regular updates ensure platform reliability and accessibility for global 
+                      research communities, with continuous integration of latest omics technologies.
+                    </p>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="divider-line my-3"></div>
+    
+              <!-- 机构信息 -->
+              <div class="flow-item py-3">
+                <div class="d-flex align-items-start">
+                  <i class="bi bi-geo-alt-fill text-danger me-3 fs-5"></i>
+                  <div class="text-content">
+                    <h4 class="mb-2 fs-5 fw-bold">Research Center</h4>
+                    <div class="contact-info">
+                      <p class="fs-6 text-secondary mb-1">College of Life Sciences and Agri-forestry</p>
+                      <p class="fs-6 text-secondary">Southwest University of Science and Technology</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="divider-line my-3"></div>
+    
+              <!-- 联系方式 -->
+              <div class="flow-item py-3">
+                <div class="d-flex align-items-start">
+                  <i class="bi bi-envelope-fill text-warning me-3 fs-5"></i>
+                  <div class="text-content">
+                    <h4 class="mb-2 fs-5 fw-bold">Contact Coordination</h4>
+                    <div class="contact-info">
+                      <p class="fs-6">
+                        <a href="mailto:wangting@swust.edu.cn" class="text-decoration-none text-dark">
+                          wangting@swust.edu.cn
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+              <div class="divider-line my-3"></div>
+    
+              <!-- 引用信息 -->
+              <div class="flow-item py-3">
+                <div class="d-flex align-items-start">
+                  <i class="bi bi-journal-text text-info me-3 fs-5"></i>
+                  <div class="text-content">
+                    <h4 class="mb-2 fs-5 fw-bold">Citation Reference</h4>
+                    <div class="alert alert-light-info border-start border-3 border-info p-3">
+                      <p class="mb-0 fs-6 text-secondary">
+                        Platform citation information will be available upon official publication. 
+                        For preliminary research references, please contact our team directly.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+    
+            </div>
+          </div>
+    
+          <!-- 右侧图片区 -->
+          <div class="col-lg-4">
+            <div class="contact-visual ms-lg-4" style="position: sticky; top: 120px;">
+              <img src="assets/img/hero-carousel/1.jpg" 
+                   class="img-fluid rounded-4 shadow-lg" 
+                   alt="Multi-omics Data Integration"
+                   style="max-height: 600px; object-fit: cover; object-position: center top;">
+              <div class="img-caption mt-3 text-muted fs-7 text-center">
+                
+                
+              </div>
+            </div>
+          </div>
+    
+        </div>
+      </div>
+    </section>
+   
+  </main>
+
+  <footer id="footer" class="footer light-background">
+    <div class="container footer-top">
+        <div class="row gy-4">
+            <div class="col-lg-4 col-md-6 footer-about">
+                <a href="index.html" class="logo d-flex align-items-center">
+                    <span class="sitename">QTP-GMD</span>
+                </a>
+                <div class="footer-contact pt-3">
+                    <p>Research Institute of Highland Agriculture</p>
+                    <p>University Campus, Building A</p>
+                    <p class="mt-3"><strong>Tel:</strong> <span>+86 XXX XXXX XXXX</span></p>
+                    <p><strong>Email:</strong> <span>contact@highlandgrass.edu.cn</span></p>
+                </div>
+                <div class="social-links d-flex mt-4">
+                    <a href=""><i class="bi bi-wechat"></i></a>
+                    <a href=""><i class="bi bi-envelope"></i></a>
+                    <a href=""><i class="bi bi-globe"></i></a>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-3 footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Project</a></li>
+                    <li><a href="#">Database Access</a></li>
+                    <li><a href="#">Research Papers</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-3 footer-links">
+                <h4>Database Resources</h4>
+                <ul>
+                    <li><a href="#">Wheat Species Data</a></li>
+                    <li><a href="#">Forage Grass Collection</a></li>
+                    <li><a href="#">Growth Parameters</a></li>
+                    <li><a href="#">Environmental Data</a></li>
+                    <li><a href="#">Research Tools</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-2 col-md-3 footer-links">
+                <h4>Partners</h4>
+                <ul>
+                    <li><a href="#">Research Institutes</a></li>
+                    <li><a href="#">Universities</a></li>
+                    <li><a href="#">Agricultural Stations</a></li>
+                    <li><a href="#">Funding Organizations</a></li>
+                    <li><a href="#">Collaborators</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="container copyright text-center mt-4">
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">Highland Grass Database</strong> <span>All Rights
+                Reserved</span></p>
+        <div class="credits">
+            Supported by the Research Institute of Highland Agriculture
+        </div>
+    </div>
+
+</footer>
+
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+
+  <!-- Vendor JS Files -->
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+  <!-- Main JS File -->
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
