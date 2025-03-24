@@ -32,6 +32,46 @@
 
     <!-- Additional CSS for the metabolomics module -->
     <style>
+        /* Search and Download Row Styling */
+        .search-download-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            margin-top: 10px;
+        }
+        
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+        
+        .search-container input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        
+        
+        .download-button:hover {
+            background-color: #3ccbcb;
+        }
+        
+        .download-button i {
+            margin-left: 8px;
+        }
 
     </style>
 
@@ -107,149 +147,133 @@
         <!-- Public Resources Section -->
         <section class="public-resources section">
             <div class="container section-title">
-                <h2>Metabolite information</h2>
+                <h2>Metabolite Information</h2>
             </div>
             <div class="container">
                 <div class="module-section">
-                    <!-- 搜索和下载区域 -->
-                    <div class="search-area">
-                        <div class="search-box">
-                            <label>Input Name, Class, ID, RT or Ion Mode:</label>
-                            <input type="text" placeholder="Search terms...">
+                    <!-- Filter Row -->
+                    <div class="row filter-row">
+                        <div class="col-md-3">
+                            <label for="bioproject">Research Project:</label>
+                            <div class="dropdown-container">
+                                <select id="bioproject" class="form-select">
+                                    <option>Select Research Project</option>
+                                    <option>PRJNA782345</option>
+                                    <option>PRJNA689012</option>
+                                </select>
+                            </div>
                         </div>
-                        <button class="download-button">Download Table <i class="bi bi-download"></i></button>
+                        <div class="col-md-3">
+                            <label for="germplasm">Germplasm:</label>
+                            <div class="dropdown-container">
+                                <select id="germplasm" class="form-select">
+                                    <option>Select Germplasm</option>
+                                    <option>Kobresia tibetica</option>
+                                    <option>Aster alpinus</option>
+                                    <option>Rhodiola crenulata</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tissue">Tissue:</label>
+                            <div class="dropdown-container">
+                                <select id="tissue" class="form-select">
+                                    <option>Select Tissue</option>
+                                    <option selected>Leaf</option>
+                                    <option>Root</option>
+                                    <option>Stem</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="stage">Growth Stage:</label>
+                            <div class="dropdown-container">
+                                <select id="stage" class="form-select">
+                                    <option>Select Growth Stage</option>
+                                    <option>Seedling</option>
+                                    <option>Vegetative</option>
+                                    <option>Flowering</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- 数据表格 - 公共资源 -->
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Class</th>
-                                <th>Retention time (RT) (s)</th>
-                                <th>Molecular mass (Da)</th>
-                                <th>Secondary Ion m/z (neg)</th>
-                                <th>Collision Energy (CE) Fragment m/z (eV)</th>
-                                <th>Ionization mode</th>
-                                <th>Identification</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Acer001</td>
-                                <td><a href="#" class="resource-link">Trimethylamine</a></td>
-                                <td>Others</td>
-                                <td>60</td>
-                                <td>60</td>
-                                <td>0.57</td>
-                                <td>30</td>
-                                <td>Positive</td>
-                                <td>standard</td>
-                            </tr>
-                            <tr>
-                                <td>Acer002</td>
-                                <td><a href="#" class="resource-link">1-methylguanidine</a></td>
-                                <td>Nucleotides and derivatives</td>
-                                <td>74</td>
-                                <td>87</td>
-                                <td>0.61</td>
-                                <td>20</td>
-                                <td>Positive</td>
-                                <td>putatively annotated</td>
-                            </tr>
-                            <tr>
-                                <td>Acer003</td>
-                                <td><a href="#" class="resource-link">Trimethylamine N-oxide</a></td>
-                                <td>Others</td>
-                                <td>76</td>
-                                <td>58.1</td>
-                                <td>0.59</td>
-                                <td>30</td>
-                                <td>Positive</td>
-                                <td>putatively annotated</td>
-                            </tr>
-                            <tr>
-                                <td>Acer004</td>
-                                <td><a href="#" class="resource-link">Picolinic</a></td>
-                                <td>Alkaloids</td>
-                                <td>86.989</td>
-                                <td>69.071</td>
-                                <td>0.59</td>
-                                <td>30</td>
-                                <td>Positive</td>
-                                <td>putatively annotated</td>
-                            </tr>
-                            <tr>
-                                <td>Acer005</td>
-                                <td><a href="#" class="resource-link">Pyruvic acid</a></td>
-                                <td>Organic acids and derivatives</td>
-                                <td>87.009</td>
-                                <td>43</td>
-                                <td>0.66</td>
-                                <td>20</td>
-                                <td>Negative</td>
-                                <td>putatively annotated</td>
-                            </tr>
-                            <tr>
-                                <td>Acer001</td>
-                                <td><a href="#" class="resource-link">Trimethylamine</a></td>
-                                <td>Others</td>
-                                <td>60</td>
-                                <td>60</td>
-                                <td>0.57</td>
-                                <td>30</td>
-                                <td>Positive</td>
-                                <td>standard</td>
-                            </tr>
-                            <tr>
-                                <td>Acer002</td>
-                                <td><a href="#" class="resource-link">1-methylguanidine</a></td>
-                                <td>Nucleotides and derivatives</td>
-                                <td>74</td>
-                                <td>87</td>
-                                <td>0.61</td>
-                                <td>20</td>
-                                <td>Positive</td>
-                                <td>putatively annotated</td>
-                            </tr>
-                            <tr>
-                                <td>Acer003</td>
-                                <td><a href="#" class="resource-link">Trimethylamine N-oxide</a></td>
-                                <td>Others</td>
-                                <td>76</td>
-                                <td>58.1</td>
-                                <td>0.59</td>
-                                <td>30</td>
-                                <td>Positive</td>
-                                <td>putatively annotated</td>
-                            </tr>
-                            <tr>
-                                <td>Acer004</td>
-                                <td><a href="#" class="resource-link">Picolinic</a></td>
-                                <td>Alkaloids</td>
-                                <td>86.989</td>
-                                <td>69.071</td>
-                                <td>0.59</td>
-                                <td>30</td>
-                                <td>Positive</td>
-                                <td>putatively annotated</td>
-                            </tr>
-                            <tr>
-                                <td>Acer005</td>
-                                <td><a href="#" class="resource-link">Pyruvic acid</a></td>
-                                <td>Organic acids and derivatives</td>
-                                <td>87.009</td>
-                                <td>43</td>
-                                <td>0.66</td>
-                                <td>20</td>
-                                <td>Negative</td>
-                                <td>putatively annotated</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <!-- Search and Download Row -->
+                    <div class="search-download-row">
+                        <div class="search-container">
+                            <i class="bi bi-search"></i>
+                            <input type="text" placeholder="Enter SRR ID, Treatment, or Collection Region">
+                        </div>
+                        <button class="download-button">
+                            Download Table <i class="bi bi-download"></i>
+                        </button>
+                    </div>
 
-                    <!-- 分页区域 -->
+                    <!-- Data Table -->
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SRR ID</th>
+                                    <th>Research Project</th>
+                                    <th>Germplasm</th>
+                                    <th>Tissue</th>
+                                    <th>Growth Stage</th>
+                                    <th>Treatment</th>
+                                    <th>Collection Region</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16782430</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA782345</a></td>
+                                    <td>Kobresia tibetica</td>
+                                    <td>Leaf</td>
+                                    <td>Vegetative</td>
+                                    <td>Natural Environment</td>
+                                    <td>Qinghai</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16782431</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA782345</a></td>
+                                    <td>Kobresia tibetica</td>
+                                    <td>Leaf</td>
+                                    <td>Vegetative</td>
+                                    <td>Natural Environment</td>
+                                    <td>Qinghai</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16782432</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA782345</a></td>
+                                    <td>Kobresia tibetica</td>
+                                    <td>Leaf</td>
+                                    <td>Vegetative</td>
+                                    <td>Natural Environment</td>
+                                    <td>Qinghai</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16785720</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA782345</a></td>
+                                    <td>Aster alpinus</td>
+                                    <td>Leaf</td>
+                                    <td>Flowering</td>
+                                    <td>Natural Environment</td>
+                                    <td>Tibet</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16789633</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA689012</a></td>
+                                    <td>Rhodiola crenulata</td>
+                                    <td>Leaf</td>
+                                    <td>Seedling</td>
+                                    <td>Hypoxia Treatment</td>
+                                    <td>Tibet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Area -->
                     <div class="pagination-area">
                         <div class="page-info">
                             Items per page:
@@ -259,7 +283,7 @@
                                 <option>50</option>
                                 <option>100</option>
                             </select>
-                            <span>1-10 of 1274</span>
+                            <span>1-5 of 120</span>
                         </div>
                         <div class="pagination">
                             <button class="page-button" disabled>❮❮</button>
@@ -269,6 +293,14 @@
                             <button class="page-button">3</button>
                             <button class="page-button">❯</button>
                             <button class="page-button">❯❯</button>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Metabolomics Information Section -->
+                    <div class="accordion-container">
+                        <div class="accordion-header">
+                            <span>Metabolomics Sample Information and Content Query</span>
+                            <i class="bi bi-chevron-up"></i>
                         </div>
                     </div>
                 </div>
