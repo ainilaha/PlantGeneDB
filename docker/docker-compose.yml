@@ -1,0 +1,35 @@
+services:
+  web:
+    build: . 
+    # image: php:8.0-cli
+    ports:
+      - "80:80"
+    volumes:
+      - ../:/var/www/html
+    command: ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
+
+  db:
+    image: mysql:9.2.0
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: plantdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpass
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+      image: phpmyadmin:5.2.2
+      ports:
+        - "8080:80"
+      environment:
+        - PMA_HOST=db
+        - PMA_USER=user
+        - PMA_PASSWORD=userpass
+      depends_on:
+        - db
+
+volumes:
+  db_data:
+   
