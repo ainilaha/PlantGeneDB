@@ -1,10 +1,10 @@
 <?php
 // MySQL配置
-define('DB_HOST', 'localhost');
+define('DB_HOST', '120.27.114.220');
 define('DB_PORT', '3306'); // MySQL默认端口
-define('DB_NAME', 'QTD');
-define('DB_USER', 'root');
-define('DB_PASS', '12345678');
+define('DB_NAME', 'plantdb');
+define('DB_USER', 'user');
+define('DB_PASS', 'userpass');
 
 
 // 建立数据库连接
