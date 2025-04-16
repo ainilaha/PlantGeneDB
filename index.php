@@ -1,3 +1,5 @@
+<?php
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,21 +9,35 @@
   <title>Qinghai-Tibetan Plateau Grass Multi-omics Database</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
-
-  <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-
-  <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<!-- Vendor CSS Files 
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"> 
   <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="assets/vendor/aos/aos.css" rel="stylesheet">
   <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  -->
 
-  <!-- Main CSS File -->
+
+  <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Swiper -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+<!-- AOS -->
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+<!-- Glightbox -->
+<link href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+
+ <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
 </head>
@@ -95,7 +111,7 @@
       <div id="hero-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
 
         <div class="carousel-item active">
-          <img src="assets/img/hero-carousel/1.jpg" alt="Highland wheat field">
+          <img src="assets/img/hero-carousel/1.jpg" alt="Highland wheat field" loading="lazy">
           <div class="container">
             <h2>Qinghai-Tibetan Plateau Grass Multi-omics Database</h2>
             <p>A comprehensive database dedicated to collecting, analyzing, and sharing data on highland wheat varieties
@@ -105,7 +121,7 @@
         </div><!-- End Carousel Item -->
 
         <div class="carousel-item">
-          <img src="assets/img/hero-carousel/dna.jpg" alt="Research laboratory">
+          <img src="assets/img/hero-carousel/dna.jpg" alt="Research laboratory" loading="lazy">
           <div class="container">
             <h2>Research & Analysis Tools</h2>
             <p>Access our advanced research tools and analytical systems to study growth patterns, genetic diversity,
@@ -317,25 +333,25 @@
           <div class="swiper-wrapper align-items-center">
             <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery"
                 href="assets/img/gallery/gallery-1冰草.webp"><img src="assets/img/gallery/gallery-1冰草.webp"
-                  class="img-fluid" alt=""></a></div>
+                  class="img-fluid" alt="" loading="lazy"></a></div>
             <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery"
                 href="assets/img/gallery/gallery-2赖草.jpg"><img src="assets/img/gallery/gallery-2赖草.jpg"
-                  class="img-fluid" alt=""></a></div>
+                  class="img-fluid" alt="" loading="lazy"></a></div>
             <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery"
                 href="assets/img/gallery/gallery-3山羊草.jpg"><img src="assets/img/gallery/gallery-3山羊草.jpg"
-                  class="img-fluid" alt=""></a></div>
+                  class="img-fluid" alt="" loading="lazy"></a></div>
             <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery"
                 href="assets/img/gallery/gallery-4小黑麦.jpg"><img src="assets/img/gallery/gallery-4小黑麦.jpg"
-                  class="img-fluid" alt=""></a></div>
+                  class="img-fluid" alt="" loading="lazy"></a></div>
             <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery"
                 href="assets/img/gallery/gallery-5燕麦.jpg"><img src="assets/img/gallery/gallery-5燕麦.jpg"
-                  class="img-fluid" alt=""></a></div>
+                  class="img-fluid" alt="" loading="lazy"></a></div>
             <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery"
                 href="assets/img/gallery/gallery-6虉草.jpg"><img src="assets/img/gallery/gallery-6虉草.jpg"
-                  class="img-fluid" alt=""></a></div>
+                  class="img-fluid" alt="" loading="lazy"></a></div>
             <div class="swiper-slide"><a class="glightbox" data-gallery="images-gallery"
                 href="assets/img/gallery/gallery-7中间偃麦草.jpg"><img src="assets/img/gallery/gallery-7中间偃麦草.jpg"
-                  class="img-fluid" alt=""></a></div>
+                  class="img-fluid" alt="" loading="lazy"></a></div>
           </div>
           <div class="swiper-pagination"></div>
         </div>
