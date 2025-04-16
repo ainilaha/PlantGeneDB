@@ -2,11 +2,25 @@ services:
   web:
     build: . 
     # image: php:8.0-cli
+    # ports:
+    #   - "80:80"
+    volumes:
+      - ../:/var/www/html
+    # command: ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
+    command: ["php-fpm"]
+    expose:
+      - "9000"
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
     ports:
       - "80:80"
     volumes:
       - ../:/var/www/html
-    command: ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
+      - ../nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+    entrypoint: ["/bin/sh", "-c", "sleep 5 && nginx -g 'daemon off;'"]
 
   db:
     image: mysql:9.2.0
