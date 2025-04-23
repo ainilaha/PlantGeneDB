@@ -19,7 +19,33 @@ CREATE TABLE users (
     INDEX idx_username (username),
     INDEX idx_login (username, email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+INSERT INTO users (
+    username,
+    first_name,
+    last_name,
+    gender,
+    institution,
+    job_type,
+    email,
+    phone_prefix,
+    phone_number,
+    password_hash,
+    country,
+    role
+) VALUES (
+    'admin',
+    'Admin',                -- first_name
+    'User',                 -- last_name
+    'male',                 -- gender
+    'Highland Agriculture', -- institution
+    'Other',                -- job_type
+    'admin@example.com',    -- email
+    '+86',                  -- phone_prefix
+    '13800138000',          -- phone_number
+    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',  -- password_hash (示例值)
+    'China',                -- country
+    'admin'                 -- role
+);
 -- 添加最后登录时间更新触发器
 DELIMITER $$
 CREATE TRIGGER update_last_login
