@@ -474,9 +474,11 @@ if (isset($_GET['species_id'])) {
     </div>
 
     <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">Highland Grass Database</strong> <span>All Rights Reserved</span></p>
-      <div class="credits">
-        Supported by the Research Institute of Highland Agriculture
+      <p>© <span>Copyright</span> <strong class="px-1 sitename">the QTP Grasses Database</strong> <span>All Rights Reserved</span></p>
+      <div class="beian mt-2">
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: color-mix(in srgb, var(--default-color), transparent 30%); font-size: 13px;">
+          蜀ICP备2025136730号-1
+        </a>
       </div>
     </div>
   </footer>
