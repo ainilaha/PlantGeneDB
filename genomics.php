@@ -69,6 +69,8 @@ if (isset($_GET['species_id'])) {
     <!-- Glightbox -->
     <link href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <!-- bootstrap-icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
   <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
@@ -147,10 +149,28 @@ if (isset($_GET['species_id'])) {
     }
 
     /* Add click feedback styles */
+    /* 保持现有的 .download-cell 样式不变 */
     .download-cell {
       cursor: pointer;
       transition: all 0.2s ease;
       position: relative;
+      padding: 10px;
+    }
+
+    /* 专门针对下载链接的样式调整 */
+    .download-link {
+      display: inline-block; /* 改为 inline-block 而不是 block */
+      width: 100%;
+      height: 100%;
+      text-decoration: none !important;
+      color: inherit !important;
+      padding: inherit; /* 继承父元素的 padding */
+      margin: -10px; /* 抵消父元素的 padding */
+    }
+
+    /* 确保伪元素仍然显示 */
+    .download-cell:hover::after {
+      opacity: 1;
     }
 
     .download-cell:hover {
@@ -203,7 +223,7 @@ if (isset($_GET['species_id'])) {
 
         <nav id="navmenu" class="navmenu">
           <ul>
-            <li><a href="index.html">Home</a></li>
+            <li><a href="index.php">Home</a></li>
             
             <!-- Omics dropdown menu -->
             <li class="dropdown"><a href="Genomics.html" class="active"><span>Omics</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -370,23 +390,30 @@ if (isset($_GET['species_id'])) {
                   <tr>
                     <td onclick="downloadFile('genomic', '<?= htmlspecialchars($selectedSpecies['id']) ?>')" 
                         id="genomicSequence" 
-                        class="download-cell">
-                        <?= htmlspecialchars($selectedSpecies['genomic_sequence'] ?? '') ?>
+                        class="download-cell"
+                        data-original="<?= htmlspecialchars($selectedSpecies['genomic_sequence'] ?? 'Download') ?>">
+                        <?= htmlspecialchars($selectedSpecies['genomic_sequence'] ?? 'Download') ?>
                     </td>
                     <td onclick="downloadFile('cds', '<?= htmlspecialchars($selectedSpecies['id']) ?>')" 
                         id="cdsSequence" 
-                        class="download-cell">
-                        <?= htmlspecialchars($selectedSpecies['cds_sequence'] ?? '') ?>
+                        class="download-cell"
+                        data-original="<?= htmlspecialchars($selectedSpecies['cds_sequence'] ?? 'Download') ?>">
+                        <?= htmlspecialchars($selectedSpecies['cds_sequence'] ?? 'Download') ?>
                     </td>
-                    <td onclick="downloadFile('gff3', '<?= htmlspecialchars($selectedSpecies['id']) ?>')" 
-                        id="gff3Annotation" 
-                        class="download-cell">
-                        <?= htmlspecialchars($selectedSpecies['gff3_annotation'] ?? '') ?>
+                    <td class="download-cell">
+                      <a href="files/annotation/<?= htmlspecialchars($selectedSpecies['gff3_annotation'] ?? '') ?>" 
+                        download
+                        class="download-link"
+                        id="gff3Annotation"
+                        data-original="<?= htmlspecialchars($selectedSpecies['gff3_annotation'] ?? 'Download') ?>">
+                        <?= htmlspecialchars($selectedSpecies['gff3_annotation'] ?? 'Download') ?>
+                      </a>
                     </td>
                     <td onclick="downloadFile('peptide', '<?= htmlspecialchars($selectedSpecies['id']) ?>')" 
                         id="peptideSequence" 
-                        class="download-cell">
-                        <?= htmlspecialchars($selectedSpecies['peptide_sequence'] ?? '') ?>
+                        class="download-cell"
+                        data-original="<?= htmlspecialchars($selectedSpecies['peptide_sequence'] ?? 'Download') ?>">
+                        <?= htmlspecialchars($selectedSpecies['peptide_sequence'] ?? 'Download') ?>
                     </td>
                   </tr>
                 </tbody>
@@ -475,6 +502,7 @@ if (isset($_GET['species_id'])) {
 
     <div class="container copyright text-center mt-4">
       <p>© <span>Copyright</span> <strong class="px-1 sitename">the QTP Grasses Database</strong> <span>All Rights Reserved</span></p>
+      <!-- 修改后的备案信息 -->
       <div class="beian mt-2">
         <a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: color-mix(in srgb, var(--default-color), transparent 30%); font-size: 13px;">
           蜀ICP备2025136730号-1
@@ -504,51 +532,50 @@ if (isset($_GET['species_id'])) {
   <script>
     // File download functionality
     function downloadFile(type, speciesId) {
-      // Create a simple direct download approach if get_file_info.php doesn't exist
-      const basePath = "assets/downloads/";
-      const fileTypes = {
-        'genomic': 'genomic',
-        'cds': 'cds',
-        'gff3': 'annotation',
-        'peptide': 'peptide'
-      };
-      
-      // Try to fetch file info from the server
-      const xhr = new XMLHttpRequest();
-      xhr.open('GET', `get_file_info.php?species_id=${speciesId}&file_type=${type}`, true);
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          try {
-            const fileInfo = JSON.parse(xhr.responseText);
-            if (fileInfo && fileInfo.filename) {
-              const fullPath = `${basePath}${fileTypes[type]}/${fileInfo.path}/${fileInfo.filename}`;
-              
-              // Create temporary download link
-              const link = document.createElement('a');
-              link.href = fullPath;
-              link.download = fileInfo.filename;
-              link.style.display = 'none';
-              
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            } else {
-              alert('File not available for download');
-            }
-          } catch (e) {
-            // Fallback if JSON parsing fails
-            alert('Error processing file information');
-            console.error(e);
-          }
-        } else {
-          // Fallback if get_file_info.php doesn't exist or returns an error
-          alert('Error retrieving file information. The get_file_info.php file may not exist.');
-        }
-      };
-      xhr.onerror = function() {
-        alert('Network error while trying to download the file.');
-      };
-      xhr.send();
+        // Show loading indicator
+        const cell = document.getElementById(type + 'Sequence');
+        cell.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+        
+        // Fetch file info from the server
+        fetch(`get_file_info.php?species_id=${speciesId}&file_type=${type}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Construct download URL
+                const downloadUrl = `files/${data.path}/${data.filename}`;
+                
+                // Create temporary download link
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = data.filename;
+                link.style.display = 'none';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Restore original cell content
+                const originalContent = cell.getAttribute('data-original') || data.filename;
+                cell.innerHTML = originalContent;
+                cell.setAttribute('data-original', originalContent);
+            })
+            .catch(error => {
+                console.error('Download error:', error);
+                alert('Error downloading file: ' + error.message);
+                
+                // Restore original cell content
+                const originalContent = cell.getAttribute('data-original') || 'Download';
+                cell.innerHTML = originalContent;
+                cell.setAttribute('data-original', originalContent);
+            });
     }
   </script>
 </body>
