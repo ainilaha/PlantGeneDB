@@ -218,7 +218,7 @@ if (isset($_GET['species_id'])) {
     <div class="branding d-flex align-items-center">
       <div class="container position-relative d-flex align-items-center justify-content-end">
         <a href="index.html" class="logo d-flex align-items-center me-auto">
-          <h1 class="sitename">QTP-GMD</h1>
+        <img src="./assets/img/logo.png" alt="">
         </a>
 
         <nav id="navmenu" class="navmenu">
@@ -226,15 +226,19 @@ if (isset($_GET['species_id'])) {
             <li><a href="index.php">Home</a></li>
             
             <!-- Omics dropdown menu -->
-            <li class="dropdown"><a href="Genomics.html" class="active"><span>Omics</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <li class="dropdown"><a href="genomics.php" class="active"><span>Omics</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
               <ul>
-                <li><a href="Genomics.html" class="active">Genomics</a></li>
+                <li><a href="genomics.php" class="active">Genomics</a></li>
                 <li><a href="transcriptomics.html">Transcriptomics</a></li>
                 <li><a href="metabolomics.html">Metabolomics</a></li>
+                <li><a href="Proteomics.html">Proteomics</a></li>
+                <li><a href="Microbiomics.html">Microbiomics</a></li>
+                <li><a href="Epigenomic.html">Epigenomic</a></li>
               </ul>
             </li>
-        
+
             <li><a href="Phenotype.html">Phenotype</a></li>
+            <li><a href="Germplasm.html">Germplasm</a></li>
         
             <!-- Tools dropdown menu -->
             <li class="dropdown"><a href="tools.html"><span>Tools</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
@@ -453,10 +457,9 @@ if (isset($_GET['species_id'])) {
             <span class="sitename">QTP-GMD</span>
           </a>
           <div class="footer-contact pt-3">
-            <p>Research Institute of Highland Agriculture</p>
-            <p>University Campus, Building A</p>
-            <p class="mt-3"><strong>Tel:</strong> <span>+86 XXX XXXX XXXX</span></p>
-            <p><strong>Email:</strong> <span>contact@highlandgrass.edu.cn</span></p>
+            <p>No. 59, Middle Section of Qinglong Avenue, Fucheng District, Mianyang City, Sichuan Province</p>
+            <p class="mt-3"><strong>Tel:</strong> <span> 0816-6089528</span></p>
+            <p><strong>Email:</strong> <span>wangting@swust.edu.cn</span></p>
           </div>
           <div class="social-links d-flex mt-4">
             <a href=""><i class="bi bi-wechat"></i></a>
@@ -497,6 +500,7 @@ if (isset($_GET['species_id'])) {
             <li><a href="#">Collaborators</a></li>
           </ul>
         </div>
+
       </div>
     </div>
 
@@ -509,6 +513,7 @@ if (isset($_GET['species_id'])) {
         </a>
       </div>
     </div>
+
   </footer>
   <!-- FOOTER END -->
 
