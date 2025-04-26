@@ -37,6 +37,8 @@
 <link href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
 
+<!-- bootstrap-icons-->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
  <!-- Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
@@ -55,27 +57,31 @@
     <div class="branding d-flex align-items-center">
 
       <div class="container position-relative d-flex align-items-center justify-content-end">
-        <a href="index.html" class="logo d-flex align-items-center me-auto">
-          <h1 class="sitename">QTP-GMD</h1>
+        <a href="index.php" class="logo d-flex align-items-center me-auto">
+          <img src="./assets/img/logo.png" alt="">
           <!-- Uncomment the line below if you also wish to use a text logo -->
           <!-- <h1 class="sitename">Medicio</h1>  -->
         </a>
 
         <nav id="navmenu" class="navmenu">
           <ul>
-            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="index.php" class="active">Home</a></li>
 
             <!-- Omics 下拉菜单 -->
-            <li class="dropdown"><a href="Genomics.html"><span>Omics</span> <i
+            <li class="dropdown"><a href="genomics.php"><span>Omics</span> <i
                   class="bi bi-chevron-down toggle-dropdown"></i></a>
               <ul>
-                <li><a href="Genomics.html">Genomics</a></li>
+                <li><a href="genomics.php">Genomics</a></li>
                 <li><a href="transcriptomics.html">Transcriptomics</a></li>
                 <li><a href="metabolomics.html">Metabolomics</a></li>
+                <li><a href="Proteomics.html">Proteomics</a></li>
+                <li><a href="Microbiomics.html">Microbiomics</a></li>
+                <li><a href="Epigenomic.html">Epigenomic</a></li>
               </ul>
             </li>
 
             <li><a href="Phenotype.html">Phenotype</a></li>
+            <li><a href="Germplasm.html">Germplasm</a></li>
 
             <!-- Tools 下拉菜单 -->
             <li class="dropdown"><a href="tools.html"><span>Tools</span> <i
@@ -114,19 +120,21 @@
           <img src="assets/img/hero-carousel/1.jpg" alt="Highland wheat field" loading="lazy">
           <div class="container">
             <h2>Qinghai-Tibetan Plateau Grass Multi-omics Database</h2>
-            <p>A comprehensive database dedicated to collecting, analyzing, and sharing data on highland wheat varieties
-              and forage grass species for sustainable agricultural development.</p>
-            <a href="Gemonic.html" class="btn-get-started">Explore Database</a>
+            <p>The QTP-GMD is a curated and integrated multi-omics resource for the wheat tribe grasses in Qinghai-Tibet Plateau.
+                This Database provides multi-omics data containing genome, transcriptome, and metabolome, which provides multi-omics information for geneticists and breeders.
+                Several useful bioinformatics tools have also been embedded in the database for for users to make it easy to utilize datasets to facilitate the breeding.</p>
+            <a href="genomics.php" class="btn-get-started">Explore Database</a>
           </div>
         </div><!-- End Carousel Item -->
 
         <div class="carousel-item">
           <img src="assets/img/hero-carousel/dna.jpg" alt="Research laboratory" loading="lazy">
           <div class="container">
-            <h2>Research & Analysis Tools</h2>
-            <p>Access our advanced research tools and analytical systems to study growth patterns, genetic diversity,
-              and environmental adaptability of highland grass species.</p>
-            <a href="tools.html" class="btn-get-started">View Tools</a>
+              <h2>Qinghai-Tibetan Plateau Grass Multi-omics Database</h2>
+              <p>The QTP-GMD is a curated and integrated multi-omics resource for the wheat tribe grasser in Qinghai-Tibet Plateau.
+                  This Database provides multi-omics data containing genome, transcriptome, and metabolome, which provides multi-omics information for geneticists and breeders.
+                  Several useful bioinformatics tools have also been embedded in the database for for users to make it easy to utilize datasets to facilitate the breeding.</p>
+            <a href="tools.html" class="btn-get-started">Explore Database</a>
           </div>
         </div><!-- End Carousel Item -->
 
@@ -277,9 +285,7 @@
           <div class="col-xl-10">
             <div class="text-center">
               <h3>Join Our Research Network</h3>
-              <p>Connect with researchers and institutions studying highland wheat and forage grass species. Share data,
-                collaborate on research projects, and contribute to our growing database of highland agricultural
-                knowledge.</p>
+              <p>We would love to hear from you for any questions or comments to improve our work.</p>
               <a class="cta-btn" href="contact.html">Contact Us</a>
             </div>
           </div>
@@ -294,7 +300,7 @@
       <!-- Section Title -->
       <div class="container section-title" data-aos="fade-up">
         <h2>Gallery</h2>
-        <p>Here we show part of images of highland plants</p>
+        <p>Here we show some images of the QTP wheat tribe grasses.</p>
       </div><!-- End Section Title -->
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -371,10 +377,9 @@
             <span class="sitename">QTP-GMD</span>
           </a>
           <div class="footer-contact pt-3">
-            <p>Research Institute of Highland Agriculture</p>
-            <p>University Campus, Building A</p>
-            <p class="mt-3"><strong>Tel:</strong> <span>+86 XXX XXXX XXXX</span></p>
-            <p><strong>Email:</strong> <span>contact@highlandgrass.edu.cn</span></p>
+            <p>No. 59, Middle Section of Qinglong Avenue, Fucheng District, Mianyang City, Sichuan Province</p>
+            <p class="mt-3"><strong>Tel:</strong> <span> 0816-6089528</span></p>
+            <p><strong>Email:</strong> <span>wangting@swust.edu.cn</span></p>
           </div>
           <div class="social-links d-flex mt-4">
             <a href=""><i class="bi bi-wechat"></i></a>
@@ -421,6 +426,7 @@
 
     <div class="container copyright text-center mt-4">
       <p>© <span>Copyright</span> <strong class="px-1 sitename">the QTP Grasses Database</strong> <span>All Rights Reserved</span></p>
+      <!-- 修改后的备案信息 -->
       <div class="beian mt-2">
         <a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow" style="color: color-mix(in srgb, var(--default-color), transparent 30%); font-size: 13px;">
           蜀ICP备2025136730号-1
