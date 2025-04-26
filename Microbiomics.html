@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>QTP-GMD</title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+    <link href="assets/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+    <!-- Main CSS File -->
+    <link href="assets/css/main.css" rel="stylesheet">
+
+    <!-- Additional CSS for the metabolomics module -->
+    <style>
+        /* Search and Download Row Styling */
+        .search-download-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            margin-top: 10px;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+        }
+
+        .search-container input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+
+
+        .download-button:hover {
+            background-color: #3ccbcb;
+        }
+
+        .download-button i {
+            margin-left: 8px;
+        }
+    </style>
+
+    <!-- JS File -->
+    <script src="assets/js/genomic-interaction.js"></script>
+
+</head>
+
+<body class="index-page">
+
+    <header id="header" class="header sticky-top">
+
+        <div class="topbar d-flex align-items-center">
+            <div class="container d-flex justify-content-center justify-content-md-between">
+
+            </div>
+        </div><!-- End Top Bar -->
+
+        <div class="branding d-flex align-items-center">
+
+            <div class="container position-relative d-flex align-items-center justify-content-end">
+                <a href="index.html" class="logo d-flex align-items-center me-auto">
+                    <img src="./assets/img/logo.png" alt="">
+                    <!-- Uncomment the line below if you also wish to use a text logo -->
+                    <!-- <h1 class="sitename">Medicio</h1>  -->
+                </a>
+
+                <nav id="navmenu" class="navmenu">
+                    <ul>
+                        <li><a href="index.php">Home</a></li>
+
+                        <!-- Omics 下拉菜单 -->
+                        <li class="dropdown"><a href="genomics.php" class="active"><span>Omics</span> <i
+                                    class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li><a href="genomics.php">Genomics</a></li>
+                                <li><a href="transcriptomics.html">Transcriptomics</a></li>
+                                <li><a href="metabolomics.html">Metabolomics</a></li>
+                                <li><a href="Proteomics.html">Proteomics</a></li>
+                                <li><a href="Microbiomics.html" class="active">Microbiomics</a></li>
+                                <li><a href="Epigenomic.html">Epigenomic</a></li>
+                            </ul>
+                        </li>
+
+                        <li><a href="Phenotype.html">Phenotype</a></li>
+                        <li><a href="Germplasm.html">Germplasm</a></li>
+
+                        <!-- Tools 下拉菜单 -->
+                        <li class="dropdown"><a href="tools.html" class="active"><span>Tools</span> <i
+                                    class="bi bi-chevron-down toggle-dropdown"></i></a>
+                            <ul>
+                                <li><a href="tools.html#jbrowse">Jbrowse</a></li>
+                                <li><a href="tools.html#blast">BLAST</a></li>
+                                <li><a href="tools.html#primer3">Primer3 Design</a></li>
+                                <li><a href="tools.html#orthovenn">OrthoVenn</a></li>
+                                <li><a href="tools.html#enrichment">Enrichment</a></li>
+                                <li><a href="tools.html#gwas">GWAS Analysis</a></li>
+                                <li><a href="tools.html#crispr">CRISPR-Predictor</a></li>
+                                <li><a href="tools.html#gene-search">Gene Search</a></li>
+                            </ul>
+                        </li>
+
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                    <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+                </nav>
+                <a class="cta-btn" href="login.html">Sign in</a>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <main class="main">
+        <!-- Public Resources Section -->
+        <section class="public-resources section">
+            <div class="container section-title">
+                <h2>Metabolite Information</h2>
+            </div>
+            <div class="container">
+                <div class="module-section">
+                    <!-- Filter Row -->
+                    <div class="row filter-row">
+                        <div class="col-md-3">
+                            <label for="bioproject">Research Project:</label>
+                            <div class="dropdown-container">
+                                <select id="bioproject" class="form-select">
+                                    <option>Select Research Project</option>
+                                    <option>PRJNA782345</option>
+                                    <option>PRJNA689012</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="germplasm">Germplasm:</label>
+                            <div class="dropdown-container">
+                                <select id="germplasm" class="form-select">
+                                    <option>Select Germplasm</option>
+                                    <option>Kobresia tibetica</option>
+                                    <option>Aster alpinus</option>
+                                    <option>Rhodiola crenulata</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="tissue">Tissue:</label>
+                            <div class="dropdown-container">
+                                <select id="tissue" class="form-select">
+                                    <option>Select Tissue</option>
+                                    <option selected>Leaf</option>
+                                    <option>Root</option>
+                                    <option>Stem</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="stage">Growth Stage:</label>
+                            <div class="dropdown-container">
+                                <select id="stage" class="form-select">
+                                    <option>Select Growth Stage</option>
+                                    <option>Seedling</option>
+                                    <option>Vegetative</option>
+                                    <option>Flowering</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Download Row -->
+                    <div class="search-download-row">
+                        <div class="search-container">
+                            <i class="bi bi-search"></i>
+                            <input type="text" placeholder="Enter SRR ID, Treatment, or Collection Region">
+                        </div>
+                        <button class="download-button">
+                            Download Table <i class="bi bi-download"></i>
+                        </button>
+                    </div>
+
+                    <!-- Data Table -->
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>SRR ID</th>
+                                    <th>Research Project</th>
+                                    <th>Germplasm</th>
+                                    <th>Tissue</th>
+                                    <th>Growth Stage</th>
+                                    <th>Treatment</th>
+                                    <th>Collection Region</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16782430</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA782345</a></td>
+                                    <td>Kobresia tibetica</td>
+                                    <td>Leaf</td>
+                                    <td>Vegetative</td>
+                                    <td>Natural Environment</td>
+                                    <td>Qinghai</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16782431</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA782345</a></td>
+                                    <td>Kobresia tibetica</td>
+                                    <td>Leaf</td>
+                                    <td>Vegetative</td>
+                                    <td>Natural Environment</td>
+                                    <td>Qinghai</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16782432</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA782345</a></td>
+                                    <td>Kobresia tibetica</td>
+                                    <td>Leaf</td>
+                                    <td>Vegetative</td>
+                                    <td>Natural Environment</td>
+                                    <td>Qinghai</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16785720</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA782345</a></td>
+                                    <td>Aster alpinus</td>
+                                    <td>Leaf</td>
+                                    <td>Flowering</td>
+                                    <td>Natural Environment</td>
+                                    <td>Tibet</td>
+                                </tr>
+                                <tr>
+                                    <td><a href="#" style="color: #0275d8;">SRR16789633</a></td>
+                                    <td><a href="#" style="color: #0275d8;">PRJNA689012</a></td>
+                                    <td>Rhodiola crenulata</td>
+                                    <td>Leaf</td>
+                                    <td>Seedling</td>
+                                    <td>Hypoxia Treatment</td>
+                                    <td>Tibet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Area -->
+                    <div class="pagination-area">
+                        <div class="page-info">
+                            Items per page:
+                            <select class="dropdown-select">
+                                <option>10</option>
+                                <option selected>15</option>
+                                <option>50</option>
+                                <option>100</option>
+                            </select>
+                            <span>1-5 of 120</span>
+                        </div>
+                        <div class="pagination">
+                            <button class="page-button" disabled>❮❮</button>
+                            <button class="page-button" disabled>❮</button>
+                            <button class="page-button active">1</button>
+                            <button class="page-button">2</button>
+                            <button class="page-button">3</button>
+                            <button class="page-button">❯</button>
+                            <button class="page-button">❯❯</button>
+                        </div>
+                    </div>
+
+                    <!-- Collapsible Metabolomics Information Section -->
+                    <div class="accordion-container">
+                        <div class="accordion-header">
+                            <span>Metabolomics Sample Information and Content Query</span>
+                            <i class="bi bi-chevron-up"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Our Resources Section -->
+        <section class="our-resources section">
+            <div class="container section-title">
+                <h2>Metabolome sample information and content query</h2>
+            </div>
+            <div class="container">
+                <div class="module-section">
+                    <!-- 样本筛选区域 -->
+                    <div class="search-area">
+                        <div style="display: flex; gap: 20px;">
+                            <div>
+                                <label>Tissue:</label>
+                                <select class="dropdown-select">
+                                    <option selected>tissue</option>
+                                    <option>mesocarp</option>
+                                    <option>leaf</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Stage:</label>
+                                <select class="dropdown-select">
+                                    <option selected>stage</option>
+                                    <option>young fruit</option>
+                                    <option>fruit expansion</option>
+                                    <option>seedling</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="download-button">Download Table <i class="bi bi-download"></i></button>
+                    </div>
+
+                    <!-- 搜索框 -->
+                    <div class="search-box" style="margin-bottom: 15px;">
+                        <label><i class="bi bi-search"></i> Input sample, tissue or stage:</label>
+                        <input type="text" placeholder="Search..." class="heatmap-input">
+                    </div>
+
+                    <!-- 数据表格 - 自身资源 -->
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Sample ID</th>
+                                <th>Tissue</th>
+                                <th>Stage</th>
+                                <th>Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>EOW-1-1-1</td>
+                                <td>mesocarp</td>
+                                <td>young fruit</td>
+                                <td>Our lab</td>
+                            </tr>
+                            <tr>
+                                <td>EOW-1-1-2</td>
+                                <td>mesocarp</td>
+                                <td>young fruit</td>
+                                <td>Our lab</td>
+                            </tr>
+                            <tr>
+                                <td>EOW-1-1-3</td>
+                                <td>mesocarp</td>
+                                <td>young fruit</td>
+                                <td>Our lab</td>
+                            </tr>
+                            <tr>
+                                <td>EOW-1-2-1</td>
+                                <td>mesocarp</td>
+                                <td>fruit expansion</td>
+                                <td>Our lab</td>
+                            </tr>
+                            <tr>
+                                <td>EOW-1-2-2</td>
+                                <td>mesocarp</td>
+                                <td>fruit expansion</td>
+                                <td>Our lab</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- 分页区域 -->
+                    <div class="pagination-area">
+                        <div class="page-info">
+                            Items per page:
+                            <select class="dropdown-select">
+                                <option>10</option>
+                                <option selected>15</option>
+                                <option>50</option>
+                                <option>100</option>
+                            </select>
+                            <span>1-10 of 36</span>
+                        </div>
+                        <div class="pagination">
+                            <button class="page-button" disabled>❮❮</button>
+                            <button class="page-button" disabled>❮</button>
+                            <button class="page-button active">1</button>
+                            <button class="page-button">❯</button>
+                            <button class="page-button">❯❯</button>
+                        </div>
+
+                    </div>
+
+                    <!-- 代谢物查询搜索框 -->
+                    <div style="margin-top: 20px;">
+                        <div class="search-box" style="margin-bottom: 15px;">
+                            <label><i class="bi bi-search"></i> Input metabolite id:</label>
+                            <input type="text" placeholder="Search metabolites..." class="heatmap-input">
+                        </div>
+                        <button class="download-button" style="margin-top: 10px;">Download Table <i
+                                class="bi bi-download"></i></button>
+                    </div>
+
+                    <!-- 代谢物含量数据表 -->
+                    <div style="overflow-x: auto; margin-top: 15px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>EOW-1-1-1</th>
+                                    <th>EOW-1-1-2</th>
+                                    <th>EOW-1-1-3</th>
+                                    <th>EOW-1-2-1</th>
+                                    <th>EOW-1-2-2</th>
+                                    <th>EOW-1-2-3</th>
+                                    <th>EOW-1-3-1</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Acer001</td>
+                                    <td>68805.90491</td>
+                                    <td>67467.71141</td>
+                                    <td>71321.67764</td>
+                                    <td>44835.36726</td>
+                                    <td>109641.244</td>
+                                    <td>77768.73883</td>
+                                    <td>71918.65767</td>
+                                </tr>
+                                <tr>
+                                    <td>Acer002</td>
+                                    <td>49626.23943</td>
+                                    <td>61292.71208</td>
+                                    <td>74126.62782</td>
+                                    <td>50676.27954</td>
+                                    <td>72269.53606</td>
+                                    <td>75702.57363</td>
+                                    <td>77153.20163</td>
+                                </tr>
+                                <tr>
+                                    <td>Acer003</td>
+                                    <td>44726.56667</td>
+                                    <td>61292.71208</td>
+                                    <td>77350.45883</td>
+                                    <td>313800.6139</td>
+                                    <td>193296.6457</td>
+                                    <td>118539.0377</td>
+                                    <td>11639.49077</td>
+                                </tr>
+                                <tr>
+                                    <td>Acer004</td>
+                                    <td>51166.91888</td>
+                                    <td>22207.98076</td>
+                                    <td>26714.3952</td>
+                                    <td>30460.65916</td>
+                                    <td>79964.64863</td>
+                                    <td>54025.58763</td>
+                                    <td>53917.92422</td>
+                                </tr>
+                                <tr>
+                                    <td>Acer005</td>
+                                    <td>32079.07945</td>
+                                    <td>70323.98177</td>
+                                    <td>36845.19252</td>
+                                    <td>55492.68684</td>
+                                    <td>42101.23894</td>
+                                    <td>72269.53606</td>
+                                    <td>33370.88788</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分页区域 -->
+                    <div class="pagination-area">
+                        <div class="page-info">
+                            Items per page:
+                            <select class="dropdown-select">
+                                <option>10</option>
+                                <option selected>15</option>
+                                <option>50</option>
+                                <option>100</option>
+                            </select>
+                            <span>1-10 of 10</span>
+                        </div>
+                        <div class="pagination">
+                            <button class="page-button" disabled>❮❮</button>
+                            <button class="page-button" disabled>❮</button>
+                            <button class="page-button active">1</button>
+                            <button class="page-button" disabled>❯</button>
+                            <button class="page-button" disabled>❯❯</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Heatmap Section -->
+        <section class="heatmap section">
+            <div class="container section-title">
+                <h2>Heat map of metabolite contents</h2>
+            </div>
+            <div class="container">
+                <div class="module-section">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="module-title">Input metabolite</div>
+                            <div style="border: 1px solid #ddd; padding: 10px; height: 280px; overflow-y: auto;">
+                                <div>Acer001</div>
+                                <div>Acer002</div>
+                                <div>Acer003</div>
+                                <div>Acer004</div>
+                                <div>Acer005</div>
+                                <div>Acer006</div>
+                                <div>Acer007</div>
+                                <div>Acer008</div>
+                                <div>Acer009</div>
+                                <div>Acer010</div>
+                            </div>
+                            <button class="heatmap-button" style="width: 100%; margin-top: 10px;">Search</button>
+                        </div>
+
+                        <div class="col-md-9">
+                            <div class="heatmap-container">
+                                <div class="module-title text-center">Metabolite Content Heatmap(log2)</div>
+                                <div style="text-align: right; margin-bottom: 10px;">
+                                    <button class="btn btn-sm btn-outline-secondary"><i
+                                            class="bi bi-arrows-fullscreen"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i
+                                            class="bi bi-download"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary"><i
+                                            class="bi bi-zoom-in"></i></button>
+                                </div>
+                                <img src="./assets/img/heat-map.png" alt="Metabolite Heatmap" class="heatmap-image">
+                                <div style="margin-top: 10px; text-align: center;">
+                                    <div class="gradient-scale"
+                                        style="height: 20px; width: 80%; margin: 0 auto; background: linear-gradient(to right, rgb(234, 202, 134), #a73d3d); position: relative;">
+                                        <div style="position: absolute; left: 0; bottom: -20px;">0</div>
+                                        <div style="position: absolute; right: 0; bottom: -20px;">2</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="footer" class="footer light-background">
+        <div class="container footer-top">
+            <div class="row gy-4">
+                <div class="col-lg-4 col-md-6 footer-about">
+                    <a href="index.html" class="logo d-flex align-items-center">
+                        <span class="sitename">QTP-GMD</span>
+                    </a>
+                    <div class="footer-contact pt-3">
+                        <p>No. 59, Middle Section of Qinglong Avenue, Fucheng District, Mianyang City, Sichuan Province
+                        </p>
+                        <p class="mt-3"><strong>Tel:</strong> <span> 0816-6089528</span></p>
+                        <p><strong>Email:</strong> <span>wangting@swust.edu.cn</span></p>
+                    </div>
+                    <div class="social-links d-flex mt-4">
+                        <a href=""><i class="bi bi-wechat"></i></a>
+                        <a href=""><i class="bi bi-envelope"></i></a>
+                        <a href=""><i class="bi bi-globe"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-3 footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">About Project</a></li>
+                        <li><a href="#">Database Access</a></li>
+                        <li><a href="#">Research Papers</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-3 footer-links">
+                    <h4>Database Resources</h4>
+                    <ul>
+                        <li><a href="#">Wheat Species Data</a></li>
+                        <li><a href="#">Forage Grass Collection</a></li>
+                        <li><a href="#">Growth Parameters</a></li>
+                        <li><a href="#">Environmental Data</a></li>
+                        <li><a href="#">Research Tools</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-2 col-md-3 footer-links">
+                    <h4>Partners</h4>
+                    <ul>
+                        <li><a href="#">Research Institutes</a></li>
+                        <li><a href="#">Universities</a></li>
+                        <li><a href="#">Agricultural Stations</a></li>
+                        <li><a href="#">Funding Organizations</a></li>
+                        <li><a href="#">Collaborators</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="container copyright text-center mt-4">
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">the QTP Grasses Database</strong> <span>All Rights
+                    Reserved</span></p>
+            <!-- 修改后的备案信息 -->
+            <div class="beian mt-2">
+                <a href="https://beian.miit.gov.cn/" target="_blank" rel="nofollow"
+                    style="color: color-mix(in srgb, var(--default-color), transparent 30%); font-size: 13px;">
+                    蜀ICP备2025136730号-1
+                </a>
+            </div>
+        </div>
+
+    </footer>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    <!-- Vendor JS Files -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+
+    <!-- JS File -->
+    <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>
