@@ -1,14 +1,14 @@
 <?php
 // MySQL配置
-define('servername', 'db');
+define('DB', "localhost");
 define('DB_PORT', '3306'); // MySQL默认端口
-define('DB_NAME', 'plantdb');
-define('DB_USER', 'user');
-define('DB_PASS', 'userpass');
+define('DB_NAME', 'QTD');
+define('DB_USER', 'root');
+define('DB_PASS', '12345678');
 
 
 // 建立数据库连接
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+$conn = new mysqli(DB, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 
 if ($conn->connect_error) {
     die("数据库连接失败: " . $conn->connect_error);

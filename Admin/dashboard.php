@@ -41,12 +41,14 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>后台管理系统 - 仪表盘</title>
+    <link rel="stylesheet" href="./assets/css/admin.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f8f9fa;
@@ -132,8 +134,10 @@ $stmt->close();
         .logout-btn:hover {
             text-decoration: underline;
         }
+
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
 </head>
 <body>
 <div class="sidebar">
@@ -144,7 +148,18 @@ $stmt->close();
         <li><a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i>数据概括</a></li>
         <li><a href="users.php"><i class="fas fa-users"></i>用户管理</a></li>
         <li><a href="review.php"><i class="fas fa-box"></i>上传管理</a></li>
-        <li><a href="orders.php"><i class="fas fa-shopping-cart"></i>基因数据</a></li>
+        <li class="has-submenu">
+            <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据管理</a>
+            <ul class="submenu">
+                <li><a href="genomics_content.php">Genomics</a></li>
+            </ul>
+        </li>
+        <li class="has-submenu">
+            <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据上传</a>
+            <ul class="submenu">
+                <li><a href="gene_upload.php">Genomics</a></li>
+            </ul>
+        </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i>系统设置</a></li>
     </ul>
 </div>
@@ -186,5 +201,42 @@ $stmt->close();
 
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 处理菜单切换
+        document.querySelectorAll('.menu-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const parent = this.closest('.has-submenu');
+
+                // 切换当前菜单状态
+                parent.classList.toggle('active');
+
+                // 关闭其他子菜单
+                document.querySelectorAll('.has-submenu').forEach(other => {
+                    if (other !== parent) {
+                        other.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // 点击页面其他区域关闭菜单
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.has-submenu')) {
+                document.querySelectorAll('.has-submenu').forEach(menu => {
+                    menu.classList.remove('active');
+                });
+            }
+        });
+
+        // 阻止子菜单点击冒泡
+        document.querySelectorAll('.submenu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -181,6 +181,7 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
             font-family: monospace;
         }
     </style>
+    <link rel="stylesheet" href="./assets/css/admin.css">
 </head>
 <body>
 <div class="sidebar">
@@ -189,9 +190,20 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
     </div>
     <ul class="sidebar-menu">
         <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i>数据概括</a></li>
-        <li><a href="users.php" class="active"><i class="fas fa-users "></i>用户管理</a></li>
+        <li><a href="users.php" class="active"><i class="fas fa-users"></i>用户管理</a></li>
         <li><a href="review.php"><i class="fas fa-box"></i>上传管理</a></li>
-        <li><a href="orders.php"><i class="fas fa-shopping-cart"></i>基因数据</a></li>
+        <li class="has-submenu">
+            <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据管理</a>
+            <ul class="submenu">
+                <li><a href="genomics_content.php">Genomics</a></li>
+            </ul>
+        </li>
+        <li class="has-submenu">
+            <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据上传</a>
+            <ul class="submenu">
+                <li><a href="gene_upload.php">Genomics</a></li>
+            </ul>
+        </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i>系统设置</a></li>
     </ul>
 </div>
@@ -257,5 +269,42 @@ if (isset($_GET['delete']) && is_numeric($_GET['delete'])) {
         </tbody>
     </table>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 处理菜单切换
+        document.querySelectorAll('.menu-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function(e) {
+                e.preventDefault();
+                const parent = this.closest('.has-submenu');
+
+                // 切换当前菜单状态
+                parent.classList.toggle('active');
+
+                // 关闭其他子菜单
+                document.querySelectorAll('.has-submenu').forEach(other => {
+                    if (other !== parent) {
+                        other.classList.remove('active');
+                    }
+                });
+            });
+        });
+
+        // 点击页面其他区域关闭菜单
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.has-submenu')) {
+                document.querySelectorAll('.has-submenu').forEach(menu => {
+                    menu.classList.remove('active');
+                });
+            }
+        });
+
+        // 阻止子菜单点击冒泡
+        document.querySelectorAll('.submenu a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    });
+</script>
 </body>
 </html>
