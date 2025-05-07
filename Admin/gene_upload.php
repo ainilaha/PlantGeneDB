@@ -1,10 +1,11 @@
 <?php
-// 原有的 PHP 代码保持不变
 session_start();
 ini_set('upload_max_filesize', '0');
 ini_set('post_max_size', '0');
 ini_set('memory_limit', '-1');
 ini_set('max_execution_time', '0');
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/error.log');
 global $conn;
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -12,7 +13,7 @@ ini_set('display_errors', 1);
 require __DIR__ . '/config.php';
 require_admin();
 
-// 原有的分片上传处理逻辑保持不变
+// 分片上传处理逻辑
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'upload_chunk') {
     try {
         $chunk = $_FILES['chunk']['tmp_name'];
@@ -20,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
         $total_chunks = (int)$_POST['total_chunks'];
         $file_name = preg_replace('/[^a-zA-Z0-9\._-]/', '_', $_POST['file_name']);
         $field = $_POST['field'];
-        $temp_dir = __DIR__ . '/Uploads/temp/' . session_id() . '/' . $field . '/';
+        $temp_dir = __DIR__ . '/uploads/temp/' . session_id() . '/' . $field . '/';
 
         if (!is_dir($temp_dir)) {
             mkdir($temp_dir, 0755, true);
@@ -41,11 +42,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
 
         if ($all_chunks_uploaded) {
             $upload_dirs = [
-                'genomic_sequence' => __DIR__ . '/Uploads/files/genomic/',
-                'cds_sequence' => __DIR__ . '/Uploads/files/cds/',
-                'gff3_annotation' => __DIR__ . '/Uploads/files/annotation/',
-                'peptide_sequence' => __DIR__ . '/Uploads/files/peptide/',
-                'image' => __DIR__ . '/Uploads/images/'
+                'genomic_sequence' => __DIR__ . '/uploads/files/genomic/',
+                'cds_sequence' => __DIR__ . '/uploads/files/cds/',
+                'gff3_annotation' => __DIR__ . '/uploads/files/annotation/',
+                'peptide_sequence' => __DIR__ . '/uploads/files/peptide/',
+                'image' => __DIR__ . '/uploads/images/'
             ];
 
             if (!is_dir($upload_dirs[$field])) {
@@ -89,13 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
             echo json_encode(['status' => 'chunk_uploaded']);
         }
     } catch (Exception $e) {
+        error_log('Chunk upload error: ' . $e->getMessage());
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
     }
     exit;
 }
 
-// 原有的表单处理和用户信息获取逻辑保持不变
+// 表单处理和用户信息获取逻辑
 $success = '';
 $error = '';
 $file_paths = [
@@ -107,6 +109,7 @@ $file_paths = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
+    error_log('Form submitted: ' . print_r($_POST, true));
     try {
         if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
             throw new Exception("Security verification failed, please resubmit");
@@ -136,11 +139,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
 
         $file_fields = ['genomic_sequence', 'cds_sequence', 'gff3_annotation', 'peptide_sequence', 'image'];
         $upload_dirs = [
-            'genomic_sequence' => __DIR__ . '/Uploads/files/genomic/',
-            'cds_sequence' => __DIR__ . '/Uploads/files/cds/',
-            'gff3_annotation' => __DIR__ . '/Uploads/files/annotation/',
-            'peptide_sequence' => __DIR__ . '/Uploads/files/peptide/',
-            'image' => __DIR__ . '/Uploads/images/'
+            'genomic_sequence' => __DIR__ . '/uploads/files/genomic/',
+            'cds_sequence' => __DIR__ . '/uploads/files/cds/',
+            'gff3_annotation' => __DIR__ . '/uploads/files/annotation/',
+            'peptide_sequence' => __DIR__ . '/uploads/files/peptide/',
+            'image' => __DIR__ . '/uploads/images/'
         ];
 
         $allowed_types = [
@@ -168,8 +171,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
             }
         }
 
-        if (empty($file_paths['genomic_sequence']['name'])) {
-            throw new Exception("Genomic sequence file is required");
+        if (empty($file_paths['genomic_sequence']['name']) || !file_exists($upload_dirs['genomic_sequence'] . $file_paths['genomic_sequence']['name'])) {
+            throw new Exception("Genomic sequence file is required and must exist");
         }
 
         $conn->begin_transaction();
@@ -206,9 +209,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
 
         $conn->commit();
         $success = "Data submitted successfully! ID: " . $stmt->insert_id;
+        // 返回 JSON 响应
+        header('Content-Type: application/json');
+        echo json_encode(['status' => 'success', 'insert_id' => $stmt->insert_id]);
+        exit;
     } catch (Exception $e) {
         $conn->rollback();
+        error_log('Submission error: ' . $e->getMessage());
         $error = "Submission failed: " . $e->getMessage();
+        header('Content-Type: application/json');
+        http_response_code(500);
+        echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        exit;
     }
 }
 
@@ -217,6 +229,7 @@ $query = "SELECT username, role FROM users WHERE id = ?";
 $stmt = $conn->prepare($query);
 
 if (!$stmt) {
+    error_log("Query preparation failed: " . $conn->error);
     die("Query preparation failed: " . $conn->error);
 }
 
@@ -225,11 +238,13 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 if (!$result) {
+    error_log("Query failed: " . $conn->error);
     die("Query failed: " . $conn->error);
 }
 
 $user = $result->fetch_assoc();
 if (!$user) {
+    error_log("User information retrieval failed");
     die("User information retrieval failed");
 }
 
@@ -246,7 +261,6 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-
         .progress-container {
             margin-top: 10px;
             display: none;
@@ -275,7 +289,11 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         .file-preview.success {
             color: #28a745;
         }
-
+        .status-text {
+            margin-top: 0.3rem;
+            font-size: 0.8rem;
+            color: #666;
+        }
         * {
             margin: 0;
             padding: 0;
@@ -435,6 +453,10 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         .submit-btn:hover {
             background: #45a049;
         }
+        .submit-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
         .alert {
             padding: 10px;
             margin-bottom: 20px;
@@ -447,6 +469,18 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         .alert-danger {
             background: #f8d7da;
             color: #721c24;
+        }
+        .global-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            padding: 15px 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            font-size: 1rem;
+            font-weight: 500;
         }
         .has-submenu .submenu {
             display: none;
@@ -513,7 +547,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         <div class="user-info">
             <span><?php echo htmlspecialchars($user['username']); ?> (<?php echo htmlspecialchars($user['role']); ?>)</span>
             <form action="logout.php" method="post">
-                <button type="submit" class="logout-btn">Logout</button>
+                <button type="submit" class="logout-btn">退出登录</button>
             </form>
         </div>
     </div>
@@ -588,8 +622,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                                 Select or Drag
                                 <input type="file" class="native-input d-none"
                                        name="genomic_sequence"
-                                       accept=".fasta,.fa,.fna,.faa,.gb,.gbk,.sam,.bam"
-                                       required>
+                                       accept=".fasta,.fa,.fna,.faa,.gb,.gbk,.sam,.bam">
                             </label>
                         </div>
                         <div class="file-preview"></div>
@@ -599,6 +632,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                             </div>
                         </div>
                         <small>Supported: .fasta, .fa, .fna, .faa, .gb, .gbk, .sam, .bam</small>
+                        <div class="status-text"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -619,6 +653,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                             </div>
                         </div>
                         <small>Supported: .cds, .fa, .fasta, .ffn</small>
+                        <div class="status-text"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -639,6 +674,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                             </div>
                         </div>
                         <small>Supported: .gff3, .gff</small>
+                        <div class="status-text"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -659,6 +695,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                             </div>
                         </div>
                         <small>Supported: .fa, .fasta, .faa, .pep, .peptide, .txt, .pepXML, .dat</small>
+                        <div class="status-text"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -679,21 +716,48 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                             </div>
                         </div>
                         <small>Supported: .jpg, .jpeg, .png, .gif</small>
+                        <div class="status-text"></div>
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn">Submit Data</button>
+            <button type="submit" class="submit-btn" disabled>Submit Data</button>
         </form>
     </div>
 </div>
 
 <script>
+    const submitBtn = document.querySelector('.submit-btn');
+    let pendingUploads = 0;
+
+    // 显示全局成功提示的函数
+    function showGlobalSuccessMessage(message) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = 'global-alert alert-success';
+        alertDiv.textContent = message;
+        document.body.appendChild(alertDiv);
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000); // 5秒后移除提示
+    }
+
+    // 显示成功提示的函数
+    function showSuccessMessage(message) {
+        const successDiv = document.createElement('div');
+        successDiv.className = 'alert alert-success';
+        successDiv.textContent = message;
+        document.querySelector('.upload-form').prepend(successDiv);
+        setTimeout(() => {
+            successDiv.remove();
+        }, 5000); // 5秒后移除提示
+    }
+
     document.querySelectorAll('.upload-zone').forEach(zone => {
         const input = zone.querySelector('input[type="file"]');
         const preview = zone.querySelector('.file-preview');
         const progressContainer = zone.querySelector('.progress-container');
         const progressBar = zone.querySelector('.progress-bar');
+        const statusText = zone.querySelector('.status-text');
         const acceptTypes = zone.dataset.accept.split(',').map(t => t.trim());
         const fieldName = input.name;
         const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB 分片大小
@@ -734,11 +798,15 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
 
         async function uploadFile(file, fieldName) {
+            pendingUploads++;
+            submitBtn.disabled = true;
+            statusText.textContent = '上传中...';
+            statusText.style.color = '#666';
+
             const totalSize = file.size;
             const totalChunks = Math.ceil(totalSize / CHUNK_SIZE);
             let uploadedBytes = 0;
 
-            // 重置进度条
             progressContainer.classList.add('active');
             progressBar.style.width = '0%';
             progressBar.textContent = '0%';
@@ -792,20 +860,30 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                     if (response.status === 'error') {
                         throw new Error(response.message);
                     } else if (response.status === 'success') {
+                        console.log('Setting hidden field:', fieldName + '_name', response.file_name);
                         document.getElementById(fieldName + '_name').value = response.file_name;
                         preview.textContent = file.name + ' (上传完成)';
                         preview.classList.add('success');
                         progressBar.classList.add('completed');
                         progressBar.style.width = '100%';
                         progressBar.textContent = '100%';
+                        statusText.textContent = '上传完成';
+                        statusText.style.color = '#28a745';
+                        showSuccessMessage(`文件 ${file.name} 上传成功！`);
                         setTimeout(() => {
                             progressContainer.classList.remove('active');
-                        }, 1000); // 上传完成后短暂显示进度条
+                        }, 1000);
                     }
                 }
             } catch (error) {
+                console.error('Upload error:', error.message);
                 progressBar.classList.add('failed');
                 showError(`上传失败: ${error.message}`);
+            } finally {
+                pendingUploads--;
+                if (pendingUploads === 0) {
+                    submitBtn.disabled = false;
+                }
             }
         }
 
@@ -814,71 +892,112 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             preview.classList.add('error');
             progressContainer.classList.add('active');
             progressBar.classList.add('failed');
+            statusText.textContent = msg;
+            statusText.style.color = '#dc3545';
             setTimeout(() => {
                 preview.textContent = '';
                 preview.classList.remove('error');
                 progressContainer.classList.remove('active');
                 progressBar.classList.remove('failed');
-            }, 8000); // 错误显示时间延长至8秒
+                statusText.textContent = '';
+                statusText.style.color = '#666';
+            }, 8000);
         }
     });
 
-    // 表单提交处理保持不变
     document.getElementById('uploadForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        console.log('Submitting form...');
+
+        const genomicSequenceName = document.getElementById('genomic_sequence_name').value;
+        if (!genomicSequenceName) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger';
+            errorDiv.textContent = '请上传 Genomic Sequence 文件';
+            this.prepend(errorDiv);
+            return;
+        }
+
         const form = this;
         const formData = new FormData(form);
 
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', form.action, true);
+        xhr.open('POST', 'gene_upload.php', true);
 
         xhr.onload = function() {
+            console.log('Response:', xhr.status, xhr.responseText);
             if (xhr.status === 200) {
-                window.location.reload();
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.status === 'success') {
+                        showGlobalSuccessMessage('成功上传');
+                        showSuccessMessage('表单提交成功！ID: ' + response.insert_id);
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000); // 2秒后刷新页面
+                    } else {
+                        throw new Error(response.message || '提交失败');
+                    }
+                } catch (e) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger';
+                    errorDiv.textContent = '表单提交失败: ' + e.message;
+                    form.prepend(errorDiv);
+                }
             } else {
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'alert alert-danger';
-                errorDiv.textContent = '表单提交失败';
+                errorDiv.textContent = `表单提交失败: ${xhr.status} ${xhr.responseText}`;
                 form.prepend(errorDiv);
             }
         };
 
         xhr.onerror = function() {
+            console.error('Network error');
             const errorDiv = document.createElement('div');
             errorDiv.className = 'alert alert-danger';
-            errorDiv.textContent = '网络错误';
+            errorDiv.textContent = '网络错误，请检查网络连接';
             form.prepend(errorDiv);
         };
 
         xhr.send(formData);
     });
 
-    // 菜单切换逻辑保持不变
     document.addEventListener('DOMContentLoaded', function() {
+        // 菜单切换逻辑
         document.querySelectorAll('.menu-toggle').forEach(toggle => {
             toggle.addEventListener('click', function(e) {
                 e.preventDefault();
+                console.log('Menu toggle clicked:', this.textContent);
                 const parent = this.closest('.has-submenu');
-                parent.classList.toggle('active');
-                document.querySelectorAll('.has-submenu').forEach(other => {
-                    if (other !== parent) {
-                        other.classList.remove('active');
-                    }
-                });
+                if (parent) {
+                    parent.classList.toggle('active');
+                    document.querySelectorAll('.has-submenu').forEach(other => {
+                        if (other !== parent) {
+                            other.classList.remove('active');
+                        }
+                    });
+                } else {
+                    console.error('Parent .has-submenu not found for toggle:', this);
+                }
             });
         });
 
+        // 点击页面其他区域关闭子菜单
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.has-submenu')) {
+                console.log('Clicked outside submenu, closing all submenus');
                 document.querySelectorAll('.has-submenu').forEach(menu => {
                     menu.classList.remove('active');
                 });
             }
         });
 
+        // 子菜单链接点击不关闭父菜单
         document.querySelectorAll('.submenu a').forEach(link => {
             link.addEventListener('click', function(e) {
-                e.stopPropagation();
+                console.log('Submenu link clicked:', this.textContent);
+                e.stopPropagation(); // 阻止冒泡到 document 的点击事件
             });
         });
     });
