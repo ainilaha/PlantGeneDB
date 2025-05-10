@@ -3,118 +3,59 @@
 // If not, you'll need to create one or modify this part accordingly
 require 'Admin/config.php';
 
-// 从数据库获取所有物种信息用于下拉菜单
-$query = "SELECT id, scientific_name FROM genomics_species ORDER BY scientific_name";
+// 首先获取所有已批准的物种（不包含品系）
+$query = "SELECT DISTINCT species_name FROM genomics_species WHERE status = 'approved' ORDER BY species_name";
 $result = $conn->query($query);
 
-$species = [];
+$speciesList = [];
 if ($result && $result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $species[] = $row;
+        $speciesList[] = $row;
     }
 }
 
-// 获取当前选中物种的信息以及其所有资源库和参考文献
-$selectedSpecies = null;
-$speciesAccessions = [];
-$speciesReferences = [];
+// 获取当前选中的物种信息
+$selectedSpeciesName = '';
+$accessions = [];
 
-if (isset($_GET['species_id'])) {
-    $species_id = $conn->real_escape_string($_GET['species_id']);
+if (isset($_GET['species'])) {
+    $selectedSpeciesName = $conn->real_escape_string($_GET['species']);
     
-    // 获取物种基本信息
-    $query = "SELECT * FROM genomics_species WHERE id = '$species_id'";
+    // 获取该物种的所有品系
+    $query = "SELECT * FROM genomics_species WHERE species_name = '$selectedSpeciesName' AND status = 'approved' ORDER BY scientific_name";
     $result = $conn->query($query);
+    
     if ($result && $result->num_rows > 0) {
-        $selectedSpecies = $result->fetch_assoc();
-        
-        // 获取该物种的所有资源库(accessions)
-        $query = "SELECT * FROM species_accessions WHERE species_id = '$species_id' AND status = 'approved'";
-        $result = $conn->query($query);
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $speciesAccessions[] = $row;
-            }
-        }
-        
-        // 获取该物种的所有参考文献
-        $query = "SELECT r.*, a.accession_name 
-                 FROM species_references r 
-                 LEFT JOIN species_accessions a ON r.accession_id = a.id 
-                 WHERE r.species_id = '$species_id'";
-        $result = $conn->query($query);
-        if ($result && $result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $speciesReferences[] = $row;
-            }
+        while ($row = $result->fetch_assoc()) {
+            $accessions[] = $row;
         }
     }
 }
 
-/**
- * 格式化描述文本，将Markdown风格的星号标记(*text*)转换为HTML的<em>标签
- */
-function formatDescription($text) {
-    // 匹配Markdown风格的星号标记，将其转换为HTML的<em>标签
-    $pattern = '/\*(.*?)\*/';
-    $replacement = '<em>$1</em>';
-    
-    // 处理描述文本中的物种名称和其他需要使用斜体的内容
-    $text = preg_replace($pattern, $replacement, $text);
-    
-    return $text;
-}
-
-/**
- * 处理科学名称的显示，精确区分斜体和正体部分
- * 例如: "Elymus nutans Griseb." => "<em>Elymus nutans</em> Griseb."
- */
-function formatScientificName($name) {
-    // 分离种和其他部分（如作者、品种等）
-    $formattedName = '';
-    
-    // 匹配模式: 属名和种名应该是斜体，后面的作者、变种等是正体
-    // 例如: "Hordeum vulgare L. var. nudum Lasa Goumang"
-    // 变成: "<em>Hordeum vulgare</em> L. var. <em>nudum</em> Lasa Goumang"
-    
-    // 基本模式: 属名和种名是斜体
-    if (preg_match('/^(\S+)\s+(\S+)(.*)$/', $name, $matches)) {
-        // 属名和种名
-        $genus = $matches[1];
-        $species = $matches[2];
-        $rest = $matches[3] ?? '';
-        
-        // 检查是否包含变种信息
-        if (stripos($rest, ' var. ') !== false) {
-            $parts = explode(' var. ', $rest, 2);
-            $authors = $parts[0] ?? '';
-            
-            if (isset($parts[1]) && !empty($parts[1])) {
-                $varietyParts = preg_split('/\s+/', trim($parts[1]), 2);
-                $variety = $varietyParts[0] ?? '';
-                $varietyRest = $varietyParts[1] ?? '';
-                
-                $formattedName = "<em>{$genus} {$species}</em>{$authors} var. <em>{$variety}</em> {$varietyRest}";
-            } else {
-                $formattedName = "<em>{$genus} {$species}</em>{$authors} var.";
+// 选中的品系
+$selectedAccession = null;
+if (!empty($accessions)) {
+    // 默认显示第一个品系，或者按用户选择显示
+    if (isset($_GET['accession_id']) && is_numeric($_GET['accession_id'])) {
+        $accession_id = intval($_GET['accession_id']);
+        foreach ($accessions as $acc) {
+            if ($acc['id'] == $accession_id) {
+                $selectedAccession = $acc;
+                break;
             }
-        } else {
-            // 常规处理：属名和种名用斜体，作者用正体
-            $formattedName = "<em>{$genus} {$species}</em>{$rest}";
         }
-    } else {
-        // 只有一个词的情况（可能只有属名）
-        $formattedName = "<em>{$name}</em>";
     }
     
-    return $formattedName;
+    // 如果没有找到指定的品系，使用第一个
+    if ($selectedAccession === null) {
+        $selectedAccession = $accessions[0];
+    }
 }
 
-/**
- * 处理属名称（只有属名时用斜体）
- */
-function formatGenus($genus) {
-    return "<em>{$genus}</em>";
+// 获取物种描述信息
+$speciesDescription = '';
+if ($selectedSpeciesName && !empty($accessions)) {
+    $speciesDescription = $accessions[0]['description'];
 }
 ?>
 <!DOCTYPE html>
@@ -167,52 +108,15 @@ function formatGenus($genus) {
     }
     
     .reference-section {
-      padding: 2rem;
-      background-color: #f8f9fa;
-      border-radius: 0.5rem;
+      border-top: 1px solid #dee2e6;
+      padding-top: 2rem;
       margin-top: 3rem;
-      box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
     }
     
-    /* 参考文献样式 */
-    .reference-text {
-      font-style: normal; /* 参考文献本身不使用斜体 */
-      color: #495057;
-      margin-bottom: 1rem;
-      border-left: 4px solid #3fbbc0;
-      padding: 0.5rem 1rem;
-      background-color: white;
-      border-radius: 0.25rem;
-      box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.05);
-    }
-    
-    /* 参考文献中的学名使用斜体 */
-    .reference-text em {
+    .reference-section p {
       font-style: italic;
-      font-family: 'Times New Roman', serif;
-    }
-    
-    /* 参考文献链接样式 */
-    .reference-link {
-      padding-top: 0.5rem;
-      padding-bottom: 1.5rem;
-      text-align: center;
-    }
-    
-    .reference-link a {
-      transition: all 0.2s ease;
-      padding: 0.5rem 1rem;
-      background-color: #f8f9fa;
-      border-radius: 0.25rem;
-      border: 1px solid #dee2e6;
-      color: #0d6efd;
-      text-decoration: none;
-      display: inline-block;
-    }
-    
-    .reference-link a:hover {
-      background-color: #e9ecef;
-      box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.1);
+      color: #555;
+      line-height: 1.6;
     }
     
     .description-content {
@@ -224,82 +128,41 @@ function formatGenus($genus) {
       box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
     }
 
-    .description-content h5 {
-      font-family: 'Poppins', sans-serif;
-      font-weight: 600;
-    }
-
-    .description-content p {
-      font-size: 1.05rem;
-      line-height: 1.8;
-      color: #495057;
-    }
-    
-    /* 描述中的学名使用斜体 */
-    .description-content em {
-      font-style: italic;
-      font-family: 'Times New Roman', serif;
-      color: #2c3e50;
-    }
-    
-    /* 强制使用斜体样式 - 只用于select的科学名称 */
-    #speciesSelector,
-    #speciesSelector option {
+    /* 科学名斜体样式 */
+    .scientific-name {
       font-style: italic !important;
       font-family: 'Times New Roman', serif !important;
     }
 
-    /* 覆盖Bootstrap默认样式 */
-    .form-select {
-      background-image: none; /* 移除默认箭头 */
-      padding-right: 12px; /* 调整内边距 */
-    }
-    
-    /* 不再全局设置斜体，只在需要时使用 */
-    .scientific-name {
-      font-size: 1.2rem;
-    }
-    
-    /* 学名自动应用斜体 */
-    .scientific-name em {
-      font-style: italic;
-      font-family: 'Times New Roman', serif;
-    }
-    
-    /* 作者名和其他文本保持正体 */
-    .scientific-name span {
-      font-style: normal;
-      font-family: sans-serif;
-    }
-    
-    /* 添加自定义下拉箭头 */
+    /* 物种选择器样式 */
     #speciesSelector {
       background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e") no-repeat right 0.75rem center/16px 12px;
     }
-
-    /* Accession部分样式 */
-    .accession-section {
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid #dee2e6;
+    
+    /* 品系切换标签 */
+    .accession-tabs {
+      margin-top: 2rem;
+      margin-bottom: 2rem;
     }
     
-    .accession-header {
-      background-color: #f8f9fa;
-      border-left: 4px solid #3fbbc0;
-      padding: 1rem;
-      margin-bottom: 1.5rem;
-    }
-    
-    /* 增大Accession标题字体 */
-    .accession-title {
-      font-weight: 600;
+    .accession-tabs .nav-link {
       color: #495057;
-      margin-bottom: 0;
-      font-size: 1.3rem; /* 增大字体大小 */
+      font-family: 'Times New Roman', serif;
+      font-style: italic;
+      border: 1px solid transparent;
+      border-radius: 0.25rem;
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
     }
     
-    /* 修复下载链接样式 */
+    .accession-tabs .nav-link.active {
+      color: #0d6efd;
+      border-color: #dee2e6 #dee2e6 #fff;
+      background-color: #fff;
+      font-weight: bold;
+    }
+    
+    /* 下载按钮样式 */
     .download-cell {
       cursor: pointer;
       transition: all 0.2s ease;
@@ -308,31 +171,30 @@ function formatGenus($genus) {
     }
 
     .download-link {
-      display: block;
+      display: inline-block;
       width: 100%;
       height: 100%;
       text-decoration: none !important;
       color: inherit !important;
-      padding: 10px 30px 10px 10px;
-      position: relative;
-      z-index: 1;
-    }
-    
-    .download-link::after {
-      content: "⬇️";
-      position: absolute;
-      right: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 2;
+      padding: inherit;
+      margin: -10px;
     }
 
     .download-cell:hover {
       background-color: #f8f9fa;
       box-shadow: 0 0 8px rgba(63, 187, 192, 0.2);
     }
+
+    .download-cell::after {
+      content: "⬇️";
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 1;
+      transition: opacity 0.2s ease;
+    }
     
-    /* 处理小屏幕响应式布局 */
     @media (max-width: 768px) {
       .species-image-card {
         margin-top: 1.5rem;
@@ -341,6 +203,10 @@ function formatGenus($genus) {
         margin-right: auto;
       }
       #speciesSelector {
+        font-size: 0.9rem;
+      }
+      .accession-tabs .nav-link {
+        padding: 0.4rem 0.7rem;
         font-size: 0.9rem;
       }
     }
@@ -421,13 +287,13 @@ function formatGenus($genus) {
           <div class="col-lg-6">
             <select class="form-select" 
                     id="speciesSelector" 
-                    onchange="window.location.href='genomics.php?species_id='+this.value"
+                    onchange="window.location.href='genomics.php?species='+this.value"
                     style="font-style: italic; font-family: 'Times New Roman', serif;">
               <option value="">Select a species</option>
-              <?php foreach ($species as $specie): ?>
-                <option value="<?= $specie['id'] ?>" 
-                  <?= (isset($selectedSpecies) && $selectedSpecies['id'] == $specie['id']) ? 'selected' : '' ?>>
-                  <?= htmlspecialchars($specie['scientific_name']) ?>
+              <?php foreach ($speciesList as $species): ?>
+                <option value="<?= htmlspecialchars($species['species_name']) ?>" 
+                  <?= ($selectedSpeciesName == $species['species_name']) ? 'selected' : '' ?>>
+                  <?= htmlspecialchars($species['species_name']) ?>
                 </option>
               <?php endforeach; ?>
             </select>
@@ -439,190 +305,169 @@ function formatGenus($genus) {
           <?php endif; ?>
         </div>
 
-        <?php if ($selectedSpecies): ?>
-        <!-- 动态内容区域 -->
+        <?php if ($selectedSpeciesName && !empty($accessions)): ?>
+        <!-- 物种描述部分 -->
+        <div class="species-description mb-5" id="speciesDescription">
+          <div class="description-content bg-light p-4 rounded-3">
+            <p class="mb-0">
+              <?= nl2br(htmlspecialchars($speciesDescription)) ?>
+            </p>
+          </div>
+        </div>
+
+        <!-- 品系选择标签 -->
+        <?php if (count($accessions) > 1): ?>
+        <div class="accession-tabs">
+          <ul class="nav nav-tabs">
+            <?php foreach ($accessions as $index => $accession): ?>
+              <li class="nav-item">
+                <a class="nav-link <?= ($selectedAccession['id'] == $accession['id']) ? 'active' : '' ?>" 
+                   href="genomics.php?species=<?= urlencode($selectedSpeciesName) ?>&accession_id=<?= $accession['id'] ?>">
+                  <?= htmlspecialchars($accession['scientific_name']) ?>
+                </a>
+              </li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+        <?php endif; ?>
+
+        <!-- 品系详细信息 -->
+        <?php if ($selectedAccession): ?>
         <div id="speciesInfo" class="species-info-container">
           
-          <!-- 物种描述 - 使用函数处理学名斜体 -->
-          <div class="species-description mb-4" id="speciesDescription">
-            <div class="description-content bg-light p-4 rounded-3">
-              <p class="mb-0">
-                <?= formatDescription($selectedSpecies['description']) ?>
-              </p>
-            </div>
-          </div>
-          
-          <!-- 循环显示每个资源库 -->
-          <?php foreach ($speciesAccessions as $index => $accession): ?>
-          <div class="accession-section" id="accession-<?= $accession['id'] ?>">
-            <div class="accession-header mb-4">
-              <h4 class="accession-title">
-                Accession <?= $index + 1 ?>: <span class="scientific-name"><?= formatScientificName($accession['accession_name']) ?></span>
-              </h4>
-            </div>
-            
-            <!-- 该资源库的物种信息 -->
+          <!-- Species Information -->
+          <div class="species-info mb-5">
             <h4>Species Information</h4>
             <div class="row align-items-start">
-              <!-- 左侧信息栏（8列宽度） -->
+              <!-- Left information column (8 columns width) -->
               <div class="col-lg-8 col-md-7">
                 <dl class="row">
                   <dt class="col-sm-4">Scientific Name</dt>
-                  <dd class="col-sm-8 scientific-name">
-                    <?= formatScientificName($accession['accession_name']) ?>
+                  <dd class="col-sm-8" class="scientific-name">
+                    <em><?= htmlspecialchars($selectedAccession['scientific_name']) ?></em>
                   </dd>
           
                   <dt class="col-sm-4">Common name</dt>
                   <dd class="col-sm-8">
-                    <?= htmlspecialchars($selectedSpecies['common_name'] ?? '') ?>
+                    <?= htmlspecialchars($selectedAccession['common_name'] ?? '') ?>
                   </dd>
           
                   <dt class="col-sm-4">Genus</dt>
-                  <dd class="col-sm-8 scientific-name">
-                    <?= formatGenus($selectedSpecies['genus'] ?? '') ?>
+                  <dd class="col-sm-8" class="scientific-name">
+                    <em><?= htmlspecialchars($selectedAccession['genus'] ?? '') ?></em>
                   </dd>
           
                   <dt class="col-sm-4">Genome Type</dt>
                   <dd class="col-sm-8">
-                    <?= htmlspecialchars($accession['genome_type'] ?? '') ?>
+                    <?= htmlspecialchars($selectedAccession['genome_type'] ?? '') ?>
                   </dd>
           
                   <dt class="col-sm-4">Genome Size</dt>
                   <dd class="col-sm-8">
-                    <?= htmlspecialchars($accession['genome_size'] ?? '') ?>
+                    <?= htmlspecialchars($selectedAccession['genome_size'] ?? '') ?>
                   </dd>
           
                   <dt class="col-sm-4">Chromosome Number</dt>
                   <dd class="col-sm-8">
-                    <?= htmlspecialchars($accession['chromosome_number'] ?? '') ?>
+                    <?= htmlspecialchars($selectedAccession['chromosome_number'] ?? '') ?>
                   </dd>
           
                   <dt class="col-sm-4">Gene Number</dt>
                   <dd class="col-sm-8">
-                    <?= htmlspecialchars($accession['gene_number'] ?? '') ?>
+                    <?= htmlspecialchars($selectedAccession['gene_number'] ?? '') ?>
                   </dd>
           
                   <dt class="col-sm-4">CDS Number</dt>
                   <dd class="col-sm-8">
-                    <?= htmlspecialchars($accession['cds_number'] ?? '') ?>
+                    <?= htmlspecialchars($selectedAccession['cds_number'] ?? '') ?>
                   </dd>
                 </dl>
               </div>
           
-              <!-- 右侧图片栏（4列宽度） -->
+              <!-- Right image column (4 columns width) -->
               <div class="col-lg-4 col-md-5">
                 <div class="species-image-card bg-white p-3 rounded-3 shadow-sm">
-                  <img
-                       src="<?= htmlspecialchars($accession['image_url'] ?: 'assets/img/placeholder.png') ?>" 
+                  <img id="speciesImage" 
+                       src="<?= htmlspecialchars($selectedAccession['image_url'] ?: 'assets/img/placeholder.png') ?>" 
                        class="img-fluid rounded" 
                        alt="Species Image"
                        style="max-height: 300px; object-fit: cover;"
                        loading="lazy">
-                  <div class="image-caption text-center text-muted mt-2 small scientific-name">
-                    <?= formatScientificName($accession['accession_name']) ?>
+                  <div class="image-caption text-center text-muted mt-2 small" class="scientific-name">
+                    <em><?= htmlspecialchars($selectedAccession['scientific_name']) ?></em>
                   </div>
                 </div>
               </div>
             </div>
-            
-            <!-- 该资源库的基因组序列 - 修复了下载链接 -->
-            <?php if (!empty($accession['genomic_sequence']) || !empty($accession['cds_sequence']) || 
-                    !empty($accession['gff3_annotation']) || !empty($accession['peptide_sequence'])): ?>
-            <div class="genomic-data mb-5 mt-4">
-              <h4>Genomic Sequence</h4>
-              <div class="table-responsive">
-                <table class="table table-bordered">
-                  <thead class="table-light">
-                    <tr>
-                      <th>Genomic Sequence</th>
-                      <th>CDS Sequence</th>
-                      <th>GFF3 Annotation</th>
-                      <th>Peptide Sequence</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="download-cell">
-                        <a href="files/genomic/<?= htmlspecialchars($accession['genomic_sequence'] ?? '') ?>" 
-                           download
-                           class="download-link">
-                          <?= htmlspecialchars($accession['genomic_sequence'] ?? 'Download') ?>
-                        </a>
-                      </td>
-                      <td class="download-cell">
-                        <a href="files/cds/<?= htmlspecialchars($accession['cds_sequence'] ?? '') ?>" 
-                           download
-                           class="download-link">
-                          <?= htmlspecialchars($accession['cds_sequence'] ?? 'Download') ?>
-                        </a>
-                      </td>
-                      <td class="download-cell">
-                        <a href="files/annotation/<?= htmlspecialchars($accession['gff3_annotation'] ?? '') ?>" 
-                           download
-                           class="download-link">
-                          <?= htmlspecialchars($accession['gff3_annotation'] ?? 'Download') ?>
-                        </a>
-                      </td>
-                      <td class="download-cell">
-                        <a href="files/peptide/<?= htmlspecialchars($accession['peptide_sequence'] ?? '') ?>" 
-                           download
-                           class="download-link">
-                          <?= htmlspecialchars($accession['peptide_sequence'] ?? 'Download') ?>
-                        </a>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <?php endif; ?>
-            
-            <!-- 该资源库的参考文献和链接（分开） -->
-            <div class="reference-section">
-              <h4 class="mb-4">Reference</h4>
-              <?php 
-              $found = false;
-              foreach ($speciesReferences as $reference): 
-                if ($reference['accession_id'] == $accession['id']):
-                  $found = true;
-              ?>
-                <!-- 参考文献文本 - 处理其中可能包含的学名 -->
-                <?php if (!empty($reference['citation_text'])): ?>
-                <div class="reference-text">
-                  <?= formatDescription($reference['citation_text']) ?>
-                </div>
-                <?php else: ?>
-                <div class="reference-text">
-                  No reference information available.
-                </div>
-                <?php endif; ?>
-                
-                <!-- 参考文献链接 - 独立的蓝色链接按钮 -->
-                <?php if (!empty($reference['link'])): ?>
-                <div class="reference-link">
-                  <a href="<?= htmlspecialchars($reference['link']) ?>" 
-                     target="_blank">
-                    <?= htmlspecialchars($reference['link']) ?>
-                  </a>
-                </div>
-                <?php endif; ?>
-              <?php 
-                endif;
-              endforeach; 
-              
-              if (!$found):
-              ?>
-                <div class="reference-text">
-                  No reference information available.
-                </div>
-              <?php endif; ?>
+          </div>
+          
+          <!-- Genomic Sequence -->
+          <div class="genomic-data mb-5">
+            <h4>Genomic Sequence</h4>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead class="table-light">
+                  <tr>
+                    <th>Genomic Sequence</th>
+                    <th>CDS Sequence</th>
+                    <th>GFF3 Annotation</th>
+                    <th>Peptide Sequence</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td onclick="downloadFile('genomic', '<?= htmlspecialchars($selectedAccession['id']) ?>')" 
+                        id="genomicSequence" 
+                        class="download-cell"
+                        data-original="<?= htmlspecialchars($selectedAccession['genomic_sequence'] ?? 'Download') ?>">
+                        <?= htmlspecialchars($selectedAccession['genomic_sequence'] ?? 'Download') ?>
+                    </td>
+                    <td onclick="downloadFile('cds', '<?= htmlspecialchars($selectedAccession['id']) ?>')" 
+                        id="cdsSequence" 
+                        class="download-cell"
+                        data-original="<?= htmlspecialchars($selectedAccession['cds_sequence'] ?? 'Download') ?>">
+                        <?= htmlspecialchars($selectedAccession['cds_sequence'] ?? 'Download') ?>
+                    </td>
+                    <td class="download-cell">
+                      <a href="files/annotation/<?= htmlspecialchars($selectedAccession['gff3_annotation'] ?? '') ?>" 
+                        download
+                        class="download-link"
+                        id="gff3Annotation"
+                        data-original="<?= htmlspecialchars($selectedAccession['gff3_annotation'] ?? 'Download') ?>">
+                        <?= htmlspecialchars($selectedAccession['gff3_annotation'] ?? 'Download') ?>
+                      </a>
+                    </td>
+                    <td onclick="downloadFile('peptide', '<?= htmlspecialchars($selectedAccession['id']) ?>')" 
+                        id="peptideSequence" 
+                        class="download-cell"
+                        data-original="<?= htmlspecialchars($selectedAccession['peptide_sequence'] ?? 'Download') ?>">
+                        <?= htmlspecialchars($selectedAccession['peptide_sequence'] ?? 'Download') ?>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-          <?php endforeach; ?>
+
+          <!-- Reference Section -->
+          <?php if (!empty($selectedAccession['reference_link'])): ?>
+          <div class="reference-section">
+            <h4 class="text-center mb-3">Reference</h4>
+            <div class="text-center">
+              <p>
+                <?php 
+                  $reference = htmlspecialchars($selectedAccession['reference_link']);
+                  echo nl2br($reference);
+                ?>
+              </p>
+            </div>
+          </div>
+          <?php endif; ?>
           
         </div>
+        <?php endif; ?>
         <?php else: ?>
-        <!-- 当没有选择物种时显示默认信息 -->
+        <!-- Display default message when no species is selected -->
         <div class="alert alert-info">
           Please select a species from the dropdown menu to view its genomic information.
         </div>
@@ -719,29 +564,52 @@ function formatGenus($genus) {
   <script src="assets/js/main.js"></script>
 
   <script>
-    // 初始化页面加载后的交互元素
-    document.addEventListener('DOMContentLoaded', function() {
-      // 初始化AOS动画
-      AOS.init({
-        duration: 1000,
-        easing: 'ease-in-out',
-        once: true,
-        mirror: false
-      });
-      
-      // 初始化提示工具
-      var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-      });
-    });
-    
-    // 平滑滚动到accession部分
-    function scrollToAccession(accessionId) {
-      const element = document.getElementById('accession-' + accessionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+    // File download functionality
+    function downloadFile(type, speciesId) {
+        // Show loading indicator
+        const cell = document.getElementById(type + 'Sequence');
+        cell.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+        
+        // Fetch file info from the server
+        fetch(`get_file_info.php?species_id=${speciesId}&file_type=${type}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Construct download URL
+                const downloadUrl = `files/${data.path}/${data.filename}`;
+                
+                // Create temporary download link
+                const link = document.createElement('a');
+                link.href = downloadUrl;
+                link.download = data.filename;
+                link.style.display = 'none';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Restore original cell content
+                const originalContent = cell.getAttribute('data-original') || data.filename;
+                cell.innerHTML = originalContent;
+                cell.setAttribute('data-original', originalContent);
+            })
+            .catch(error => {
+                console.error('Download error:', error);
+                alert('Error downloading file: ' + error.message);
+                
+                // Restore original cell content
+                const originalContent = cell.getAttribute('data-original') || 'Download';
+                cell.innerHTML = originalContent;
+                cell.setAttribute('data-original', originalContent);
+            });
     }
   </script>
 </body>
