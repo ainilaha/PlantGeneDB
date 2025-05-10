@@ -1,0 +1,568 @@
+[10-May-2025 05:27:53 UTC] Form submitted: Array
+(
+    [csrf_token] => deda649aa659d8b15c48d2ec56c103a131ffa7d7cad77c659bb9e67232d307a2
+    [genomic_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [cds_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [gff3_annotation_name] => Aegilops_comosa_annotation.gff3
+    [peptide_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [image_name] => 680ce64255f36_2025-04-2609-41-33.png
+    [scientific_name] => z
+    [common_name] => zzz
+    [genus] => zzz
+    [genome_type] => zzz
+    [genome_size] => 999
+    [chromosome_number] => 999
+    [gene_number] => 999
+    [cds_number] => 999
+    [description] => 999
+    [reference_link] => https://kimi.moonshot.cn/chat/d0dc2b6dcmon00gknr80
+)
+
+[10-May-2025 05:27:53 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 05:29:49 UTC] Form submitted: Array
+(
+    [csrf_token] => f79f7a1d6454af6540445f63282823cdf8739314ab3967b21df70185b775649c
+    [genomic_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [cds_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [gff3_annotation_name] => Aegilops_comosa_annotation.gff3
+    [peptide_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [image_name] => 680ce64255f36_2025-04-2609-41-33.png
+    [scientific_name] => zzz
+    [common_name] => zzz
+    [genus] => zzz
+    [genome_type] => zzz
+    [genome_size] => 999
+    [chromosome_number] => 999
+    [gene_number] => 999
+    [cds_number] => 999
+    [description] => 999
+    [reference_link] => https://kimi.moonshot.cn/chat/d0dc2b6dcmon00gknr80
+)
+
+[10-May-2025 05:29:49 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 05:29:50 UTC] Form submitted: Array
+(
+    [csrf_token] => f79f7a1d6454af6540445f63282823cdf8739314ab3967b21df70185b775649c
+    [genomic_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [cds_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [gff3_annotation_name] => Aegilops_comosa_annotation.gff3
+    [peptide_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [image_name] => 680ce64255f36_2025-04-2609-41-33.png
+    [scientific_name] => zzz
+    [common_name] => zzz
+    [genus] => zzz
+    [genome_type] => zzz
+    [genome_size] => 999
+    [chromosome_number] => 999
+    [gene_number] => 999
+    [cds_number] => 999
+    [description] => 999
+    [reference_link] => https://kimi.moonshot.cn/chat/d0dc2b6dcmon00gknr80
+)
+
+[10-May-2025 05:29:50 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 05:31:31 UTC] Form submitted: Array
+(
+    [csrf_token] => eea73fd3ef9b18f648ddf0a3171853d06a032a2ed02b6ecbbac514b41a30ea0b
+    [genomic_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [cds_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [gff3_annotation_name] => Aegilops_comosa_annotation.gff3
+    [peptide_sequence_name] => 680ce64255eb0_Aegilops_comosa_cds_3_.fasta
+    [image_name] => 680ce64255f36_2025-04-2609-41-33.png
+    [scientific_name] => zzz
+    [common_name] => zzz
+    [genus] => zzz
+    [genome_type] => zzz
+    [genome_size] => 999
+    [chromosome_number] => 999
+    [gene_number] => 999
+    [cds_number] => 999
+    [description] => 999
+    [reference_link] => https://kimi.moonshot.cn/chat/d0dc2b6dcmon00gknr80
+)
+
+[10-May-2025 05:31:31 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 05:41:17 UTC] Form submitted: Array
+(
+    [csrf_token] => e42cca2771f4c6b048f3ab400ab414ec1018c7fd38a9910f9d8a4b5873d15862
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 05:41:27 UTC] Form submitted: Array
+(
+    [csrf_token] => 591a726c29830bff8eeea61b21999e4ff66a1359250e69ccd054b0bac9170471
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt55
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 06:03:53 UTC] Form submitted: Array
+(
+    [csrf_token] => 9726f0f55ca978dee3f7fb6c7a6fbda95a81b74608f2ac5700946291ebd097ac
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt55
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 06:03:53 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 06:04:07 UTC] Form submitted: Array
+(
+    [csrf_token] => 43452dde6a123a58c458d2d5223e55859f245b845392c5337c5f4b66864c5603
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt555
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 06:04:07 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 06:08:54 UTC] Form submitted: Array
+(
+    [csrf_token] => 38e648443724099ce9f922622a690036cfb8791b713209317ecbecc87e576d33
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt55
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 06:08:54 UTC] New file uploaded for genomic_sequence: q_genome_2_1.fasta
+[10-May-2025 06:08:54 UTC] New file uploaded for cds_sequence: q_cds.fasta
+[10-May-2025 06:08:54 UTC] New file uploaded for gff3_annotation: q.gff3
+[10-May-2025 06:08:54 UTC] New file uploaded for peptide_sequence: q_peptide_1.fasta
+[10-May-2025 06:08:54 UTC] New file uploaded for image: fig-git-hm.jpg
+[10-May-2025 06:08:54 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 06:16:28 UTC] Form submitted: Array
+(
+    [csrf_token] => 1c240a4e31f80638c64641d92eade704887fceb931496bc8a638ffa160460ead
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt55
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 06:16:28 UTC] New file uploaded for genomic_sequence: q_genome_2_1.fasta
+[10-May-2025 06:16:28 UTC] New file uploaded for cds_sequence: q_cds.fasta
+[10-May-2025 06:16:28 UTC] New file uploaded for gff3_annotation: q.gff3
+[10-May-2025 06:16:28 UTC] New file uploaded for peptide_sequence: q_peptide_1.fasta
+[10-May-2025 06:16:28 UTC] New file uploaded for image: fig-git-hm.jpg
+[10-May-2025 06:16:28 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 06:16:34 UTC] Form submitted: Array
+(
+    [csrf_token] => 1c240a4e31f80638c64641d92eade704887fceb931496bc8a638ffa160460ead
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt555
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 06:16:34 UTC] New file uploaded for genomic_sequence: q_genome_2_1.fasta
+[10-May-2025 06:16:34 UTC] New file uploaded for cds_sequence: q_cds.fasta
+[10-May-2025 06:16:34 UTC] New file uploaded for gff3_annotation: q.gff3
+[10-May-2025 06:16:34 UTC] New file uploaded for peptide_sequence: q_peptide_1.fasta
+[10-May-2025 06:16:34 UTC] New file uploaded for image: fig-git-hm.jpg
+[10-May-2025 06:16:34 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 06:31:40 UTC] Form submitted: Array
+(
+    [csrf_token] => 8ab852db5738938bcc3cdb541d7c382765d9fdec934e611cbf18b09b97cb6cab
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt55
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 06:31:40 UTC] Submission error: Genomic sequence file is required and must exist
+[10-May-2025 06:31:42 UTC] Form submitted: Array
+(
+    [csrf_token] => 8ab852db5738938bcc3cdb541d7c382765d9fdec934e611cbf18b09b97cb6cab
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt55
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 06:31:42 UTC] Submission error: Genomic sequence file is required and must exist
+[10-May-2025 06:31:42 UTC] Form submitted: Array
+(
+    [csrf_token] => 8ab852db5738938bcc3cdb541d7c382765d9fdec934e611cbf18b09b97cb6cab
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => fig-git-hm.jpg
+    [scientific_name] => ttt55
+    [common_name] => ttt
+    [genus] => ttt
+    [genome_type] => ttt
+    [genome_size] => 1
+    [chromosome_number] => 1
+    [gene_number] => 1
+    [cds_number] => 1
+    [description] => 1
+    [reference_link] => https://grok.com/chat/51e1d513-fb1e-4978-9fcd-d8e98ff6f6d4
+)
+
+[10-May-2025 06:31:42 UTC] Submission error: Genomic sequence file is required and must exist
+[10-May-2025 06:32:35 UTC] Form submitted: Array
+(
+    [csrf_token] => 5f4c926baca991217fa3b0acd23d083c2390665952311c746c6e7862c5075367
+    [genomic_sequence_name] => test.fasta
+    [cds_sequence_name] => test.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => test.fasta
+    [image_name] => ct.jpg
+    [scientific_name] => 333
+    [common_name] => 333
+    [genus] => 333
+    [genome_type] => 333
+    [genome_size] => 333
+    [chromosome_number] => 333
+    [gene_number] => 333
+    [cds_number] => 333
+    [description] => 333
+    [reference_link] => https://grok.com/chat/99610ffe-85ef-4ece-85f6-e3922160b702
+)
+
+[10-May-2025 06:32:49 UTC] Form submitted: Array
+(
+    [csrf_token] => 8f75655b7457c13ee33cb33694ece6d2a4cccdc94e02107495f1e1d93a309feb
+    [genomic_sequence_name] => test.fasta
+    [cds_sequence_name] => test.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => test.fasta
+    [image_name] => ct.jpg
+    [scientific_name] => 3334
+    [common_name] => 333
+    [genus] => 333
+    [genome_type] => 333
+    [genome_size] => 333
+    [chromosome_number] => 333
+    [gene_number] => 333
+    [cds_number] => 333
+    [description] => 333
+    [reference_link] => https://grok.com/chat/99610ffe-85ef-4ece-85f6-e3922160b702
+)
+
+[10-May-2025 06:34:05 UTC] Form submitted: Array
+(
+    [csrf_token] => c7699189e0427313537521e9adf28af59647867cba9dcf2145e54385b6571417
+    [genomic_sequence_name] => test.fasta
+    [cds_sequence_name] => test.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => test.fasta
+    [image_name] => ct.jpg
+    [scientific_name] => 33344
+    [common_name] => 333
+    [genus] => 333
+    [genome_type] => 333
+    [genome_size] => 333
+    [chromosome_number] => 333
+    [gene_number] => 333
+    [cds_number] => 333
+    [description] => 333
+    [reference_link] => https://grok.com/chat/99610ffe-85ef-4ece-85f6-e3922160b702
+)
+
+[10-May-2025 06:54:13 UTC] Form submitted: Array
+(
+    [csrf_token] => cabe8047842766a8aa6dd83a4c1ad1b183766ea5e0f2b37f009a5c95f697fadc
+    [genomic_sequence_name] => Aegilops_comosa_cds_2_5.fasta
+    [cds_sequence_name] => test.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => test.fasta
+    [image_name] => ct.jpg
+    [scientific_name] => 333
+    [common_name] => 333
+    [genus] => 333
+    [genome_type] => 333
+    [genome_size] => 333
+    [chromosome_number] => 333
+    [gene_number] => 333
+    [cds_number] => 333
+    [description] => 333
+    [reference_link] => https://grok.com/chat/99610ffe-85ef-4ece-85f6-e3922160b702
+)
+
+[10-May-2025 06:54:44 UTC] Form submitted: Array
+(
+    [csrf_token] => cabe8047842766a8aa6dd83a4c1ad1b183766ea5e0f2b37f009a5c95f697fadc
+    [genomic_sequence_name] => test.fasta
+    [cds_sequence_name] => test.fasta
+    [gff3_annotation_name] => q.gff3
+    [peptide_sequence_name] => test.fasta
+    [image_name] => ct.jpg
+    [scientific_name] => 333445
+    [common_name] => 333
+    [genus] => 333
+    [genome_type] => 333
+    [genome_size] => 333
+    [chromosome_number] => 333
+    [gene_number] => 333
+    [cds_number] => 333
+    [description] => 333
+    [reference_link] => https://grok.com/chat/99610ffe-85ef-4ece-85f6-e3922160b702
+)
+
+[10-May-2025 06:54:44 UTC] Update error: Genomic sequence file is required and must exist
+[10-May-2025 06:55:46 UTC] Form submitted: Array
+(
+    [csrf_token] => 02e7a03ec8f06a149c9f6be3fae484060622ae41207aef5335eac929c8596549
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q_1.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => 680ce64255f36_2025-04-2609-41-33.png
+    [scientific_name] => zzz
+    [common_name] => zz
+    [genus] => zz
+    [genome_type] => zz
+    [genome_size] => 22
+    [chromosome_number] => 22
+    [gene_number] => 22
+    [cds_number] => 22
+    [description] => 2
+    [reference_link] => https://github.com/ainilaha/PlantGeneDB/blob/main/Admin/gene_upload.php
+)
+
+[10-May-2025 06:55:57 UTC] Form submitted: Array
+(
+    [csrf_token] => 4c178084c1d270461596fd420ac481eafee335e09d700e1846eb3b8b9b77919a
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q_1.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => 680ce64255f36_2025-04-2609-41-33.png
+    [scientific_name] => zzz2324
+    [common_name] => zz
+    [genus] => zz
+    [genome_type] => zz
+    [genome_size] => 22
+    [chromosome_number] => 22
+    [gene_number] => 22
+    [cds_number] => 22
+    [description] => 2
+    [reference_link] => https://github.com/ainilaha/PlantGeneDB/blob/main/Admin/gene_upload.php
+)
+
+[10-May-2025 06:56:07 UTC] Form submitted: Array
+(
+    [csrf_token] => 4c178084c1d270461596fd420ac481eafee335e09d700e1846eb3b8b9b77919a
+    [genomic_sequence_name] => q_genome_2_1.fasta
+    [cds_sequence_name] => q_cds.fasta
+    [gff3_annotation_name] => q_1.gff3
+    [peptide_sequence_name] => q_peptide_1.fasta
+    [image_name] => 680ce64255f36_2025-04-2609-41-33.png
+    [scientific_name] => zzz2324555
+    [common_name] => zz
+    [genus] => zz
+    [genome_type] => zz
+    [genome_size] => 22
+    [chromosome_number] => 22
+    [gene_number] => 22
+    [cds_number] => 22
+    [description] => 2
+    [reference_link] => https://github.com/ainilaha/PlantGeneDB/blob/main/Admin/gene_upload.php
+)
+
+[10-May-2025 06:57:36 UTC] Form submitted: Array
+(
+    [csrf_token] => 4c178084c1d270461596fd420ac481eafee335e09d700e1846eb3b8b9b77919a
+    [genomic_sequence_name] => test.fasta
+    [cds_sequence_name] => test_1.fasta
+    [gff3_annotation_name] => after.gff3
+    [peptide_sequence_name] => test_1.fasta
+    [image_name] => 680ce64255f36_2025-04-2609-41-33.png
+    [scientific_name] => zzz2324555
+    [common_name] => zz
+    [genus] => zz
+    [genome_type] => zz
+    [genome_size] => 22
+    [chromosome_number] => 22
+    [gene_number] => 22
+    [cds_number] => 22
+    [description] => 2
+    [reference_link] => https://github.com/ainilaha/PlantGeneDB/blob/main/Admin/gene_upload.php
+)
+
+[10-May-2025 07:03:37 UTC] Form submitted: Array
+(
+    [csrf_token] => f774eb2d621c4da39f883df02fb6710b6c121b77737351b0226bf76e3c5151bd
+    [genomic_sequence_name] => ttttt.fasta
+    [cds_sequence_name] => ttttt.fasta
+    [gff3_annotation_name] => ttt.gff3
+    [peptide_sequence_name] => ttttt.fasta
+    [image_name] => _______2024-12-08_10-56-12.png
+    [scientific_name] => 142
+    [common_name] => 1242
+    [genus] => 21
+    [genome_type] => dd
+    [genome_size] => 3123
+    [chromosome_number] => 323
+    [gene_number] => 333
+    [cds_number] => 33
+    [description] => 11
+    [reference_link] => https://github.com/ainilaha/PlantGeneDB/blob/main/Admin/gene_upload.php
+)
+
+[10-May-2025 07:03:46 UTC] Form submitted: Array
+(
+    [csrf_token] => c231c13d597ddf4c67f9d21164175e265b3a2e75fbb55904749bfca2a9cc32b0
+    [genomic_sequence_name] => ttttt.fasta
+    [cds_sequence_name] => ttttt.fasta
+    [gff3_annotation_name] => ttt.gff3
+    [peptide_sequence_name] => ttttt.fasta
+    [image_name] => _______2024-12-08_10-56-12.png
+    [scientific_name] => 14244
+    [common_name] => 1242
+    [genus] => 21
+    [genome_type] => dd
+    [genome_size] => 3123
+    [chromosome_number] => 323
+    [gene_number] => 333
+    [cds_number] => 33
+    [description] => 11
+    [reference_link] => https://github.com/ainilaha/PlantGeneDB/blob/main/Admin/gene_upload.php
+)
+
+[10-May-2025 07:03:53 UTC] Form submitted: Array
+(
+    [csrf_token] => c231c13d597ddf4c67f9d21164175e265b3a2e75fbb55904749bfca2a9cc32b0
+    [genomic_sequence_name] => ttttt.fasta
+    [cds_sequence_name] => ttttt.fasta
+    [gff3_annotation_name] => ttt.gff3
+    [peptide_sequence_name] => ttttt.fasta
+    [image_name] => _______2024-12-08_10-56-12.png
+    [scientific_name] => 14244yyy
+    [common_name] => 1242
+    [genus] => 21
+    [genome_type] => dd
+    [genome_size] => 3123
+    [chromosome_number] => 323
+    [gene_number] => 333
+    [cds_number] => 33
+    [description] => 11
+    [reference_link] => https://github.com/ainilaha/PlantGeneDB/blob/main/Admin/gene_upload.php
+)
+
+[10-May-2025 07:04:30 UTC] Form submitted: Array
+(
+    [csrf_token] => c231c13d597ddf4c67f9d21164175e265b3a2e75fbb55904749bfca2a9cc32b0
+    [genomic_sequence_name] => test_1.fasta
+    [cds_sequence_name] => test_2.fasta
+    [gff3_annotation_name] => after_1.gff3
+    [peptide_sequence_name] => test_2.fasta
+    [image_name] => _______2024-12-08_10-56-12.png
+    [scientific_name] => 14244yyy
+    [common_name] => 1242
+    [genus] => 21
+    [genome_type] => dd
+    [genome_size] => 3123
+    [chromosome_number] => 323
+    [gene_number] => 333
+    [cds_number] => 33
+    [description] => 11
+    [reference_link] => https://github.com/ainilaha/PlantGeneDB/blob/main/Admin/gene_upload.php
+)
+

@@ -13,7 +13,7 @@ ini_set('display_errors', 1);
 require __DIR__ . '/config.php';
 require_admin();
 
-// 分片上传处理逻辑
+// 分片上传处理逻辑（与 gene_upload.php 一致）
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'upload_chunk') {
     try {
         $chunk = $_FILES['chunk']['tmp_name'];
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['ac
     exit;
 }
 
-// 表单处理和用户信息获取逻辑
+// 初始化消息变量
 $success = '';
 $error = '';
 $file_paths = [
@@ -107,13 +107,63 @@ $file_paths = [
     'image' => ['name' => '', 'path' => '']
 ];
 
+// 获取用户信息
+$user_id = $_SESSION['user_id'];
+$query = "SELECT username, role FROM users WHERE id = ?";
+$stmt = $conn->prepare($query);
+if (!$stmt) {
+    error_log("Query preparation failed: " . $conn->error);
+    die("Query preparation failed: " . $conn->error);
+}
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$user = $stmt->get_result()->fetch_assoc();
+if (!$user) {
+    error_log("User information retrieval failed");
+    die("User information retrieval failed");
+}
+$stmt->close();
+
+// 生成 CSRF 令牌
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// 获取要编辑的记录
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$query = "SELECT * FROM genomics_species WHERE id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$species = $stmt->get_result()->fetch_assoc();
+$stmt->close();
+
+if (!$species) {
+    die("Record not found");
+}
+
+// 设置现有文件路径
+$file_paths['genomic_sequence']['name'] = $species['genomic_sequence'] ?? '';
+$file_paths['genomic_sequence']['path'] = $species['genomic_sequence'] ? __DIR__ . '/uploads/files/genomic/' . $species['genomic_sequence'] : '';
+$file_paths['cds_sequence']['name'] = $species['cds_sequence'] ?? '';
+$file_paths['cds_sequence']['path'] = $species['cds_sequence'] ? __DIR__ . '/uploads/files/cds/' . $species['cds_sequence'] : '';
+$file_paths['gff3_annotation']['name'] = $species['gff3_annotation'] ?? '';
+$file_paths['gff3_annotation']['path'] = $species['gff3_annotation'] ? __DIR__ . '/uploads/files/annotation/' . $species['gff3_annotation'] : '';
+$file_paths['peptide_sequence']['name'] = $species['peptide_sequence'] ?? '';
+$file_paths['peptide_sequence']['path'] = $species['peptide_sequence'] ? __DIR__ . '/Uploads/files/peptide/' . $species['peptide_sequence'] : '';
+$file_paths['image']['name'] = $species['image_url'] ? basename($species['image_url']) : '';
+$file_paths['image']['path'] = $species['image_url'] ?? '';
+
+// 处理表单提交
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
     error_log('Form submitted: ' . print_r($_POST, true));
     try {
+        // 验证 CSRF 令牌
         if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
             throw new Exception("Security verification failed, please resubmit");
         }
 
+        // 验证表单数据
         $fields = [
             'scientific_name' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'common_name' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
@@ -136,6 +186,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
             return $value ?? '';
         }, $form_data);
 
+        // 处理文件字段
         $file_fields = ['genomic_sequence', 'cds_sequence', 'gff3_annotation', 'peptide_sequence', 'image'];
         $upload_dirs = [
             'genomic_sequence' => __DIR__ . '/uploads/files/genomic/',
@@ -153,6 +204,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
             'image' => ['jpg', 'jpeg', 'png', 'gif']
         ];
 
+        $old_file_paths = $file_paths; // 保存旧文件路径以便在成功更新后删除
         foreach ($file_fields as $field) {
             if (!empty($_POST[$field . '_name'])) {
                 $file_name = preg_replace('/[^a-zA-Z0-9\._-]/', '_', $_POST[$field . '_name']);
@@ -167,21 +219,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
                 if ($field === 'image') {
                     $file_paths[$field]['path'] = 'Admin/uploads/images/' . $file_name;
                 }
+            } else {
+                // 如果没有上传新文件，保留原有文件名
+                $file_paths[$field]['name'] = $species[$field] ?? '';
+                $file_paths[$field]['path'] = $species[$field] ? $upload_dirs[$field] . $species[$field] : '';
+                if ($field === 'image') {
+                    $file_paths[$field]['path'] = $species['image_url'] ?? '';
+                }
             }
         }
 
+        // 验证基因组序列文件
         if (empty($file_paths['genomic_sequence']['name']) || !file_exists($upload_dirs['genomic_sequence'] . $file_paths['genomic_sequence']['name'])) {
             throw new Exception("Genomic sequence file is required and must exist");
         }
 
+        // 更新数据库
         $conn->begin_transaction();
-
-        $stmt = $conn->prepare("INSERT INTO genomics_species 
-            (scientific_name, common_name, genus, genome_type, genome_size,
-            chromosome_number, gene_number, cds_number, description, image_url,
-            genomic_sequence, cds_sequence, gff3_annotation, peptide_sequence,
-            reference_link, submitted_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("UPDATE genomics_species SET 
+            scientific_name = ?, common_name = ?, genus = ?, genome_type = ?,
+            genome_size = ?, chromosome_number = ?, gene_number = ?, cds_number = ?,
+            description = ?, image_url = ?, genomic_sequence = ?, cds_sequence = ?,
+            gff3_annotation = ?, peptide_sequence = ?, reference_link = ?
+            WHERE id = ?");
 
         $stmt->bind_param("sssssiiiissssssi",
             $form_data['scientific_name'],
@@ -199,64 +259,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
             $file_paths['gff3_annotation']['name'],
             $file_paths['peptide_sequence']['name'],
             $form_data['reference_link'],
-            $_SESSION['user_id']
+            $id
         );
 
         if (!$stmt->execute()) {
             throw new Exception("Database error: " . $stmt->error);
         }
 
+        // 删除旧文件（仅当新文件上传成功时）
+        foreach ($file_fields as $field) {
+            if ($file_paths[$field]['name'] !== $old_file_paths[$field]['name'] && !empty($old_file_paths[$field]['path']) && file_exists($old_file_paths[$field]['path'])) {
+                unlink($old_file_paths[$field]['path']);
+            }
+        }
+
         $conn->commit();
-        $success = "Data submitted successfully! ID: " . $stmt->insert_id;
-        // 返回 JSON 响应
+        $success = "Data updated successfully! ID: " . $id;
         header('Content-Type: application/json');
-        echo json_encode(['status' => 'success', 'insert_id' => $stmt->insert_id]);
+        echo json_encode(['status' => 'success', 'message' => $success]);
         exit;
     } catch (Exception $e) {
         $conn->rollback();
-        error_log('Submission error: ' . $e->getMessage());
-        $error = "Submission failed: " . $e->getMessage();
+        error_log('Update error: ' . $e->getMessage());
         header('Content-Type: application/json');
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         exit;
     }
 }
-
-$user_id = $_SESSION['user_id'];
-$query = "SELECT username, role FROM users WHERE id = ?";
-$stmt = $conn->prepare($query);
-
-if (!$stmt) {
-    error_log("Query preparation failed: " . $conn->error);
-    die("Query preparation failed: " . $conn->error);
-}
-
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-
-if (!$result) {
-    error_log("Query failed: " . $conn->error);
-    die("Query failed: " . $conn->error);
-}
-
-$user = $result->fetch_assoc();
-if (!$user) {
-    error_log("User information retrieval failed");
-    die("User information retrieval failed");
-}
-
-$stmt->close();
-
-$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数据上传</title>
+    <title>编辑基因组数据</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
@@ -542,7 +580,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
 <div class="main-content">
     <div class="header">
-        <h3>数据上传</h3>
+        <h3>编辑基因组数据</h3>
         <div class="user-info">
             <span><?php echo htmlspecialchars($user['username']); ?> (<?php echo htmlspecialchars($user['role']); ?>)</span>
             <form action="logout.php" method="post">
@@ -561,53 +599,53 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
         <form id="uploadForm" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
-            <input type="hidden" name="genomic_sequence_name" id="genomic_sequence_name">
-            <input type="hidden" name="cds_sequence_name" id="cds_sequence_name">
-            <input type="hidden" name="gff3_annotation_name" id="gff3_annotation_name">
-            <input type="hidden" name="peptide_sequence_name" id="peptide_sequence_name">
-            <input type="hidden" name="image_name" id="image_name">
+            <input type="hidden" name="genomic_sequence_name" id="genomic_sequence_name" value="<?php echo htmlspecialchars($file_paths['genomic_sequence']['name']); ?>">
+            <input type="hidden" name="cds_sequence_name" id="cds_sequence_name" value="<?php echo htmlspecialchars($file_paths['cds_sequence']['name']); ?>">
+            <input type="hidden" name="gff3_annotation_name" id="gff3_annotation_name" value="<?php echo htmlspecialchars($file_paths['gff3_annotation']['name']); ?>">
+            <input type="hidden" name="peptide_sequence_name" id="peptide_sequence_name" value="<?php echo htmlspecialchars($file_paths['peptide_sequence']['name']); ?>">
+            <input type="hidden" name="image_name" id="image_name" value="<?php echo htmlspecialchars($file_paths['image']['name']); ?>">
 
             <h5>Genomic</h5>
             <div class="form-grid">
                 <div class="form-group">
                     <label>Scientific Name *</label>
-                    <input type="text" name="scientific_name" required>
+                    <input type="text" name="scientific_name" value="<?php echo htmlspecialchars($species['scientific_name']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Common Name</label>
-                    <input type="text" name="common_name">
+                    <input type="text" name="common_name" value="<?php echo htmlspecialchars($species['common_name']); ?>">
                 </div>
                 <div class="form-group">
                     <label>Genus *</label>
-                    <input type="text" name="genus" required>
+                    <input type="text" name="genus" value="<?php echo htmlspecialchars($species['genus']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Genome Type *</label>
-                    <input type="text" name="genome_type" required>
+                    <input type="text" name="genome_type" value="<?php echo htmlspecialchars($species['genome_type']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Genome Size (bp) *</label>
-                    <input type="number" name="genome_size" required>
+                    <input type="number" name="genome_size" value="<?php echo htmlspecialchars($species['genome_size']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Chromosome Number *</label>
-                    <input type="number" name="chromosome_number" required>
+                    <input type="number" name="chromosome_number" value="<?php echo htmlspecialchars($species['chromosome_number']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label>Gene Number *</label>
-                    <input type="number" name="gene_number" required>
+                    <input type="number" name="gene_number" value="<?php echo htmlspecialchars($species['gene_number']); ?>" required>
                 </div>
                 <div class="form-group">
                     <label>CDS Number *</label>
-                    <input type="number" name="cds_number" required>
+                    <input type="number" name="cds_number" value="<?php echo htmlspecialchars($species['cds_number']); ?>" required>
                 </div>
                 <div class="form-group description">
                     <label>Description</label>
-                    <textarea name="description"></textarea>
+                    <textarea name="description"><?php echo htmlspecialchars($species['description']); ?></textarea>
                 </div>
                 <div class="form-group reference-link">
                     <label>Reference Link</label>
-                    <input type="url" name="reference_link">
+                    <input type="url" name="reference_link" value="<?php echo htmlspecialchars($species['reference_link']); ?>">
                 </div>
             </div>
 
@@ -615,7 +653,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             <div class="row g-3">
                 <div class="col-md-6">
                     <div class="upload-zone" data-accept=".fasta,.fa,.fna,.faa,.gb,.gbk,.sam,.bam">
-                        <h6>Genomic Sequence *</h6>
+                        <h6>Genomic Sequence * (当前: <?php echo $file_paths['genomic_sequence']['name'] ?: '无'; ?>)</h6>
                         <div class="upload-instruction">
                             <label class="custom-upload-btn">
                                 Select or Drag
@@ -624,7 +662,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                                        accept=".fasta,.fa,.fna,.faa,.gb,.gbk,.sam,.bam">
                             </label>
                         </div>
-                        <div class="file-preview"></div>
+                        <div class="file-preview"><?php echo $file_paths['genomic_sequence']['name'] ? htmlspecialchars($file_paths['genomic_sequence']['name']) : ''; ?></div>
                         <div class="progress-container">
                             <div class="progress">
                                 <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
@@ -636,7 +674,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 </div>
                 <div class="col-md-6">
                     <div class="upload-zone" data-accept=".cds,.fa,.fasta,.ffn">
-                        <h6>CDS Sequence</h6>
+                        <h6>CDS Sequence (当前: <?php echo $file_paths['cds_sequence']['name'] ?: '无'; ?>)</h6>
                         <div class="upload-instruction">
                             <label class="custom-upload-btn">
                                 Select or Drag
@@ -645,7 +683,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                                        accept=".cds,.fa,.fasta,.ffn">
                             </label>
                         </div>
-                        <div class="file-preview"></div>
+                        <div class="file-preview"><?php echo $file_paths['cds_sequence']['name'] ? htmlspecialchars($file_paths['cds_sequence']['name']) : ''; ?></div>
                         <div class="progress-container">
                             <div class="progress">
                                 <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
@@ -657,7 +695,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 </div>
                 <div class="col-md-6">
                     <div class="upload-zone" data-accept=".gff3,.gff">
-                        <h6>GFF3 Annotation</h6>
+                        <h6>GFF3 Annotation (当前: <?php echo $file_paths['gff3_annotation']['name'] ?: '无'; ?>)</h6>
                         <div class="upload-instruction">
                             <label class="custom-upload-btn">
                                 Select or Drag
@@ -666,7 +704,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                                        accept=".gff3,.gff">
                             </label>
                         </div>
-                        <div class="file-preview"></div>
+                        <div class="file-preview"><?php echo $file_paths['gff3_annotation']['name'] ? htmlspecialchars($file_paths['gff3_annotation']['name']) : ''; ?></div>
                         <div class="progress-container">
                             <div class="progress">
                                 <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
@@ -678,7 +716,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 </div>
                 <div class="col-md-6">
                     <div class="upload-zone" data-accept=".fa,.fasta,.faa,.pep,.peptide,.txt,.pepXML,.dat">
-                        <h6>Peptide Sequence</h6>
+                        <h6>Peptide Sequence (当前: <?php echo $file_paths['peptide_sequence']['name'] ?: '无'; ?>)</h6>
                         <div class="upload-instruction">
                             <label class="custom-upload-btn">
                                 Select or Drag
@@ -687,7 +725,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                                        accept=".fa,.fasta,.faa,.pep,.peptide,.txt,.pepXML,.dat">
                             </label>
                         </div>
-                        <div class="file-preview"></div>
+                        <div class="file-preview"><?php echo $file_paths['peptide_sequence']['name'] ? htmlspecialchars($file_paths['peptide_sequence']['name']) : ''; ?></div>
                         <div class="progress-container">
                             <div class="progress">
                                 <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
@@ -699,7 +737,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 </div>
                 <div class="col-md-6">
                     <div class="upload-zone" data-accept=".jpg,.jpeg,.png,.gif">
-                        <h6>Image</h6>
+                        <h6>Image (当前: <?php echo $file_paths['image']['name'] ?: '无'; ?>)</h6>
                         <div class="upload-instruction">
                             <label class="custom-upload-btn">
                                 Select or Drag
@@ -708,7 +746,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                                        accept=".jpg,.jpeg,.png,.gif">
                             </label>
                         </div>
-                        <div class="file-preview"></div>
+                        <div class="file-preview"><?php echo $file_paths['image']['name'] ? htmlspecialchars($file_paths['image']['name']) : ''; ?></div>
                         <div class="progress-container">
                             <div class="progress">
                                 <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
@@ -720,7 +758,9 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 </div>
             </div>
 
-            <button type="submit" class="submit-btn" disabled>Submit Data</button>
+            <div class="d-flex justify-content-between mt-4">
+                <button type="submit" class="submit-btn">保存更改</button>
+            </div>
         </form>
     </div>
 </div>
@@ -737,7 +777,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         document.body.appendChild(alertDiv);
         setTimeout(() => {
             alertDiv.remove();
-        }, 5000); // 5秒后移除提示
+        }, 5000);
     }
 
     // 显示成功提示的函数
@@ -748,7 +788,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         document.querySelector('.upload-form').prepend(successDiv);
         setTimeout(() => {
             successDiv.remove();
-        }, 5000); // 5秒后移除提示
+        }, 5000);
     }
 
     document.querySelectorAll('.upload-zone').forEach(zone => {
@@ -759,7 +799,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         const statusText = zone.querySelector('.status-text');
         const acceptTypes = zone.dataset.accept.split(',').map(t => t.trim());
         const fieldName = input.name;
-        const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB 分片大小
+        const CHUNK_SIZE = 10 * 1024 * 1024;
 
         zone.addEventListener('dragover', e => {
             e.preventDefault();
@@ -859,7 +899,6 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                     if (response.status === 'error') {
                         throw new Error(response.message);
                     } else if (response.status === 'success') {
-                        console.log('Setting hidden field:', fieldName + '_name', response.file_name);
                         document.getElementById(fieldName + '_name').value = response.file_name;
                         preview.textContent = file.name + ' (上传完成)';
                         preview.classList.add('success');
@@ -921,7 +960,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         const formData = new FormData(form);
 
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'gene_upload.php', true);
+        xhr.open('POST', 'genomics_edit.php?id=<?php echo $id; ?>', true);
 
         xhr.onload = function() {
             console.log('Response:', xhr.status, xhr.responseText);
@@ -929,24 +968,24 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 try {
                     const response = JSON.parse(xhr.responseText);
                     if (response.status === 'success') {
-                        showGlobalSuccessMessage('成功上传');
-                        showSuccessMessage('表单提交成功！ID: ' + response.insert_id);
+                        showGlobalSuccessMessage('成功更新');
+                        showSuccessMessage(response.message);
                         setTimeout(() => {
-                            window.location.reload();
-                        }, 2000); // 2秒后刷新页面
+                            window.location.href = 'genomics_content.php';
+                        }, 2000);
                     } else {
-                        throw new Error(response.message || '提交失败');
+                        throw new Error(response.message || '更新失败');
                     }
                 } catch (e) {
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'alert alert-danger';
-                    errorDiv.textContent = '表单提交失败: ' + e.message;
+                    errorDiv.textContent = '表单更新失败: ' + e.message;
                     form.prepend(errorDiv);
                 }
             } else {
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'alert alert-danger';
-                errorDiv.textContent = `表单提交失败: ${xhr.status} ${xhr.responseText}`;
+                errorDiv.textContent = `表单更新失败: ${xhr.status} ${xhr.responseText}`;
                 form.prepend(errorDiv);
             }
         };
@@ -963,40 +1002,30 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     });
 
     document.addEventListener('DOMContentLoaded', function() {
-        // 菜单切换逻辑
         document.querySelectorAll('.menu-toggle').forEach(toggle => {
             toggle.addEventListener('click', function(e) {
                 e.preventDefault();
-                console.log('Menu toggle clicked:', this.textContent);
                 const parent = this.closest('.has-submenu');
-                if (parent) {
-                    parent.classList.toggle('active');
-                    document.querySelectorAll('.has-submenu').forEach(other => {
-                        if (other !== parent) {
-                            other.classList.remove('active');
-                        }
-                    });
-                } else {
-                    console.error('Parent .has-submenu not found for toggle:', this);
-                }
+                parent.classList.toggle('active');
+                document.querySelectorAll('.has-submenu').forEach(other => {
+                    if (other !== parent) {
+                        other.classList.remove('active');
+                    }
+                });
             });
         });
 
-        // 点击页面其他区域关闭子菜单
         document.addEventListener('click', function(e) {
             if (!e.target.closest('.has-submenu')) {
-                console.log('Clicked outside submenu, closing all submenus');
                 document.querySelectorAll('.has-submenu').forEach(menu => {
                     menu.classList.remove('active');
                 });
             }
         });
 
-        // 子菜单链接点击不关闭父菜单
         document.querySelectorAll('.submenu a').forEach(link => {
             link.addEventListener('click', function(e) {
-                console.log('Submenu link clicked:', this.textContent);
-                e.stopPropagation(); // 阻止冒泡到 document 的点击事件
+                e.stopPropagation();
             });
         });
     });
