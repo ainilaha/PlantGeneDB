@@ -8,7 +8,27 @@ ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/error.log');
 global $conn;
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0); // 关闭直接显示错误，防止破坏JSON响应
+
+// HTML 内容净化函数 - 修复版
+function sanitize_html($html) {
+    // 如果输入为空，直接返回空字符串而不是null
+    if (empty($html)) {
+        return '';
+    }
+    
+    // 允许的标签列表
+    $allowed_tags = '<p><br><a><em><i><strong><b><ul><ol><li><h1><h2><h3><h4><h5><h6><span><div><img><table><tr><td><th><thead><tbody><blockquote>';
+    
+    // 移除危险属性
+    $html = preg_replace('/<([^>]*)(?:onclick|onload|onerror|onmouseover|onmouseout|onkeydown|onkeypress|onkeyup)([^>]*)>/i', '<$1$2>', $html);
+    
+    // 保留允许的标签，移除其他标签
+    $html = strip_tags($html, $allowed_tags);
+    
+    // 确保返回的是字符串，不是null或false
+    return $html !== false ? $html : '';
+}
 
 require __DIR__ . '/config.php';
 require_admin();
@@ -108,23 +128,62 @@ $file_paths = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
+    // 启用输出缓冲，防止直接输出错误信息
+    ob_start();
+    
     error_log('Form submitted: ' . print_r($_POST, true));
     try {
         if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
             throw new Exception("Security verification failed, please resubmit");
         }
 
+        // 在处理表单数据之前，对富文本内容进行净化
+        if (isset($_POST['description'])) {
+            $_POST['description'] = sanitize_html($_POST['description']);
+            // 额外日志记录，用于调试
+            error_log('Sanitized description: ' . $_POST['description']);
+        }
+
+        if (isset($_POST['reference_link'])) {
+            $_POST['reference_link'] = sanitize_html($_POST['reference_link']);
+            error_log('Sanitized reference_link: ' . $_POST['reference_link']);
+        }
+
+        if (isset($_POST['scientific_name'])) {
+            $_POST['scientific_name'] = sanitize_html($_POST['scientific_name']);
+            error_log('Sanitized scientific_name: ' . $_POST['scientific_name']);
+        }
+
         $fields = [
-            'scientific_name' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'species_name' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'scientific_name' => [
+                'filter' => FILTER_CALLBACK,
+                'options' => function($value) { 
+                    // 确保不返回null或false
+                    return $value !== null && $value !== false ? $value : ''; 
+                }
+            ],
             'common_name' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'genus' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'genome_type' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            'genome_size' => FILTER_SANITIZE_NUMBER_INT,
+            'genome_size' => FILTER_SANITIZE_FULL_SPECIAL_CHARS, // 修改为字符串过滤器
             'chromosome_number' => FILTER_SANITIZE_NUMBER_INT,
             'gene_number' => FILTER_SANITIZE_NUMBER_INT,
             'cds_number' => FILTER_SANITIZE_NUMBER_INT,
-            'description' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            'reference_link' => FILTER_VALIDATE_URL
+            'description' => [
+                'filter' => FILTER_CALLBACK,
+                'options' => function($value) { 
+                    // 确保不返回null或false
+                    return $value !== null && $value !== false ? $value : ''; 
+                }
+            ],
+            'reference_link' => [
+                'filter' => FILTER_CALLBACK,
+                'options' => function($value) { 
+                    // 确保不返回null或false
+                    return $value !== null && $value !== false ? $value : ''; 
+                }
+            ]
         ];
 
         $form_data = filter_input_array(INPUT_POST, $fields, true) ?? [];
@@ -132,9 +191,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
             throw new Exception("Form data validation failed");
         }
 
+        // 确保所有字段都有值，即使是空字符串
         $form_data = array_map(function($value) {
             return $value ?? '';
         }, $form_data);
+
+        // 记录处理后的表单数据以便调试
+        error_log('Processed form data: ' . print_r($form_data, true));
 
         $file_fields = ['genomic_sequence', 'cds_sequence', 'gff3_annotation', 'peptide_sequence', 'image'];
         $upload_dirs = [
@@ -176,46 +239,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
 
         $conn->begin_transaction();
 
+        // 修正SQL语句：17个字段需要17个问号
         $stmt = $conn->prepare("INSERT INTO genomics_species 
-            (scientific_name, common_name, genus, genome_type, genome_size,
+            (species_name, scientific_name, common_name, genus, genome_type, genome_size,
             chromosome_number, gene_number, cds_number, description, image_url,
             genomic_sequence, cds_sequence, gff3_annotation, peptide_sequence,
             reference_link, submitted_by)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        $stmt->bind_param("sssssiiiissssssi",
-            $form_data['scientific_name'],
-            $form_data['common_name'],
-            $form_data['genus'],
-            $form_data['genome_type'],
-            $form_data['genome_size'],
-            $form_data['chromosome_number'],
-            $form_data['gene_number'],
-            $form_data['cds_number'],
-            $form_data['description'],
-            $file_paths['image']['path'],
-            $file_paths['genomic_sequence']['name'],
-            $file_paths['cds_sequence']['name'],
-            $file_paths['gff3_annotation']['name'],
-            $file_paths['peptide_sequence']['name'],
-            $form_data['reference_link'],
-            $_SESSION['user_id']
+        if (!$stmt) {
+            throw new Exception("SQL preparation error: " . $conn->error);
+        }
+
+        // 准备数据，确保所有值都是字符串（对于字符串字段）
+        $species_name = strval($form_data['species_name']);
+        $scientific_name = strval($form_data['scientific_name']);
+        $common_name = strval($form_data['common_name']);
+        $genus = strval($form_data['genus']);
+        $genome_type = strval($form_data['genome_type']);
+        $genome_size = strval($form_data['genome_size']); // 修改为 strval，保留文本格式
+        $chromosome_number = intval($form_data['chromosome_number']);
+        $gene_number = intval($form_data['gene_number']);
+        $cds_number = intval($form_data['cds_number']);
+        $description = strval($form_data['description']);
+        $image_url = strval($file_paths['image']['path']);
+        $genomic_sequence = strval($file_paths['genomic_sequence']['name']);
+        $cds_sequence = strval($file_paths['cds_sequence']['name']);
+        $gff3_annotation = strval($file_paths['gff3_annotation']['name']);
+        $peptide_sequence = strval($file_paths['peptide_sequence']['name']);
+        $reference_link = strval($form_data['reference_link']);
+        $submitted_by = intval($_SESSION['user_id']);
+
+        // 修正参数绑定：确保顺序与字段匹配，将 genome_size 的类型从 i 改为 s
+        $bind_result = $stmt->bind_param("ssssssiiisssssssi",
+            $species_name,        // 1. species_name
+            $scientific_name,     // 2. scientific_name
+            $common_name,         // 3. common_name
+            $genus,               // 4. genus
+            $genome_type,         // 5. genome_type
+            $genome_size,         // 6. genome_size - 现在是s类型(字符串)
+            $chromosome_number,   // 7. chromosome_number
+            $gene_number,         // 8. gene_number
+            $cds_number,          // 9. cds_number
+            $description,         // 10. description
+            $image_url,           // 11. image_url
+            $genomic_sequence,    // 12. genomic_sequence
+            $cds_sequence,        // 13. cds_sequence
+            $gff3_annotation,     // 14. gff3_annotation
+            $peptide_sequence,    // 15. peptide_sequence
+            $reference_link,      // 16. reference_link
+            $submitted_by         // 17. submitted_by
         );
+
+        if (!$bind_result) {
+            throw new Exception("Parameter binding error: " . $stmt->error);
+        }
 
         if (!$stmt->execute()) {
             throw new Exception("Database error: " . $stmt->error);
         }
 
+        $insert_id = $stmt->insert_id;
         $conn->commit();
-        $success = "Data submitted successfully! ID: " . $stmt->insert_id;
-        // 返回 JSON 响应
+
+        error_log("Insert successful with ID: " . $insert_id);
+        $success = "Data submitted successfully! ID: " . $insert_id;
+        
+        // 清除缓冲区并发送JSON响应
+        ob_clean();
         header('Content-Type: application/json');
-        echo json_encode(['status' => 'success', 'insert_id' => $stmt->insert_id]);
+        echo json_encode(['status' => 'success', 'insert_id' => $insert_id]);
         exit;
     } catch (Exception $e) {
         $conn->rollback();
         error_log('Submission error: ' . $e->getMessage());
         $error = "Submission failed: " . $e->getMessage();
+        
+        // 清除缓冲区并发送JSON错误响应
+        ob_clean();
         header('Content-Type: application/json');
         http_response_code(500);
         echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
@@ -259,6 +360,8 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     <title>数据上传</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- TinyMCE 编辑器 -->
+    <script src="https://cdn.tiny.cloud/1/17ulot83qpdv0de56wq31hm49zthms8q06rwv9cu8itx55es/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <style>
         .progress-container {
             margin-top: 10px;
@@ -376,7 +479,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         }
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr); /* 修改为3列布局 */
             gap: 20px;
         }
         .form-group label {
@@ -513,6 +616,24 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         .has-submenu.active .menu-toggle::after {
             transform: rotate(90deg);
         }
+        
+        /* TinyMCE 编辑器样式 */
+        .tox-tinymce {
+            border-radius: 4px !important;
+            border-color: #ced4da !important;
+        }
+        .tox .tox-toolbar, .tox .tox-toolbar__primary {
+            background-color: #f8f9fa !important;
+        }
+        .tox .tox-tbtn {
+            border-radius: 4px !important;
+        }
+        .tox .tox-tbtn:hover {
+            background-color: #e9ecef !important;
+        }
+        .form-group.description, .form-group.reference-link {
+            margin-bottom: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -570,8 +691,13 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
             <h5>Genomic</h5>
             <div class="form-grid">
                 <div class="form-group">
+                    <label>Species Name *</label>
+                    <input type="text" name="species_name" required>
+                    <small class="text-muted">（默认斜体显示）</small>
+                </div>
+                <div class="form-group">
                     <label>Scientific Name *</label>
-                    <input type="text" name="scientific_name" required>
+                    <textarea id="editor_scientific_name" name="scientific_name" class="form-control"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Common Name</label>
@@ -580,14 +706,16 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 <div class="form-group">
                     <label>Genus *</label>
                     <input type="text" name="genus" required>
+                    <small class="text-muted">（默认斜体显示）</small>
                 </div>
                 <div class="form-group">
                     <label>Genome Type *</label>
                     <input type="text" name="genome_type" required>
                 </div>
                 <div class="form-group">
-                    <label>Genome Size (bp) *</label>
-                    <input type="number" name="genome_size" required>
+                    <label>Genome Size *</label>
+                    <input type="text" name="genome_size" required>
+                    <small class="text-muted">（可输入带单位的值，如3.1GB, 147Mb等）</small>
                 </div>
                 <div class="form-group">
                     <label>Chromosome Number *</label>
@@ -603,11 +731,11 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 </div>
                 <div class="form-group description">
                     <label>Description</label>
-                    <textarea name="description"></textarea>
+                    <textarea name="description" id="editor_description"></textarea>
                 </div>
                 <div class="form-group reference-link">
-                    <label>Reference Link</label>
-                    <input type="url" name="reference_link">
+                    <label>Reference</label>
+                    <textarea name="reference_link" id="editor_reference"></textarea>
                 </div>
             </div>
 
@@ -728,6 +856,78 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 <script>
     const submitBtn = document.querySelector('.submit-btn');
     let pendingUploads = 0;
+
+    // 初始化 TinyMCE 编辑器
+    tinymce.init({
+        selector: '#editor_scientific_name',
+        plugins: 'autoresize',
+        toolbar: 'formatscientific italic | undo redo',
+        menubar: false,
+        statusbar: false,
+        height: 70,
+        setup: function(editor) {
+            // 添加科学名称格式化按钮
+            editor.ui.registry.addButton('formatscientific', {
+                text: '格式化学名',
+                tooltip: '自动将属名和种名格式化为斜体',
+                onAction: function () {
+                    // 获取当前选中的文本
+                    const selectedText = editor.selection.getContent({format: 'text'});
+                    
+                    if (selectedText) {
+                        // 假设输入格式为 "Genus species cv. Variety" 或类似格式
+                        const parts = selectedText.split(' ');
+                        if (parts.length >= 2) {
+                            // 将属名和种名设为斜体
+                            let formattedText = '<em>' + parts[0] + ' ' + parts[1] + '</em>';
+                            
+                            // 添加其余部分（如果有）
+                            if (parts.length > 2) {
+                                formattedText += ' ' + parts.slice(2).join(' ');
+                            }
+                            
+                            editor.selection.setContent(formattedText);
+                        }
+                    }
+                }
+            });
+            
+            editor.on('change', function() {
+                editor.save();
+                console.log('Scientific name changed:', editor.getContent());
+            });
+        }
+    });
+
+    tinymce.init({
+        selector: '#editor_description',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        menubar: false,
+        height: 300,
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; }',
+        setup: function(editor) {
+            editor.on('change', function() {
+                editor.save();
+                console.log('Description changed:', editor.getContent());
+            });
+        }
+    });
+
+    tinymce.init({
+        selector: '#editor_reference',
+        plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link | align lineheight | numlist bullist indent outdent | removeformat',
+        menubar: false,
+        height: 200,
+        content_style: 'body { font-family: "Times New Roman", Times, serif; font-size: 16px; }',
+        setup: function(editor) {
+            editor.on('change', function() {
+                editor.save();
+                console.log('Reference changed:', editor.getContent());
+            });
+        }
+    });
 
     // 显示全局成功提示的函数
     function showGlobalSuccessMessage(message) {
@@ -907,6 +1107,24 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     document.getElementById('uploadForm').addEventListener('submit', function(e) {
         e.preventDefault();
         console.log('Submitting form...');
+        
+        // 验证必填字段
+        const speciesName = document.querySelector('input[name="species_name"]').value;
+        if (!speciesName.trim()) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'alert alert-danger';
+            errorDiv.textContent = '请填写 Species Name 字段';
+            this.prepend(errorDiv);
+            return;
+        }
+        
+        // 确保 TinyMCE 编辑器的内容已保存到表单
+        tinymce.triggerSave();
+        
+        // 记录富文本内容，便于调试
+        console.log('Scientific Name:', document.getElementById('editor_scientific_name').value);
+        console.log('Description:', document.getElementById('editor_description').value);
+        console.log('Reference:', document.getElementById('editor_reference').value);
 
         const genomicSequenceName = document.getElementById('genomic_sequence_name').value;
         if (!genomicSequenceName) {
@@ -920,11 +1138,22 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
         const form = this;
         const formData = new FormData(form);
 
+        // 输出 FormData 内容用于调试
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+        // 移除任何现有的错误提示
+        const existingAlerts = form.querySelectorAll('.alert');
+        existingAlerts.forEach(alert => alert.remove());
+
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'gene_upload.php', true);
 
         xhr.onload = function() {
-            console.log('Response:', xhr.status, xhr.responseText);
+            console.log('Response status:', xhr.status);
+            console.log('Response text:', xhr.responseText);
+            
             if (xhr.status === 200) {
                 try {
                     const response = JSON.parse(xhr.responseText);
@@ -933,20 +1162,39 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                         showSuccessMessage('表单提交成功！ID: ' + response.insert_id);
                         setTimeout(() => {
                             window.location.reload();
-                        }, 2000); // 2秒后刷新页面
+                        }, 2000);
                     } else {
                         throw new Error(response.message || '提交失败');
                     }
                 } catch (e) {
+                    console.error('JSON解析错误:', e);
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'alert alert-danger';
-                    errorDiv.textContent = '表单提交失败: ' + e.message;
+                    errorDiv.textContent = '表单提交失败: ' + (e.message || '服务器返回无效数据');
+                    
+                    // 如果响应不是有效JSON，显示原始响应内容（限制长度）
+                    if (xhr.responseText.length > 0) {
+                        const responsePreview = xhr.responseText.substring(0, 200) + (xhr.responseText.length > 200 ? '...' : '');
+                        const debugInfo = document.createElement('div');
+                        debugInfo.className = 'mt-2 text-muted small';
+                        debugInfo.textContent = '服务器响应: ' + responsePreview;
+                        errorDiv.appendChild(debugInfo);
+                    }
+                    
                     form.prepend(errorDiv);
                 }
             } else {
                 const errorDiv = document.createElement('div');
                 errorDiv.className = 'alert alert-danger';
-                errorDiv.textContent = `表单提交失败: ${xhr.status} ${xhr.responseText}`;
+                errorDiv.textContent = `表单提交失败: HTTP ${xhr.status}`;
+                
+                // 添加响应内容提示
+                const responsePreview = xhr.responseText.substring(0, 200) + (xhr.responseText.length > 200 ? '...' : '');
+                const debugInfo = document.createElement('div');
+                debugInfo.className = 'mt-2 text-muted small';
+                debugInfo.textContent = '服务器响应: ' + responsePreview;
+                errorDiv.appendChild(debugInfo);
+                
                 form.prepend(errorDiv);
             }
         };
