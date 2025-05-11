@@ -3,6 +3,20 @@
 // If not, you'll need to create one or modify this part accordingly
 require 'Admin/config.php';
 
+// 函数用于安全显示HTML内容
+function safe_html_output($html) {
+    // 简单过滤，保留基本格式标签，移除危险标签
+    $allowed_tags = '<p><br><a><em><i><strong><b><ul><ol><li><h1><h2><h3><h4><h5><h6><span><div><img><table><tr><td><th><thead><tbody><blockquote>';
+    
+    // 移除危险属性
+    $html = preg_replace('/<([^>]*)(?:onclick|onload|onerror|onmouseover|onmouseout|onkeydown|onkeypress|onkeyup)([^>]*)>/i', '<$1$2>', $html);
+    
+    // 保留允许的标签，移除其他标签
+    $html = strip_tags($html, $allowed_tags);
+    
+    return $html;
+}
+
 // 首先获取所有已批准的物种（不包含品系）
 $query = "SELECT DISTINCT species_name FROM genomics_species WHERE status = 'approved' ORDER BY species_name";
 $result = $conn->query($query);
@@ -114,9 +128,35 @@ if ($selectedSpeciesName && !empty($accessions)) {
     }
     
     .reference-section p {
-      font-style: italic;
       color: #555;
       line-height: 1.6;
+    }
+    
+    /* 确保富文本内容正确显示 */
+    .description-content .rich-text-content,
+    .reference-section .rich-text-content {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: 1.6;
+    }
+    
+    /* 保留富文本编辑器的样式 */
+    .rich-text-content p {
+      margin-bottom: 1em;
+    }
+    
+    .rich-text-content p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .rich-text-content em,
+    .rich-text-content i {
+      font-style: italic;
+    }
+    
+    .rich-text-content strong,
+    .rich-text-content b {
+      font-weight: bold;
     }
     
     .description-content {
@@ -309,9 +349,9 @@ if ($selectedSpeciesName && !empty($accessions)) {
         <!-- 物种描述部分 -->
         <div class="species-description mb-5" id="speciesDescription">
           <div class="description-content bg-light p-4 rounded-3">
-            <p class="mb-0">
-              <?= nl2br(htmlspecialchars($speciesDescription)) ?>
-            </p>
+            <div class="mb-0 rich-text-content">
+              <?php echo safe_html_output($speciesDescription); ?>
+            </div>
           </div>
         </div>
 
@@ -323,7 +363,7 @@ if ($selectedSpeciesName && !empty($accessions)) {
               <li class="nav-item">
                 <a class="nav-link <?= ($selectedAccession['id'] == $accession['id']) ? 'active' : '' ?>" 
                    href="genomics.php?species=<?= urlencode($selectedSpeciesName) ?>&accession_id=<?= $accession['id'] ?>">
-                  <?= htmlspecialchars($accession['scientific_name']) ?>
+                  <?php echo safe_html_output($accession['scientific_name']); ?>
                 </a>
               </li>
             <?php endforeach; ?>
@@ -343,8 +383,8 @@ if ($selectedSpeciesName && !empty($accessions)) {
               <div class="col-lg-8 col-md-7">
                 <dl class="row">
                   <dt class="col-sm-4">Scientific Name</dt>
-                  <dd class="col-sm-8" class="scientific-name">
-                    <em><?= htmlspecialchars($selectedAccession['scientific_name']) ?></em>
+                  <dd class="col-sm-8 rich-text-content">
+                    <?php echo safe_html_output($selectedAccession['scientific_name']); ?>
                   </dd>
           
                   <dt class="col-sm-4">Common name</dt>
@@ -353,8 +393,8 @@ if ($selectedSpeciesName && !empty($accessions)) {
                   </dd>
           
                   <dt class="col-sm-4">Genus</dt>
-                  <dd class="col-sm-8" class="scientific-name">
-                    <em><?= htmlspecialchars($selectedAccession['genus'] ?? '') ?></em>
+                  <dd class="col-sm-8 scientific-name">
+                    <?php echo safe_html_output($selectedAccession['genus'] ?? ''); ?>
                   </dd>
           
                   <dt class="col-sm-4">Genome Type</dt>
@@ -393,8 +433,8 @@ if ($selectedSpeciesName && !empty($accessions)) {
                        alt="Species Image"
                        style="max-height: 300px; object-fit: cover;"
                        loading="lazy">
-                  <div class="image-caption text-center text-muted mt-2 small" class="scientific-name">
-                    <em><?= htmlspecialchars($selectedAccession['scientific_name']) ?></em>
+                  <div class="image-caption text-center text-muted mt-2 small rich-text-content">
+                    <?php echo safe_html_output($selectedAccession['scientific_name']); ?>
                   </div>
                 </div>
               </div>
@@ -453,13 +493,8 @@ if ($selectedSpeciesName && !empty($accessions)) {
           <?php if (!empty($selectedAccession['reference_link'])): ?>
           <div class="reference-section">
             <h4 class="text-center mb-3">Reference</h4>
-            <div class="text-center">
-              <p>
-                <?php 
-                  $reference = htmlspecialchars($selectedAccession['reference_link']);
-                  echo nl2br($reference);
-                ?>
-              </p>
+            <div class="text-center rich-text-content">
+              <?php echo safe_html_output($selectedAccession['reference_link']); ?>
             </div>
           </div>
           <?php endif; ?>
