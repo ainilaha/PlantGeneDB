@@ -6,6 +6,7 @@ services:
     #   - "80:80"
     volumes:
       - ../:/var/www/html
+       - ../../data:/var/data
     # command: ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
     command: ["php-fpm"]
     expose:
@@ -17,6 +18,7 @@ services:
       - "80:80"
     volumes:
       - ../:/var/www/html
+      - ../../data:/var/data
       - ../nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - web
