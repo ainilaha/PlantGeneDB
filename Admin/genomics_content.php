@@ -86,6 +86,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
     }
 }
 
+// 辅助函数：清理HTML，保留必要格式
+function clean_html_for_display($html) {
+    // 移除多余空格和换行
+    $html = preg_replace('/\s+/', ' ', $html);
+    // 移除Word特有的MsoNormal类
+    $html = str_replace('class="MsoNormal"', '', $html);
+    // 移除无用的空格实体
+    $html = str_replace('&nbsp;', ' ', $html);
+    // 移除多余空白
+    $html = trim($html);
+    return $html;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -265,6 +278,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
         .pagination {
             margin-top: 20px;
         }
+        /* 添加样式，将表格内容设为不可选择，并移除鼠标手型指针 */
+        .table-content {
+            user-select: none;
+            cursor: default;
+        }
+        /* 设置学名显示样式 */
+        .scientific-name {
+            font-style: normal; /* 默认不倾斜 */
+        }
+        .scientific-name em {
+            font-style: italic; /* 保留em标签的斜体效果 */
+        }
     </style>
     <link rel="stylesheet" href="./assets/css/admin.css">
 </head>
@@ -341,12 +366,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
                     <tbody>
                     <?php while($row = $result->fetch_assoc()): ?>
                         <tr>
-                            <td><?= $row['id'] ?></td>
-                            <td><?= htmlspecialchars($row['scientific_name']) ?></td>
-                            <td><?= htmlspecialchars($row['common_name']) ?></td>
-                            <td><?= htmlspecialchars($row['genus']) ?></td>
-                            <td><?= htmlspecialchars($row['genome_type']) ?></td>
-                            <td><?= date('Y-m-d H:i', strtotime($row['created_at'])) ?></td>
+                            <td class="table-content"><?= $row['id'] ?></td>
+                            <td class="table-content scientific-name"><?= clean_html_for_display($row['scientific_name']) ?></td>
+                            <td class="table-content"><?= htmlspecialchars($row['common_name']) ?></td>
+                            <td class="table-content"><?= htmlspecialchars($row['genus']) ?></td>
+                            <td class="table-content"><?= htmlspecialchars($row['genome_type']) ?></td>
+                            <td class="table-content"><?= date('Y-m-d H:i', strtotime($row['created_at'])) ?></td>
                             <td class="action-btns">
                                 <a href="genomics_edit.php?id=<?= $row['id'] ?>"
                                    class="btn btn-sm btn-warning" title="编辑">
@@ -417,15 +442,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
                 e.stopPropagation();
             });
         });
-    });
-
-    // 表格行点击效果
-    document.querySelectorAll('tbody tr').forEach(row => {
-        row.addEventListener('click', (e) => {
-            if(!e.target.closest('.action-btns')) {
-                window.location = `genomics_detail.php?id=${row.cells[0].textContent}`;
-            }
-        });
+        
+        // 移除表格行点击事件，防止点击行时跳转到详情页
+        // 原代码被删除
     });
 </script>
 </body>
