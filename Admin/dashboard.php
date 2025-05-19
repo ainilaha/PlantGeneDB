@@ -145,7 +145,7 @@ $stmt->close();
         <h2>后台管理系统</h2>
     </div>
     <ul class="sidebar-menu">
-        <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i>数据概括</a></li>
+        <li><a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i>数据概括</a></li>
         <li><a href="users.php"><i class="fas fa-users"></i>用户管理</a></li>
         <li><a href="review.php"><i class="fas fa-box"></i>上传管理</a></li>
         <li class="has-submenu">
