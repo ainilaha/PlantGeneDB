@@ -1,12 +1,12 @@
 <?php
-// Include database connection file
-require_once 'config.php';
+// 包含admin目录下的数据库连接文件
+require_once 'admin/config.php';
 
-// Process filter conditions
+// 处理筛选条件
 $category = isset($_GET['category']) ? $_GET['category'] : '';
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
-// Build SQL query
+// 构建SQL查询
 $sql = "SELECT * FROM Microbiomics WHERE 1=1";
 
 if (!empty($category)) {
@@ -26,10 +26,27 @@ if (!empty($search)) {
     )";
 }
 
-// Execute query
-$result = $conn->query($sql);
+// 执行查询获取总记录数
+$count_result = $conn->query($sql);
+$total_records = $count_result ? $count_result->num_rows : 0;
 
-// Get category list for dropdown filter
+// 设置分页参数
+$records_per_page = 8;
+$total_pages = ceil($total_records / $records_per_page);
+
+// 获取当前页码
+$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($current_page < 1) $current_page = 1;
+if ($current_page > $total_pages && $total_pages > 0) $current_page = $total_pages;
+
+// 计算SQL的LIMIT偏移量
+$offset = ($current_page - 1) * $records_per_page;
+
+// 修改SQL查询以包含分页
+$page_sql = $sql . " LIMIT $offset, $records_per_page";
+$result = $conn->query($page_sql);
+
+// 获取类别列表，用于下拉筛选
 $categoryQuery = "SELECT DISTINCT Biotic_stress FROM Microbiomics WHERE Biotic_stress IS NOT NULL AND Biotic_stress != ''";
 $categoryResult = $conn->query($categoryQuery);
 $categories = [];
