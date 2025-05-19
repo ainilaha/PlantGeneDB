@@ -145,19 +145,21 @@ $stmt->close();
         <h2>后台管理系统</h2>
     </div>
     <ul class="sidebar-menu">
-        <li><a href="dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i>数据概括</a></li>
+        <li><a href="dashboard.php"><i class="fas fa-tachometer-alt"></i>数据概括</a></li>
         <li><a href="users.php"><i class="fas fa-users"></i>用户管理</a></li>
         <li><a href="review.php"><i class="fas fa-box"></i>上传管理</a></li>
         <li class="has-submenu">
             <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据管理</a>
             <ul class="submenu">
                 <li><a href="genomics_content.php">Genomics</a></li>
+                <li><a href="microbiomics_content.php" class="active-sub">Microbiomics</a></li>
             </ul>
         </li>
         <li class="has-submenu">
             <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据上传</a>
             <ul class="submenu">
                 <li><a href="gene_upload.php">Genomics</a></li>
+                <li><a href="microbiomics_upload.php">Microbiomics</a></li>
             </ul>
         </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i>系统设置</a></li>
