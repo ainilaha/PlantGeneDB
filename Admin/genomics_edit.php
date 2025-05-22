@@ -13,6 +13,26 @@ ini_set('display_errors', 1);
 require __DIR__ . '/config.php';
 require_admin();
 
+// HTML 内容净化函数
+function sanitize_html($html) {
+    // 如果输入为空，直接返回空字符串而不是null
+    if (empty($html)) {
+        return '';
+    }
+    
+    // 允许的标签列表
+    $allowed_tags = '<p><br><a><em><i><strong><b><ul><ol><li><h1><h2><h3><h4><h5><h6><span><div><img><table><tr><td><th><thead><tbody><blockquote>';
+    
+    // 移除危险属性
+    $html = preg_replace('/<([^>]*)(?:onclick|onload|onerror|onmouseover|onmouseout|onkeydown|onkeypress|onkeyup)([^>]*)>/i', '<$1$2>', $html);
+    
+    // 保留允许的标签，移除其他标签
+    $html = strip_tags($html, $allowed_tags);
+    
+    // 确保返回的是字符串，不是null或false
+    return $html !== false ? $html : '';
+}
+
 // 分片上传处理逻辑（与 gene_upload.php 一致）
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['action']) && $_GET['action'] === 'upload_chunk') {
     try {
@@ -163,18 +183,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
             throw new Exception("Security verification failed, please resubmit");
         }
 
+        // 处理富文本内容
+        if (isset($_POST['description'])) {
+            $_POST['description'] = sanitize_html($_POST['description']);
+            error_log('Sanitized description: ' . $_POST['description']);
+        }
+
+        if (isset($_POST['scientific_name'])) {
+            $_POST['scientific_name'] = sanitize_html($_POST['scientific_name']);
+            error_log('Sanitized scientific_name: ' . $_POST['scientific_name']);
+        }
+
+        if (isset($_POST['reference_link'])) {
+            $_POST['reference_link'] = sanitize_html($_POST['reference_link']);
+            error_log('Sanitized reference_link: ' . $_POST['reference_link']);
+        }
+
         // 验证表单数据
         $fields = [
-            'scientific_name' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'scientific_name' => [
+                'filter' => FILTER_CALLBACK,
+                'options' => function($value) { 
+                    return $value !== null && $value !== false ? $value : ''; 
+                }
+            ],
             'common_name' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'genus' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'genome_type' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            'genome_size' => FILTER_SANITIZE_NUMBER_INT,
+            'genome_size' => FILTER_SANITIZE_FULL_SPECIAL_CHARS, // 修改为字符串过滤器
             'chromosome_number' => FILTER_SANITIZE_NUMBER_INT,
             'gene_number' => FILTER_SANITIZE_NUMBER_INT,
             'cds_number' => FILTER_SANITIZE_NUMBER_INT,
-            'description' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            'reference_link' => FILTER_VALIDATE_URL
+            'description' => [
+                'filter' => FILTER_CALLBACK,
+                'options' => function($value) { 
+                    return $value !== null && $value !== false ? $value : ''; 
+                }
+            ],
+            'reference_link' => [
+                'filter' => FILTER_CALLBACK,
+                'options' => function($value) { 
+                    return $value !== null && $value !== false ? $value : ''; 
+                }
+            ]
         ];
 
         $form_data = filter_input_array(INPUT_POST, $fields, true) ?? [];
@@ -297,6 +348,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
     <title>编辑基因组数据</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- TinyMCE 编辑器 -->
+    <script src="https://cdn.tiny.cloud/1/17ulot83qpdv0de56wq31hm49zthms8q06rwv9cu8itx55es/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <style>
         .progress-container {
             margin-top: 10px;
@@ -414,7 +467,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
         }
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(3, 1fr); /* 修改为3列布局 */
             gap: 20px;
         }
         .form-group label {
@@ -551,6 +604,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
         .has-submenu.active .menu-toggle::after {
             transform: rotate(90deg);
         }
+        
+        /* TinyMCE 编辑器样式 */
+        .tox-tinymce {
+            border-radius: 4px !important;
+            border-color: #ced4da !important;
+        }
+        .tox .tox-toolbar, .tox .tox-toolbar__primary {
+            background-color: #f8f9fa !important;
+        }
+        .tox .tox-tbtn {
+            border-radius: 4px !important;
+        }
+        .tox .tox-tbtn:hover {
+            background-color: #e9ecef !important;
+        }
+        .form-group.description, .form-group.reference-link {
+            margin-bottom: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -566,12 +637,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
             <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据管理</a>
             <ul class="submenu">
                 <li><a href="genomics_content.php" class="active-sub">Genomics</a></li>
+                <li><a href="microbiomics_content.php">Microbiomics</a></li>
             </ul>
         </li>
         <li class="has-submenu">
             <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据上传</a>
             <ul class="submenu">
                 <li><a href="gene_upload.php">Genomics</a></li>
+                <li><a href="microbiomics_upload.php">Microbiomics</a></li>
             </ul>
         </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i>系统设置</a></li>
@@ -608,8 +681,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
             <h5>Genomic</h5>
             <div class="form-grid">
                 <div class="form-group">
+                    <label>Species Name *</label>
+                    <input type="text" name="species_name" value="<?php echo htmlspecialchars($species['species_name']); ?>" required>
+                    <small class="text-muted">（默认斜体显示）</small>
+                </div>
+                <div class="form-group">
                     <label>Scientific Name *</label>
-                    <input type="text" name="scientific_name" value="<?php echo htmlspecialchars($species['scientific_name']); ?>" required>
+                    <textarea id="editor_scientific_name" name="scientific_name" class="form-control"><?php echo htmlspecialchars($species['scientific_name']); ?></textarea>
                 </div>
                 <div class="form-group">
                     <label>Common Name</label>
@@ -618,14 +696,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
                 <div class="form-group">
                     <label>Genus *</label>
                     <input type="text" name="genus" value="<?php echo htmlspecialchars($species['genus']); ?>" required>
+                    <small class="text-muted">（默认斜体显示）</small>
                 </div>
                 <div class="form-group">
                     <label>Genome Type *</label>
                     <input type="text" name="genome_type" value="<?php echo htmlspecialchars($species['genome_type']); ?>" required>
                 </div>
                 <div class="form-group">
-                    <label>Genome Size (bp) *</label>
-                    <input type="number" name="genome_size" value="<?php echo htmlspecialchars($species['genome_size']); ?>" required>
+                    <label>Genome Size *</label>
+                    <input type="text" name="genome_size" value="<?php echo htmlspecialchars($species['genome_size']); ?>" required>
+                    <small class="text-muted">（可输入带单位的值，如3.1GB, 147Mb等）</small>
                 </div>
                 <div class="form-group">
                     <label>Chromosome Number *</label>
@@ -641,11 +721,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
                 </div>
                 <div class="form-group description">
                     <label>Description</label>
-                    <textarea name="description"><?php echo htmlspecialchars($species['description']); ?></textarea>
+                    <textarea id="editor_description" name="description"><?php echo htmlspecialchars($species['description']); ?></textarea>
                 </div>
                 <div class="form-group reference-link">
-                    <label>Reference Link</label>
-                    <input type="url" name="reference_link" value="<?php echo htmlspecialchars($species['reference_link']); ?>">
+                    <label>Reference</label>
+                    <textarea id="editor_reference" name="reference_link"><?php echo htmlspecialchars($species['reference_link']); ?></textarea>
                 </div>
             </div>
 
@@ -769,6 +849,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
     const submitBtn = document.querySelector('.submit-btn');
     let pendingUploads = 0;
 
+    // 初始化 TinyMCE 编辑器
+    tinymce.init({
+        selector: '#editor_scientific_name',
+        plugins: 'autoresize',
+        toolbar: 'formatscientific italic | undo redo',
+        menubar: false,
+        statusbar: false,
+        height: 70,
+        setup: function(editor) {
+            // 添加科学名称格式化按钮
+            editor.ui.registry.addButton('formatscientific', {
+                text: '格式化学名',
+                tooltip: '自动将属名和种名格式化为斜体',
+                onAction: function () {
+                    // 获取当前选中的文本
+                    const selectedText = editor.selection.getContent({format: 'text'});
+                    
+                    if (selectedText) {
+                        // 假设输入格式为 "Genus species cv. Variety" 或类似格式
+                        const parts = selectedText.split(' ');
+                        if (parts.length >= 2) {
+                            // 将属名和种名设为斜体
+                            let formattedText = '<em>' + parts[0] + ' ' + parts[1] + '</em>';
+                            
+                            // 添加其余部分（如果有）
+                            if (parts.length > 2) {
+                                formattedText += ' ' + parts.slice(2).join(' ');
+                            }
+                            
+                            editor.selection.setContent(formattedText);
+                        }
+                    }
+                }
+            });
+            
+            editor.on('change', function() {
+                editor.save();
+                console.log('Scientific name changed:', editor.getContent());
+            });
+        }
+    });
+
+    tinymce.init({
+        selector: '#editor_description',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        menubar: false,
+        height: 300,
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; }',
+        setup: function(editor) {
+            editor.on('change', function() {
+                editor.save();
+                console.log('Description changed:', editor.getContent());
+            });
+        }
+    });
+
+    tinymce.init({
+        selector: '#editor_reference',
+        plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link | align lineheight | numlist bullist indent outdent | removeformat',
+        menubar: false,
+        height: 200,
+        content_style: 'body { font-family: "Times New Roman", Times, serif; font-size: 16px; }',
+        setup: function(editor) {
+            editor.on('change', function() {
+                editor.save();
+                console.log('Reference changed:', editor.getContent());
+            });
+        }
+    });
+
     // 显示全局成功提示的函数
     function showGlobalSuccessMessage(message) {
         const alertDiv = document.createElement('div');
@@ -777,7 +929,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
         document.body.appendChild(alertDiv);
         setTimeout(() => {
             alertDiv.remove();
-        }, 5000);
+        }, 5000); // 5秒后移除提示
     }
 
     // 显示成功提示的函数
@@ -788,7 +940,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
         document.querySelector('.upload-form').prepend(successDiv);
         setTimeout(() => {
             successDiv.remove();
-        }, 5000);
+        }, 5000); // 5秒后移除提示
     }
 
     document.querySelectorAll('.upload-zone').forEach(zone => {
@@ -799,7 +951,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
         const statusText = zone.querySelector('.status-text');
         const acceptTypes = zone.dataset.accept.split(',').map(t => t.trim());
         const fieldName = input.name;
-        const CHUNK_SIZE = 10 * 1024 * 1024;
+        const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB 分片大小
 
         zone.addEventListener('dragover', e => {
             e.preventDefault();
@@ -946,6 +1098,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
     document.getElementById('uploadForm').addEventListener('submit', function(e) {
         e.preventDefault();
         console.log('Submitting form...');
+        
+        // 保存 TinyMCE 内容到表单
+        tinymce.triggerSave();
+        
+        // 记录富文本内容，便于调试
+        console.log('Scientific Name:', document.getElementById('editor_scientific_name').value);
+        console.log('Description:', document.getElementById('editor_description').value);
+        console.log('Reference:', document.getElementById('editor_reference').value);
 
         const genomicSequenceName = document.getElementById('genomic_sequence_name').value;
         if (!genomicSequenceName) {
@@ -958,6 +1118,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_GET['action'])) {
 
         const form = this;
         const formData = new FormData(form);
+
+        // 输出 FormData 内容用于调试
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+        // 移除任何现有的错误提示
+        const existingAlerts = form.querySelectorAll('.alert');
+        existingAlerts.forEach(alert => alert.remove());
 
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'genomics_edit.php?id=<?php echo $id; ?>', true);

@@ -144,12 +144,14 @@ $uploads = $uploads_result->fetch_all(MYSQLI_ASSOC) ?: [];
             <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据管理</a>
             <ul class="submenu">
                 <li><a href="genomics_content.php">Genomics</a></li>
+                <li><a href="microbiomics_content.php">Microbiomics</a></li>
             </ul>
         </li>
         <li class="has-submenu">
             <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据上传</a>
             <ul class="submenu">
                 <li><a href="gene_upload.php">Genomics</a></li>
+                <li><a href="microbiomics_upload.php">Microbiomics</a></li>
             </ul>
         </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i>系统设置</a></li>

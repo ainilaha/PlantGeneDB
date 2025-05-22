@@ -1,5 +1,6 @@
 <?php
-// genomics_manage.php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 require __DIR__ . '/config.php';
 global $conn;
@@ -44,12 +45,12 @@ $offset = ($page - 1) * $per_page;
 
 // 搜索处理
 $search = isset($_GET['search']) ? "%{$_GET['search']}%" : '%';
-$where = "WHERE scientific_name LIKE ? OR common_name LIKE ?";
-$params = [$search, $search];
-$param_types = "ss";
+$where = "WHERE Species LIKE ? OR Article_Overview LIKE ? OR Source LIKE ?";
+$params = [$search, $search, $search];
+$param_types = "sss";
 
 // 获取总记录数
-$count_sql = "SELECT COUNT(*) FROM genomics_species $where";
+$count_sql = "SELECT COUNT(*) FROM Microbiomics $where";
 $count_stmt = $conn->prepare($count_sql);
 $count_stmt->bind_param($param_types, ...$params);
 $count_stmt->execute();
@@ -57,7 +58,7 @@ $total = $count_stmt->get_result()->fetch_row()[0];
 $total_pages = ceil($total / $per_page);
 
 // 获取数据
-$sql = "SELECT * FROM genomics_species $where 
+$sql = "SELECT * FROM Microbiomics $where 
         ORDER BY created_at DESC 
         LIMIT $per_page OFFSET $offset";
 $stmt = $conn->prepare($sql);
@@ -73,39 +74,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
         }
 
         $delete_id = (int)$_POST['delete_id'];
-        $delete_stmt = $conn->prepare("DELETE FROM genomics_species WHERE id = ?");
+        $delete_stmt = $conn->prepare("DELETE FROM Microbiomics WHERE id = ?");
         $delete_stmt->bind_param("i", $delete_id);
         if ($delete_stmt->execute()) {
             $success = "Record deleted successfully";
             // 刷新当前页数据
-            header("Location: genomics_content.php?page=$page");
+            header("Location: microbiomics.php?page=$page");
             exit();
         }
     } catch (Exception $e) {
         $error = "Delete failed: " . $e->getMessage();
     }
 }
-
-// 辅助函数：清理HTML，保留必要格式
-function clean_html_for_display($html) {
-    // 移除多余空格和换行
-    $html = preg_replace('/\s+/', ' ', $html);
-    // 移除Word特有的MsoNormal类
-    $html = str_replace('class="MsoNormal"', '', $html);
-    // 移除无用的空格实体
-    $html = str_replace('&nbsp;', ' ', $html);
-    // 移除多余空白
-    $html = trim($html);
-    return $html;
-}
-
 ?>
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>基因组数据管理</title>
+    <title>微生物组数据管理</title>
     <link rel="stylesheet" href="./assets/css/admin.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -199,20 +187,17 @@ function clean_html_for_display($html) {
             min-height: 200px;
             resize: vertical;
         }
-
         .upload-zone h6 {
             margin: 0 0 8px;
             font-size: 0.9rem;
             font-weight: 600;
         }
-
         .upload-zone small {
             display: block;
             margin-top: 0.3rem;
             color: #6c757d;
             font-size: 0.75rem;
         }
-
         .alert {
             padding: 10px;
             margin-bottom: 20px;
@@ -278,18 +263,6 @@ function clean_html_for_display($html) {
         .pagination {
             margin-top: 20px;
         }
-        /* 添加样式，将表格内容设为不可选择，并移除鼠标手型指针 */
-        .table-content {
-            user-select: none;
-            cursor: default;
-        }
-        /* 设置学名显示样式 */
-        .scientific-name {
-            font-style: normal; /* 默认不倾斜 */
-        }
-        .scientific-name em {
-            font-style: italic; /* 保留em标签的斜体效果 */
-        }
     </style>
     <link rel="stylesheet" href="./assets/css/admin.css">
 </head>
@@ -305,8 +278,8 @@ function clean_html_for_display($html) {
         <li class="has-submenu">
             <a href="javascript:void(0);" class="menu-toggle"><i class="fas fa-dna"></i>数据管理</a>
             <ul class="submenu">
-                <li><a href="genomics_content.php" class="active-sub">Genomics</a></li>
-                <li><a href="microbiomics_content.php">Microbiomics</a></li>
+                <li><a href="genomics_content.php">Genomics</a></li>
+                <li><a href="microbiomics_content.php" class="active-sub">Microbiomics</a></li>
             </ul>
         </li>
         <li class="has-submenu">
@@ -319,7 +292,6 @@ function clean_html_for_display($html) {
         <li><a href="settings.php"><i class="fas fa-cog"></i>系统设置</a></li>
     </ul>
 </div>
-
 
 <div class="main-content">
     <div class="header">
@@ -343,7 +315,7 @@ function clean_html_for_display($html) {
             <!-- 搜索框 -->
             <form class="search-box">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="搜索物种或通用名..."
+                    <input type="text" class="form-control" placeholder="搜索物种、文章概述或来源..."
                            name="search" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                     <button class="btn btn-primary" type="submit">
                         <i class="fas fa-search"></i>
@@ -357,10 +329,9 @@ function clean_html_for_display($html) {
                     <thead class="table-light">
                     <tr>
                         <th>ID</th>
-                        <th>学名</th>
-                        <th>通用名</th>
-                        <th>属</th>
-                        <th>基因组类型</th>
+                        <th>物种</th>
+                        <th>文章概述</th>
+                        <th>来源</th>
                         <th>上传时间</th>
                         <th>操作</th>
                     </tr>
@@ -368,14 +339,13 @@ function clean_html_for_display($html) {
                     <tbody>
                     <?php while($row = $result->fetch_assoc()): ?>
                         <tr>
-                            <td class="table-content"><?= $row['id'] ?></td>
-                            <td class="table-content scientific-name"><?= clean_html_for_display($row['scientific_name']) ?></td>
-                            <td class="table-content"><?= htmlspecialchars($row['common_name']) ?></td>
-                            <td class="table-content"><?= htmlspecialchars($row['genus']) ?></td>
-                            <td class="table-content"><?= htmlspecialchars($row['genome_type']) ?></td>
-                            <td class="table-content"><?= date('Y-m-d H:i', strtotime($row['created_at'])) ?></td>
+                            <td><?= $row['id'] ?></td>
+                            <td><?= htmlspecialchars($row['Species']) ?></td>
+                            <td><?= $row['Article_Overview'] ?></td>
+                            <td><?= htmlspecialchars($row['Source']) ?></td>
+                            <td><?= date('Y-m-d H:i', strtotime($row['created_at'])) ?></td>
                             <td class="action-btns">
-                                <a href="genomics_edit.php?id=<?= $row['id'] ?>"
+                                <a href="microbiomics_edit.php?id=<?= $row['id'] ?>"
                                    class="btn btn-sm btn-warning" title="编辑">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -444,9 +414,15 @@ function clean_html_for_display($html) {
                 e.stopPropagation();
             });
         });
-        
-        // 移除表格行点击事件，防止点击行时跳转到详情页
-        // 原代码被删除
+    });
+
+    // 表格行点击效果
+    document.querySelectorAll('tbody tr').forEach(row => {
+        row.addEventListener('click', (e) => {
+            if(!e.target.closest('.action-btns')) {
+                window.location = `microbiomics_detail.php?id=${row.cells[0].textContent}`;
+            }
+        });
     });
 </script>
 </body>
