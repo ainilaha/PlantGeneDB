@@ -8,6 +8,13 @@
 You first need to change the directory to docker by `cd docker`
 - `docker compose up -d `
 
+To shutdown
+- `docker compose down`
+
+To restart a container
+
+- `docker compose resart <container name>`
+
 #### check the containers
 
 - `docker compose ps`
