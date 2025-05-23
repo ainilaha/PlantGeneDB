@@ -1,6 +1,6 @@
 <?php
 // 包含admin目录下的数据库连接文件
-require_once 'admin/config.php';
+require_once 'Admin/config.php';
 
 // 处理筛选条件
 $category = isset($_GET['category']) ? $_GET['category'] : '';
