@@ -1,6 +1,6 @@
 <?php
 // Include database connection file
-require_once 'admin/config.php';
+require_once 'Admin/config.php';
 
 // Process filter conditions
 $category = isset($_GET['category']) ? $_GET['category'] : '';
