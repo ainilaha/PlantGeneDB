@@ -378,7 +378,7 @@ if ($categoryResult && $categoryResult->num_rows > 0) {
                     <span class="sitename">QTP-GMD</span>
                 </a>
                 <div class="footer-contact pt-3">
-                    <p>No. 59, Middle Section of Qinglong Avenue, Fucheng District, Mianyang City, Sichuan Province</p>
+                    <p>No. 59, Middle Section of Qinglong Avenue, Fucheng District, Mianyang City, Sichuan Province, China</p>
                     <p class="mt-3"><strong>Tel:</strong> <span> 0816-6089528</span></p>
                     <p><strong>Email:</strong> <span>wangting@swust.edu.cn</span></p>
                 </div>
