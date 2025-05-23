@@ -75,7 +75,7 @@
                 <li><a href="transcriptomics.html">Transcriptomics</a></li>
                 <li><a href="metabolomics.html">Metabolomics</a></li>
                 <li><a href="Proteomics.html">Proteomics</a></li>
-                <li><a href="Microbiomics.html">Microbiomics</a></li>
+                <li><a href="microbiomics.php">Microbiomics</a></li>
                 <li><a href="Epigenomic.html">Epigenomic</a></li>
               </ul>
             </li>
