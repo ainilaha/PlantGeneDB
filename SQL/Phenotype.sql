@@ -4,6 +4,7 @@ CREATE TABLE Phenotype (
                            Class VARCHAR(50),
                            Trait_name VARCHAR(100),
                            Record_num INT,
+                           Planting_location VARCHAR(255),
                            Planting_date VARCHAR(100),
                            Treatment VARCHAR(200),
                            Source VARCHAR(200),
