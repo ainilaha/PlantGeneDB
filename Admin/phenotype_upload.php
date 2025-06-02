@@ -36,6 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'filter' => FILTER_VALIDATE_INT,
                 'options' => ['default' => null]
             ],
+            'planting_location' => [
+                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                'options' => ['default' => '']
+            ],
             'planting_date' => [
                 'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
                 'options' => ['default' => '']
@@ -69,8 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $conn->begin_transaction();
 
-        $stmt = $conn->prepare("INSERT INTO Phenotype (Species, Class, Trait_name, Record_num, Planting_date, Treatment, Source, Link) 
-                                VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO Phenotype (Species, Class, Trait_name, Record_num, Planting_location, Planting_date, Treatment, Source, Link) 
+                                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         if (!$stmt) {
             error_log("SQL prepare error: " . $conn->error);
@@ -81,16 +85,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $class = strval($form_data['class']);
         $trait_name = strval($form_data['trait_name']);
         $record_num = $form_data['record_num'] !== null ? intval($form_data['record_num']) : null;
+        $planting_location = strval($form_data['planting_location']);
         $planting_date = strval($form_data['planting_date']);
         $treatment = strval($form_data['treatment']);
         $source = strval($form_data['source']);
         $link = strval($form_data['link']);
 
-        $bind_result = $stmt->bind_param("sssissss",
+        $bind_result = $stmt->bind_param("ssssissss",
             $species,
             $class,
             $trait_name,
             $record_num,
+            $planting_location,
             $planting_date,
             $treatment,
             $source,
@@ -405,6 +411,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 <div class="form-group">
                     <label>Species *</label>
                     <input type="text" name="species" required>
+                    <small class="text-muted">（默认斜体显示）</small>
                 </div>
                 <div class="form-group">
                     <label>Class</label>
@@ -417,6 +424,10 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 <div class="form-group">
                     <label>Record Number</label>
                     <input type="number" name="record_num">
+                </div>
+                <div class="form-group">
+                    <label>Planting Location</label>
+                    <input type="text" name="planting_location">
                 </div>
                 <div class="form-group">
                     <label>Planting Date</label>
