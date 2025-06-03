@@ -10,7 +10,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $sql = "SELECT * FROM Microbiomics WHERE 1=1";
 
 if (!empty($category)) {
-    $sql .= " AND Biotic_stress = '" . $conn->real_escape_string($category) . "'";
+    $sql .= " AND Species = '" . $conn->real_escape_string($category) . "'";
 }
 
 if (!empty($search)) {
@@ -20,6 +20,9 @@ if (!empty($search)) {
         Family_of_endophyte_fungi LIKE '%" . $conn->real_escape_string($search) . "%' OR 
         Genus_of_endophyte_fungi LIKE '%" . $conn->real_escape_string($search) . "%' OR 
         Species_of_endophyte_fungi LIKE '%" . $conn->real_escape_string($search) . "%' OR 
+        Genome_of_endophyte_fungi LIKE '%" . $conn->real_escape_string($search) . "%' OR 
+        Transcriptome_of_endophyte_fungi LIKE '%" . $conn->real_escape_string($search) . "%' OR 
+        Microbiome_of_endophyte_fungi LIKE '%" . $conn->real_escape_string($search) . "%' OR 
         Tissue LIKE '%" . $conn->real_escape_string($search) . "%' OR 
         Biotic_stress LIKE '%" . $conn->real_escape_string($search) . "%' OR 
         Abiotic_stress LIKE '%" . $conn->real_escape_string($search) . "%'
@@ -46,15 +49,20 @@ $offset = ($current_page - 1) * $records_per_page;
 $page_sql = $sql . " LIMIT $offset, $records_per_page";
 $result = $conn->query($page_sql);
 
-// 获取类别列表，用于下拉筛选
-$categoryQuery = "SELECT DISTINCT Biotic_stress FROM Microbiomics WHERE Biotic_stress IS NOT NULL AND Biotic_stress != ''";
+// 获取物种列表，用于下拉筛选
+$categoryQuery = "SELECT DISTINCT Species FROM Microbiomics WHERE Species IS NOT NULL AND Species != '' ORDER BY Species";
 $categoryResult = $conn->query($categoryQuery);
 $categories = [];
 
 if ($categoryResult && $categoryResult->num_rows > 0) {
     while ($row = $categoryResult->fetch_assoc()) {
-        $categories[] = $row['Biotic_stress'];
+        $categories[] = $row['Species'];
     }
+}
+
+// 辅助函数：清理HTML标签但保留文本内容
+function strip_tags_preserve_content($html) {
+    return strip_tags($html);
 }
 ?>
 
@@ -174,6 +182,30 @@ if ($categoryResult && $categoryResult->num_rows > 0) {
             background-color: #3fbbc0;
             border-color: #3fbbc0;
         }
+
+        /* 科学名称斜体样式 */
+        .species-italic {
+            font-style: italic;
+            font-weight: normal;
+        }
+        
+        /* 确保富文本内容正确显示 */
+        .rich-text-content {
+            line-height: 1.4;
+        }
+        
+        .rich-text-content p {
+            margin: 0;
+            padding: 0;
+        }
+        
+        .rich-text-content em {
+            font-style: italic;
+        }
+        
+        .rich-text-content strong {
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -207,7 +239,7 @@ if ($categoryResult && $categoryResult->num_rows > 0) {
                         </ul>
                     </li>
 
-                    <li><a href="Phenotype.html">Phenotype</a></li>
+                    <li><a href="phenotype.php">Phenotype</a></li>
                     <li><a href="Germplasm.html">Germplasm</a></li>
 
                     <!-- Tools dropdown menu -->
@@ -247,11 +279,11 @@ if ($categoryResult && $categoryResult->num_rows > 0) {
                     <div class="container">
                         <div class="row">
                             <div class="col-md-4 text-start">
-                                <select class="form-select" id="categoryFilter" name="category" onchange="this.form.submit()">
-                                    <option value="">All Categories</option>
+                                <select class="form-select" id="categoryFilter" name="category" onchange="this.form.submit()" style="font-style: italic; font-family: 'Times New Roman', serif;">
+                                    <option value="">All Species</option>
                                     <?php foreach ($categories as $cat): ?>
                                         <option value="<?php echo htmlspecialchars($cat); ?>" <?php echo ($category == $cat) ? 'selected' : ''; ?>>
-                                            <?php echo htmlspecialchars($cat); ?>
+                                            <span style="font-style: italic;"><?php echo htmlspecialchars(strip_tags_preserve_content($cat)); ?></span>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -282,18 +314,17 @@ if ($categoryResult && $categoryResult->num_rows > 0) {
                 <table class="table table-striped table-hover" id="dataTable">
                     <thead class="table">
                     <tr>
-                        <th>Species</th>
                         <th>Article Overview</th>
                         <th>Family of Endophyte Fungi</th>
                         <th>Genus of Endophyte Fungi</th>
                         <th>Species of Endophyte Fungi</th>
                         <th>Genome of Endophyte Fungi</th>
+                        <th>Transcriptome of Endophyte Fungi</th>
                         <th>Microbiome of Endophyte Fungi</th>
                         <th>Tissue</th>
                         <th>Biotic Stress</th>
                         <th>Abiotic Stress</th>
                         <th>Source</th>
-                        <th>Link</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -302,23 +333,46 @@ if ($categoryResult && $categoryResult->num_rows > 0) {
                     if ($result && $result->num_rows > 0) {
                         // Output data
                         while($row = $result->fetch_assoc()) {
-                            echo "<tr data-category='" . htmlspecialchars($row["Biotic_stress"]) . "'>";
-                            echo "<td>" . htmlspecialchars($row["Species"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["Article_Overview"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["Family_of_endophyte_fungi"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["Genus_of_endophyte_fungi"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["Species_of_endophyte_fungi"]) . "</td>";
+                            echo "<tr data-category='" . htmlspecialchars(strip_tags_preserve_content($row["Species"])) . "'>";
+                            
+                            // Article Overview - 保留HTML格式
+                            echo "<td><div class='rich-text-content'>" . $row["Article_Overview"] . "</div></td>";
+                            
+                            // Family of endophyte fungi - 默认斜体
+                            echo "<td><span class='species-italic'>" . htmlspecialchars($row["Family_of_endophyte_fungi"]) . "</span></td>";
+                            
+                            // Genus of endophyte fungi - 默认斜体
+                            echo "<td><span class='species-italic'>" . htmlspecialchars($row["Genus_of_endophyte_fungi"]) . "</span></td>";
+                            
+                            // Species of endophyte fungi - 默认斜体
+                            echo "<td><span class='species-italic'>" . htmlspecialchars($row["Species_of_endophyte_fungi"]) . "</span></td>";
+                            
+                            // Genome of endophyte fungi - 正常显示
                             echo "<td>" . htmlspecialchars($row["Genome_of_endophyte_fungi"]) . "</td>";
+                            
+                            // Transcriptome of endophyte fungi - 新增字段，正常显示
+                            echo "<td>" . htmlspecialchars($row["Transcriptome_of_endophyte_fungi"] ?? '') . "</td>";
+                            
+                            // 其他字段正常显示
                             echo "<td>" . htmlspecialchars($row["Microbiome_of_endophyte_fungi"]) . "</td>";
                             echo "<td>" . htmlspecialchars($row["Tissue"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["Biotic_stress"]) . "</td>";
+                            
+                            // Biotic stress - 保留HTML格式
+                            echo "<td><div class='rich-text-content'>" . $row["Biotic_stress"] . "</div></td>";
+                            
                             echo "<td>" . htmlspecialchars($row["Abiotic_stress"]) . "</td>";
-                            echo "<td>" . htmlspecialchars($row["Source"]) . "</td>";
-                            echo "<td><a href='" . htmlspecialchars($row["Link"]) . "' class='source-link' target='_blank'>Link</a></td>";
+                            
+                            // 修改Source列，使其可点击跳转到Link
+                            if (!empty($row["Link"])) {
+                                echo "<td><a href='" . htmlspecialchars($row["Link"]) . "' class='source-link' target='_blank'>" . htmlspecialchars($row["Source"]) . "</a></td>";
+                            } else {
+                                echo "<td>" . htmlspecialchars($row["Source"]) . "</td>";
+                            }
+                            
                             echo "</tr>";
                         }
                     } else {
-                        echo "<tr><td colspan='12' class='text-center'>No data found</td></tr>";
+                        echo "<tr><td colspan='11' class='text-center'>No data found</td></tr>";
                     }
                     ?>
                     </tbody>

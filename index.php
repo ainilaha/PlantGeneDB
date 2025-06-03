@@ -80,7 +80,7 @@
               </ul>
             </li>
 
-            <li><a href="Phenotype.html">Phenotype</a></li>
+            <li><a href="phenotype.php">Phenotype</a></li>
             <li><a href="Germplasm.html">Germplasm</a></li>
 
             <!-- Tools 下拉菜单 -->
