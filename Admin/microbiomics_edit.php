@@ -443,17 +443,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="form-group">
                     <label>Family of endophyte fungi</label>
-                    <input type="text" name="family_of_endophyte_fungi" value="<?php echo htmlspecialchars($record['Family_of_endophyte_fungi']); ?>">
+                    <input type="text" name="family_of_endophyte_fungi" value="<?php echo htmlspecialchars_decode($record['Family_of_endophyte_fungi'], ENT_QUOTES); ?>">
                     <small class="text-muted">（默认斜体显示）</small>
                 </div>
                 <div class="form-group">
                     <label>Genus of endophyte fungi</label>
-                    <input type="text" name="genus_of_endophyte_fungi" value="<?php echo htmlspecialchars($record['Genus_of_endophyte_fungi']); ?>">
+                    <input type="text" name="genus_of_endophyte_fungi" value="<?php echo htmlspecialchars_decode($record['Genus_of_endophyte_fungi'], ENT_QUOTES); ?>">
                     <small class="text-muted">（默认斜体显示）</small>
                 </div>
                 <div class="form-group">
                     <label>Species of endophyte fungi</label>
-                    <input type="text" name="species_of_endophyte_fungi" value="<?php echo htmlspecialchars($record['Species_of_endophyte_fungi']); ?>">
+                    <input type="text" name="species_of_endophyte_fungi" value="<?php echo htmlspecialchars_decode($record['Species_of_endophyte_fungi'], ENT_QUOTES); ?>">
                     <small class="text-muted">（默认斜体显示）</small>
                 </div>
                 <div class="form-group">
@@ -466,7 +466,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="form-group">
                     <label>Microbiome of endophyte fungi</label>
-                    <input type="text" name="microbiome_of_endophyte_fungi" value="<?php echo htmlspecialchars($record['Microbiome_of_endophyte_fungi']); ?>">
+                    <input type="text" name="microbiome_of_endophyte_fungi" value="<?php echo htmlspecialchars_decode($record['Microbiome_of_endophyte_fungi'], ENT_QUOTES); ?>">
                 </div>
                 <div class="form-group">
                     <label>Tissue</label>
@@ -511,7 +511,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 onAction: function () {
                     // 获取当前选中的文本
                     const selectedText = editor.selection.getContent({format: 'text'});
-                    
+
                     if (selectedText) {
                         // 将选中的病原体名称设为斜体
                         const formattedText = '<em>' + selectedText + '</em>';
@@ -519,7 +519,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
             });
-            
+
             editor.on('change', function() {
                 editor.save();
                 console.log('Biotic stress changed:', editor.getContent());

@@ -77,6 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'filter' => FILTER_VALIDATE_INT,
                 'options' => ['default' => null]
             ],
+            'planting_location' => [
+                'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+                'options' => ['default' => '']
+            ],
             'planting_date' => [
                 'filter' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
                 'options' => ['default' => '']
@@ -115,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // 更新数据库
         $conn->begin_transaction();
         $stmt = $conn->prepare("UPDATE Phenotype SET 
-            Species = ?, Class = ?, Trait_name = ?, Record_num = ?, 
+            Species = ?, Class = ?, Trait_name = ?, Record_num = ?, Planting_location = ?,
             Planting_date = ?, Treatment = ?, Source = ?, Link = ?
             WHERE id = ?");
 
@@ -127,16 +131,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $class = strval($form_data['class']);
         $trait_name = strval($form_data['trait_name']);
         $record_num = $form_data['record_num'] !== null ? intval($form_data['record_num']) : null;
+        $planting_location = strval($form_data['planting_location']);
         $planting_date = strval($form_data['planting_date']);
         $treatment = strval($form_data['treatment']);
         $source = strval($form_data['source']);
         $link = strval($form_data['link']);
 
-        $stmt->bind_param("sssissisi",
+        $stmt->bind_param("sssisssisi",
             $species,
             $class,
             $trait_name,
             $record_num,
+            $planting_location,
             $planting_date,
             $treatment,
             $source,
@@ -427,6 +433,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-group">
                     <label>Record Number</label>
                     <input type="number" name="record_num" value="<?php echo htmlspecialchars($record['Record_num']); ?>">
+                </div>
+                <div class="form-group">
+                    <label>Plant Location</label>
+                    <input type="text" name="planting_location" value="<?php echo htmlspecialchars($record['Planting_location']); ?>">
                 </div>
                 <div class="form-group">
                     <label>Planting Date</label>
