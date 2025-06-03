@@ -16,3 +16,6 @@ CREATE TABLE Microbiomics (
          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
      );
+ALTER TABLE Microbiomics 
+ADD COLUMN Transcriptome_of_endophyte_fungi VARCHAR(255) 
+AFTER Genome_of_endophyte_fungi;
