@@ -74,6 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             error_log('净化后的文章概述: ' . $_POST['article_overview']);
         }
 
+        // 净化生物胁迫富文本内容
+        if (isset($_POST['biotic_stress'])) {
+            $_POST['biotic_stress'] = sanitize_html($_POST['biotic_stress']);
+            error_log('净化后的生物胁迫: ' . $_POST['biotic_stress']);
+        }
+
         // 验证表单数据
         $fields = [
             'species' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
@@ -87,9 +93,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'genus_of_endophyte_fungi' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'species_of_endophyte_fungi' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'genome_of_endophyte_fungi' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'transcriptome_of_endophyte_fungi' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'microbiome_of_endophyte_fungi' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'tissue' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
-            'biotic_stress' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
+            'biotic_stress' => [
+                'filter' => FILTER_CALLBACK,
+                'options' => function($value) {
+                    return $value !== null && $value !== false ? $value : '';
+                }
+            ],
             'abiotic_stress' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'source' => FILTER_SANITIZE_FULL_SPECIAL_CHARS,
             'link' => FILTER_SANITIZE_URL
@@ -111,21 +123,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare("UPDATE Microbiomics SET 
             Species = ?, Article_Overview = ?, Family_of_endophyte_fungi = ?, 
             Genus_of_endophyte_fungi = ?, Species_of_endophyte_fungi = ?, 
-            Genome_of_endophyte_fungi = ?, Microbiome_of_endophyte_fungi = ?, 
-            Tissue = ?, Biotic_stress = ?, Abiotic_stress = ?, Source = ?, Link = ?
+            Genome_of_endophyte_fungi = ?, Transcriptome_of_endophyte_fungi = ?,
+            Microbiome_of_endophyte_fungi = ?, Tissue = ?, Biotic_stress = ?, 
+            Abiotic_stress = ?, Source = ?, Link = ?
             WHERE id = ?");
 
         if (!$stmt) {
             throw new Exception("SQL准备错误: " . $conn->error);
         }
 
-        $stmt->bind_param("ssssssssssssi",
+        $stmt->bind_param("sssssssssssssi",
             $form_data['species'],
             $form_data['article_overview'],
             $form_data['family_of_endophyte_fungi'],
             $form_data['genus_of_endophyte_fungi'],
             $form_data['species_of_endophyte_fungi'],
             $form_data['genome_of_endophyte_fungi'],
+            $form_data['transcriptome_of_endophyte_fungi'],
             $form_data['microbiome_of_endophyte_fungi'],
             $form_data['tissue'],
             $form_data['biotic_stress'],
@@ -272,7 +286,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             resize: vertical;
         }
         .form-group.article-overview,
-        .form-group.link {
+        .form-group.link,
+        .form-group.biotic-stress {
             grid-column: 1 / -1;
         }
         .submit-btn {
@@ -359,7 +374,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .tox .tox-tbtn:hover {
             background-color: #e9ecef !important;
         }
-        .form-group.article-overview, .form-group.link {
+        .form-group.article-overview, .form-group.link, .form-group.biotic-stress {
             margin-bottom: 1.5rem;
         }
     </style>
@@ -378,6 +393,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <ul class="submenu">
                 <li><a href="genomics_content.php">Genomics</a></li>
                 <li><a href="microbiomics_content.php" class="active-sub">Microbiomics</a></li>
+                <li><a href="phenotype_content.php">Phenotype</a></li>
             </ul>
         </li>
         <li class="has-submenu">
@@ -385,6 +401,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <ul class="submenu">
                 <li><a href="gene_upload.php">Genomics</a></li>
                 <li><a href="microbiomics_upload.php">Microbiomics</a></li>
+                <li><a href="phenotype_upload.php">Phenotype</a></li>
             </ul>
         </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i>系统设置</a></li>
@@ -418,22 +435,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="form-group">
                     <label>Species *</label>
                     <input type="text" name="species" value="<?php echo htmlspecialchars($record['Species']); ?>" required>
+                    <small class="text-muted">（默认斜体显示）</small>
+                </div>
+                <div class="form-group article-overview">
+                    <label>Article overview</label>
+                    <textarea name="article_overview" id="editor_article_overview"><?php echo htmlspecialchars($record['Article_Overview']); ?></textarea>
                 </div>
                 <div class="form-group">
                     <label>Family of endophyte fungi</label>
                     <input type="text" name="family_of_endophyte_fungi" value="<?php echo htmlspecialchars($record['Family_of_endophyte_fungi']); ?>">
+                    <small class="text-muted">（默认斜体显示）</small>
                 </div>
                 <div class="form-group">
                     <label>Genus of endophyte fungi</label>
                     <input type="text" name="genus_of_endophyte_fungi" value="<?php echo htmlspecialchars($record['Genus_of_endophyte_fungi']); ?>">
+                    <small class="text-muted">（默认斜体显示）</small>
                 </div>
                 <div class="form-group">
                     <label>Species of endophyte fungi</label>
                     <input type="text" name="species_of_endophyte_fungi" value="<?php echo htmlspecialchars($record['Species_of_endophyte_fungi']); ?>">
+                    <small class="text-muted">（默认斜体显示）</small>
                 </div>
                 <div class="form-group">
                     <label>Genome of endophyte fungi</label>
                     <input type="text" name="genome_of_endophyte_fungi" value="<?php echo htmlspecialchars($record['Genome_of_endophyte_fungi']); ?>">
+                </div>
+                <div class="form-group">
+                    <label>Transcriptome of endophyte fungi</label>
+                    <input type="text" name="transcriptome_of_endophyte_fungi" value="<?php echo htmlspecialchars($record['Transcriptome_of_endophyte_fungi'] ?? ''); ?>">
                 </div>
                 <div class="form-group">
                     <label>Microbiome of endophyte fungi</label>
@@ -443,9 +472,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label>Tissue</label>
                     <input type="text" name="tissue" value="<?php echo htmlspecialchars($record['Tissue']); ?>">
                 </div>
-                <div class="form-group">
+                <div class="form-group biotic-stress">
                     <label>Biotic stress</label>
-                    <input type="text" name="biotic_stress" value="<?php echo htmlspecialchars($record['Biotic_stress']); ?>">
+                    <textarea name="biotic_stress" id="editor_biotic_stress"><?php echo htmlspecialchars($record['Biotic_stress']); ?></textarea>
+                    <small class="text-muted">可以使用富文本编辑器设置部分内容为斜体，例如病原体名称</small>
                 </div>
                 <div class="form-group">
                     <label>Abiotic stress</label>
@@ -459,10 +489,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label>Link</label>
                     <input type="url" name="link" value="<?php echo htmlspecialchars($record['Link']); ?>">
                 </div>
-                <div class="form-group article-overview">
-                    <label>Article overview</label>
-                    <textarea name="article_overview" id="editor_article_overview"><?php echo htmlspecialchars($record['Article_Overview']); ?></textarea>
-                </div>
             </div>
 
             <button type="submit" class="submit-btn">保存更改</button>
@@ -471,6 +497,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
+    tinymce.init({
+        selector: '#editor_biotic_stress',
+        plugins: 'autoresize',
+        toolbar: 'formatpathogen italic bold | undo redo',
+        menubar: false,
+        statusbar: false,
+        height: 100,
+        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 16px; }',
+        setup: function(editor) {
+            // 添加病原体名称格式化按钮
+            editor.ui.registry.addButton('formatpathogen', {
+                onAction: function () {
+                    // 获取当前选中的文本
+                    const selectedText = editor.selection.getContent({format: 'text'});
+                    
+                    if (selectedText) {
+                        // 将选中的病原体名称设为斜体
+                        const formattedText = '<em>' + selectedText + '</em>';
+                        editor.selection.setContent(formattedText);
+                    }
+                }
+            });
+            
+            editor.on('change', function() {
+                editor.save();
+                console.log('Biotic stress changed:', editor.getContent());
+            });
+        }
+    });
+
     // 初始化 TinyMCE 编辑器，仅用于文章概述
     tinymce.init({
         selector: '#editor_article_overview',
@@ -528,6 +584,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 记录富文本内容，便于调试
         console.log('文章概述:', document.getElementById('editor_article_overview').value);
+        console.log('生物胁迫:', document.getElementById('editor_biotic_stress').value);
 
         const form = this;
         const formData = new FormData(form);

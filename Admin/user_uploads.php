@@ -145,6 +145,7 @@ $uploads = $uploads_result->fetch_all(MYSQLI_ASSOC) ?: [];
             <ul class="submenu">
                 <li><a href="genomics_content.php">Genomics</a></li>
                 <li><a href="microbiomics_content.php">Microbiomics</a></li>
+                <li><a href="phenotype_content.php">Phenotype</a></li>
             </ul>
         </li>
         <li class="has-submenu">
@@ -152,6 +153,7 @@ $uploads = $uploads_result->fetch_all(MYSQLI_ASSOC) ?: [];
             <ul class="submenu">
                 <li><a href="gene_upload.php">Genomics</a></li>
                 <li><a href="microbiomics_upload.php">Microbiomics</a></li>
+                <li><a href="phenotype_upload.php">Phenotype</a></li>
             </ul>
         </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i>系统设置</a></li>

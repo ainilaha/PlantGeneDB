@@ -43,11 +43,15 @@ $per_page = 10;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $per_page;
 
-// 搜索处理
+// 搜索处理 - 扩展搜索字段以包含新字段
 $search = isset($_GET['search']) ? "%{$_GET['search']}%" : '%';
-$where = "WHERE Species LIKE ? OR Article_Overview LIKE ? OR Source LIKE ?";
-$params = [$search, $search, $search];
-$param_types = "sss";
+$where = "WHERE Species LIKE ? OR Article_Overview LIKE ? OR Source LIKE ? OR 
+          Family_of_endophyte_fungi LIKE ? OR Genus_of_endophyte_fungi LIKE ? OR 
+          Species_of_endophyte_fungi LIKE ? OR Genome_of_endophyte_fungi LIKE ? OR 
+          Transcriptome_of_endophyte_fungi LIKE ? OR Microbiome_of_endophyte_fungi LIKE ? OR 
+          Tissue LIKE ? OR Biotic_stress LIKE ? OR Abiotic_stress LIKE ?";
+$params = array_fill(0, 12, $search);
+$param_types = str_repeat("s", 12);
 
 // 获取总记录数
 $count_sql = "SELECT COUNT(*) FROM Microbiomics $where";
@@ -78,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
         $delete_stmt->bind_param("i", $delete_id);
         if ($delete_stmt->execute()) {
             $success = "Record deleted successfully";
-            // 刷新当前页数据
-            header("Location: microbiomics.php?page=$page");
+            // 修复重定向URL
+            header("Location: microbiomics_content.php?page=$page");
             exit();
         }
     } catch (Exception $e) {
@@ -263,6 +267,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
         .pagination {
             margin-top: 20px;
         }
+        .article-overview-cell {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .article-overview-cell:hover {
+            white-space: normal;
+            overflow: visible;
+        }
     </style>
     <link rel="stylesheet" href="./assets/css/admin.css">
 </head>
@@ -280,6 +294,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
             <ul class="submenu">
                 <li><a href="genomics_content.php">Genomics</a></li>
                 <li><a href="microbiomics_content.php" class="active-sub">Microbiomics</a></li>
+                <li><a href="phenotype_content.php">Phenotype</a></li>
             </ul>
         </li>
         <li class="has-submenu">
@@ -287,6 +302,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
             <ul class="submenu">
                 <li><a href="gene_upload.php">Genomics</a></li>
                 <li><a href="microbiomics_upload.php">Microbiomics</a></li>
+                <li><a href="phenotype_upload.php">Phenotype</a></li>
             </ul>
         </li>
         <li><a href="settings.php"><i class="fas fa-cog"></i>系统设置</a></li>
@@ -295,7 +311,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
 
 <div class="main-content">
     <div class="header">
-        <h3>数据管理</h3>
+        <h3>微生物组数据管理</h3>
         <div class="user-info">
             <span><?php echo htmlspecialchars($user['username']); ?> (<?php echo htmlspecialchars($user['role']); ?>)</span>
             <form action="logout.php" method="post">
@@ -315,12 +331,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
             <!-- 搜索框 -->
             <form class="search-box">
                 <div class="input-group">
-                    <input type="text" class="form-control" placeholder="搜索物种、文章概述或来源..."
+                    <input type="text" class="form-control" placeholder="搜索所有字段..."
                            name="search" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
                     <button class="btn btn-primary" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
+                <small class="text-muted">可搜索：物种、文章概述、来源、真菌分类信息、基因组、转录组、微生物组、组织、胁迫等所有字段</small>
             </form>
 
             <!-- 数据表格 -->
@@ -331,6 +348,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
                         <th>ID</th>
                         <th>物种</th>
                         <th>文章概述</th>
+                        <th>转录组</th>
                         <th>来源</th>
                         <th>上传时间</th>
                         <th>操作</th>
@@ -340,8 +358,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
                     <?php while($row = $result->fetch_assoc()): ?>
                         <tr>
                             <td><?= $row['id'] ?></td>
-                            <td><?= htmlspecialchars($row['Species']) ?></td>
-                            <td><?= $row['Article_Overview'] ?></td>
+                            <td><em><?= htmlspecialchars($row['Species']) ?></em></td>
+                            <td class="article-overview-cell"><?= $row['Article_Overview'] ?></td>
+                            <td><?= htmlspecialchars($row['Transcriptome_of_endophyte_fungi'] ?? '') ?></td>
                             <td><?= htmlspecialchars($row['Source']) ?></td>
                             <td><?= date('Y-m-d H:i', strtotime($row['created_at'])) ?></td>
                             <td class="action-btns">
